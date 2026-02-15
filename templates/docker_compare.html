@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Docker Hardened vs Standard - Baran Basaran{% endblock %}
+{% block title %}Docker Hardened vs Standard - Baran Başaran{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
@@ -155,6 +155,53 @@
                 <button class="action-btn" id="resetBtn">
                     <i class="fa-solid fa-rotate-left"></i> Sıfırla
                 </button>
+                <button class="action-btn editor-diff-btn" id="diffBtn">
+                    <i class="fa-solid fa-code-compare"></i> Farkları Göster
+                </button>
+                <button class="action-btn editor-analyze-btn" id="analyzeBtn">
+                    <i class="fa-solid fa-shield-halved"></i> Güvenlik Analizi
+                </button>
+            </div>
+
+            <!-- Diff Sonuçları -->
+            <div id="diffResults" class="editor-results hidden">
+                <h3 class="subsection-title"><i class="fa-solid fa-code-compare"></i> Satır Farkları</h3>
+                <div class="diff-view-grid">
+                    <div class="diff-view-panel">
+                        <div class="diff-view-header diff-view-header-old">
+                            <i class="fa-solid fa-box"></i> Standard
+                        </div>
+                        <div id="diffStandardView" class="diff-view-content"></div>
+                    </div>
+                    <div class="diff-view-panel">
+                        <div class="diff-view-header diff-view-header-new">
+                            <i class="fa-solid fa-shield-halved"></i> Hardened
+                        </div>
+                        <div id="diffHardenedView" class="diff-view-content"></div>
+                    </div>
+                </div>
+                <div id="diffSummary" class="diff-summary"></div>
+            </div>
+
+            <!-- Güvenlik Analizi Sonuçları -->
+            <div id="analyzeResults" class="editor-results hidden">
+                <h3 class="subsection-title"><i class="fa-solid fa-shield-halved"></i> Güvenlik Analizi</h3>
+                <div class="analyze-grid">
+                    <div class="analyze-panel" id="analyzeStandard">
+                        <div class="analyze-panel-header">
+                            <i class="fa-solid fa-box"></i> Standard — Analiz
+                            <span id="scoreStandard" class="analyze-score"></span>
+                        </div>
+                        <div id="analyzeStandardBody" class="analyze-body"></div>
+                    </div>
+                    <div class="analyze-panel" id="analyzeHardened">
+                        <div class="analyze-panel-header">
+                            <i class="fa-solid fa-shield-halved"></i> Hardened — Analiz
+                            <span id="scoreHardened" class="analyze-score"></span>
+                        </div>
+                        <div id="analyzeHardenedBody" class="analyze-body"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -299,7 +346,207 @@ docker run --rm demo-hardened sh -c "touch /etc/hACKED"
     document.getElementById('resetBtn')?.addEventListener('click', () => {
         document.getElementById('editorStandard').value = origStandard;
         document.getElementById('editorHardened').value = origHardened;
+        document.getElementById('diffResults').classList.add('hidden');
+        document.getElementById('analyzeResults').classList.add('hidden');
     });
+
+    // =============================================
+    // Farkları Göster (Diff)
+    // =============================================
+    document.getElementById('diffBtn')?.addEventListener('click', () => {
+        const stdLines = document.getElementById('editorStandard').value.split('\n');
+        const hrdLines = document.getElementById('editorHardened').value.split('\n');
+
+        const maxLen = Math.max(stdLines.length, hrdLines.length);
+        let stdHtml = '';
+        let hrdHtml = '';
+        let addedCount = 0, removedCount = 0, sameCount = 0;
+
+        // Basit satır-satır karşılaştırma
+        const allStdSet = new Set(stdLines.map(l => l.trim()).filter(l => l));
+        const allHrdSet = new Set(hrdLines.map(l => l.trim()).filter(l => l));
+
+        for (let i = 0; i < maxLen; i++) {
+            const sLine = i < stdLines.length ? stdLines[i] : '';
+            const hLine = i < hrdLines.length ? hrdLines[i] : '';
+            const sTrim = sLine.trim();
+            const hTrim = hLine.trim();
+
+            // Standard tarafı
+            if (i < stdLines.length) {
+                if (sTrim === '' || sTrim.startsWith('#')) {
+                    stdHtml += `<div class="diff-line diff-line-neutral"><span class="diff-line-num">${i+1}</span><span class="diff-line-text">${escHtml(sLine)}</span></div>`;
+                    sameCount++;
+                } else if (!allHrdSet.has(sTrim)) {
+                    stdHtml += `<div class="diff-line diff-line-removed"><span class="diff-line-num">${i+1}</span><span class="diff-line-marker">−</span><span class="diff-line-text">${escHtml(sLine)}</span></div>`;
+                    removedCount++;
+                } else {
+                    stdHtml += `<div class="diff-line diff-line-same"><span class="diff-line-num">${i+1}</span><span class="diff-line-text">${escHtml(sLine)}</span></div>`;
+                    sameCount++;
+                }
+            }
+
+            // Hardened tarafı
+            if (i < hrdLines.length) {
+                if (hTrim === '' || hTrim.startsWith('#')) {
+                    hrdHtml += `<div class="diff-line diff-line-neutral"><span class="diff-line-num">${i+1}</span><span class="diff-line-text">${escHtml(hLine)}</span></div>`;
+                } else if (!allStdSet.has(hTrim)) {
+                    hrdHtml += `<div class="diff-line diff-line-added"><span class="diff-line-num">${i+1}</span><span class="diff-line-marker">+</span><span class="diff-line-text">${escHtml(hLine)}</span></div>`;
+                    addedCount++;
+                } else {
+                    hrdHtml += `<div class="diff-line diff-line-same"><span class="diff-line-num">${i+1}</span><span class="diff-line-text">${escHtml(hLine)}</span></div>`;
+                }
+            }
+        }
+
+        document.getElementById('diffStandardView').innerHTML = stdHtml;
+        document.getElementById('diffHardenedView').innerHTML = hrdHtml;
+        document.getElementById('diffSummary').innerHTML =
+            `<span class="diff-stat diff-stat-same"><i class="fa-solid fa-equals"></i> ${sameCount} ortak satır</span>` +
+            `<span class="diff-stat diff-stat-removed"><i class="fa-solid fa-minus"></i> ${removedCount} sadece Standard'da</span>` +
+            `<span class="diff-stat diff-stat-added"><i class="fa-solid fa-plus"></i> ${addedCount} sadece Hardened'da</span>`;
+
+        document.getElementById('diffResults').classList.remove('hidden');
+        document.getElementById('analyzeResults').classList.add('hidden');
+        document.getElementById('diffResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    function escHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // =============================================
+    // Güvenlik Analizi
+    // =============================================
+    document.getElementById('analyzeBtn')?.addEventListener('click', () => {
+        const stdText = document.getElementById('editorStandard').value;
+        const hrdText = document.getElementById('editorHardened').value;
+
+        const stdResult = analyzeDockerfile(stdText);
+        const hrdResult = analyzeDockerfile(hrdText);
+
+        document.getElementById('analyzeStandardBody').innerHTML = stdResult.html;
+        document.getElementById('scoreStandard').innerHTML = stdResult.scoreHtml;
+        document.getElementById('scoreStandard').className = 'analyze-score ' + stdResult.scoreClass;
+
+        document.getElementById('analyzeHardenedBody').innerHTML = hrdResult.html;
+        document.getElementById('scoreHardened').innerHTML = hrdResult.scoreHtml;
+        document.getElementById('scoreHardened').className = 'analyze-score ' + hrdResult.scoreClass;
+
+        document.getElementById('analyzeResults').classList.remove('hidden');
+        document.getElementById('diffResults').classList.add('hidden');
+        document.getElementById('analyzeResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    function analyzeDockerfile(content) {
+        const lines = content.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+        let checks = [];
+        let score = 0;
+        const maxScore = 6;
+
+        // FROM satırlarını bul
+        const fromLines = lines.filter(l => /^FROM\s+/i.test(l));
+        // Multi-stage build'de son FROM satırı final image'dır
+        const finalFrom = fromLines.length > 0 ? fromLines[fromLines.length - 1] : '';
+        const isSecureBase = /dhi\.io|distroless|chainguard|hardened|scratch/i.test(finalFrom);
+
+        // 1. USER komutu var mı?
+        const hasUser = lines.some(l => /^USER\s+/i.test(l));
+        const userIsRoot = lines.some(l => /^USER\s+root/i.test(l));
+        if (hasUser && !userIsRoot) {
+            checks.push({ status: 'pass', icon: 'fa-user-shield', label: 'Non-root kullanıcı', desc: 'USER komutu ile root dışı kullanıcı tanımlı' });
+            score++;
+        } else if (hasUser && userIsRoot) {
+            checks.push({ status: 'fail', icon: 'fa-user-xmark', label: 'Root kullanıcı!', desc: 'USER root olarak ayarlanmış — tehlikeli' });
+        } else if (isSecureBase) {
+            checks.push({ status: 'pass', icon: 'fa-user-shield', label: 'Non-root (built-in)', desc: 'Hardened base image varsayılan olarak non-root kullanıcı içeriyor' });
+            score++;
+        } else {
+            checks.push({ status: 'fail', icon: 'fa-user-xmark', label: 'USER komutu yok', desc: 'Varsayılan olarak root ile çalışır — saldırganlar tam yetki kazanabilir' });
+        }
+
+        // 2. Base image güvenli mi? (Final FROM'a bak)
+        if (isSecureBase) {
+            checks.push({ status: 'pass', icon: 'fa-shield-halved', label: 'Güvenli base image', desc: `Minimal/hardened image: <code>${escHtml(finalFrom)}</code>` });
+            score++;
+        } else if (/alpine/i.test(finalFrom)) {
+            checks.push({ status: 'warn', icon: 'fa-shield', label: 'Alpine base image', desc: `Hafif ama tam güvenli değil: <code>${escHtml(finalFrom)}</code>` });
+            score += 0.5;
+        } else if (finalFrom) {
+            checks.push({ status: 'fail', icon: 'fa-box-open', label: 'Standart base image', desc: `Tam OS image — gereksiz araçlar mevcut: <code>${escHtml(finalFrom)}</code>` });
+        } else {
+            checks.push({ status: 'fail', icon: 'fa-box-open', label: 'FROM komutu yok', desc: 'Base image tanımlı değil' });
+        }
+
+        // 3. COPY --chown kullanımı
+        const hasCopyChown = lines.some(l => /COPY\s+--chown/i.test(l));
+        if (hasCopyChown) {
+            checks.push({ status: 'pass', icon: 'fa-file-shield', label: 'COPY --chown kullanımı', desc: 'Dosya sahipliği doğru ayarlanmış' });
+            score++;
+        } else {
+            checks.push({ status: 'warn', icon: 'fa-file-circle-question', label: 'COPY --chown yok', desc: 'Dosyalar root\'a ait olabilir — sahiplik kontrolü önerilir' });
+        }
+
+        // 4. Multi-stage build
+        if (fromLines.length > 1) {
+            checks.push({ status: 'pass', icon: 'fa-layer-group', label: 'Multi-stage build', desc: `${fromLines.length} aşamalı build — sadece gerekli dosyalar final image'a kopyalanır` });
+            score++;
+        } else {
+            checks.push({ status: 'fail', icon: 'fa-box', label: 'Tek aşamalı build', desc: 'Build araçları ve bağımlılıklar final image\'da kalır — boyut ve güvenlik riski' });
+        }
+
+        // 5. no-cache-dir veya cache temizliği
+        const hasNoCache = /--no-cache-dir|rm\s+-rf.*cache|apt-get\s+clean/i.test(content);
+        if (hasNoCache) {
+            checks.push({ status: 'pass', icon: 'fa-broom', label: 'Cache temizliği', desc: 'Gereksiz cache dosyaları temizlenmiş — image boyutu düşürülmüş' });
+            score++;
+        } else {
+            checks.push({ status: 'warn', icon: 'fa-database', label: 'Cache temizliği yok', desc: 'Gereksiz dosyalar image boyutunu artırabilir' });
+        }
+
+        // 6. HEALTHCHECK
+        const hasHealth = lines.some(l => /^HEALTHCHECK\s+/i.test(l));
+        if (hasHealth) {
+            checks.push({ status: 'pass', icon: 'fa-heart-pulse', label: 'HEALTHCHECK tanımlı', desc: 'Container sağlık durumu izlenebiliyor' });
+            score++;
+        } else {
+            checks.push({ status: 'warn', icon: 'fa-heart-circle-xmark', label: 'HEALTHCHECK yok', desc: 'Container durumu izlenemiyor — otomatik recovery devre dışı' });
+        }
+
+        // HTML oluştur
+        let html = '';
+        checks.forEach(c => {
+            const cls = c.status === 'pass' ? 'analyze-check-pass' : c.status === 'warn' ? 'analyze-check-warn' : 'analyze-check-fail';
+            html += `<div class="analyze-check ${cls}">
+                <div class="analyze-icon"><i class="fa-solid ${c.icon}"></i></div>
+                <div>
+                    <strong>${c.label}</strong>
+                    <p>${c.desc}</p>
+                </div>
+            </div>`;
+        });
+
+        // Skor çubuğu
+        const pct = Math.round((score / maxScore) * 100);
+        let scoreClass, grade, fillClass;
+        if (pct >= 80) { scoreClass = 'score-good'; grade = 'A'; fillClass = 'fill-good'; }
+        else if (pct >= 50) { scoreClass = 'score-mid'; grade = 'B'; fillClass = 'fill-mid'; }
+        else { scoreClass = 'score-bad'; grade = 'C'; fillClass = 'fill-bad'; }
+
+        html += `<div class="analyze-score-bar">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+                <span style="color:var(--text-muted)">Güvenlik Skoru</span>
+                <span style="font-weight:700; color:var(--text)">${Math.round(score)}/${maxScore}</span>
+            </div>
+            <div class="analyze-score-track">
+                <div class="analyze-score-fill ${fillClass}" style="width:${pct}%"></div>
+            </div>
+        </div>`;
+
+        const scoreHtml = `${grade} (${Math.round(score)}/${maxScore})`;
+
+        return { html, scoreHtml, scoreClass };
+    }
 </script>
 {% endblock %}
 

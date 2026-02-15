@@ -28,7 +28,7 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 PERSONAL_INFO = {
-    'name': 'Baran Basaran',
+    'name': 'Baran Başaran',
     'github': 'https://github.com/basaranbaran',
     'linkedin': 'https://www.linkedin.com/in/baran-basaran/',
     'domain': 'baranbasaran.com',

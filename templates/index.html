@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Baran Basaran - Portfolio{% endblock %}
+{% block title %}Baran Başaran - Portfolio{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -9,14 +9,19 @@
         <div class="hero-grid"></div>
         <div class="hero-glow hero-glow-1"></div>
         <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-glow hero-glow-3"></div>
     </div>
     <div class="hero-content">
-        <div class="hero-avatar">
-            <span>BB</span>
+        <div class="hero-intro" style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:1.5rem;">
+            <div class="hero-avatar-wrap" style="width:120px;height:120px;flex-shrink:0;border-radius:50%;position:relative;">
+                <div class="hero-avatar" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid rgba(57,255,20,0.4);">
+                    <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="Baran Başaran" style="width:120px;height:120px;object-fit:cover;object-position:center 15%;display:block;border-radius:50%;">
+                </div>
+            </div>
+            <h1 class="hero-name">Baran Başaran</h1>
         </div>
-        <h1 class="hero-name">Baran Basaran</h1>
-        <p class="hero-subtitle">Software Developer & Tech Enthusiast</p>
-        <p class="hero-desc">Projelerimi keşfedin — hepsi bu sunucuda çalışıyor.</p>
+        <p class="hero-subtitle">AI Engineer | LLM Deployment & Fine-tuning</p>
+        <p class="hero-desc">Projelerimi keşfedin</p>
         <div class="hero-buttons">
             <a href="{{ info.github }}" target="_blank" class="hero-btn github-btn">
                 <i class="fa-brands fa-github"></i> GitHub
@@ -133,4 +138,3 @@
     </div>
 </section>
 {% endblock %}
-
