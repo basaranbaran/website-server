@@ -17,7 +17,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /var/www/projenin_yolu  # BURAYI KENDİ PROJE YOLUNLA DEĞİŞTİR
+            cd /home/baran/sunucu
             git pull origin main
             # Eğer backend kullanıyorsan (örn: pm2 restart veya systemctl restart)
             # sudo systemctl restart nginx
