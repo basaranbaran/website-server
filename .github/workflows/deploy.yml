@@ -1,0 +1,23 @@
+name: Monster Server Deploy
+
+on:
+  push:
+    branches:
+      - main  # Main branch'ine her push geldiğinde çalışır
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH ile Sunucuya Bağlan ve Kodu Çek
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /var/www/projenin_yolu  # BURAYI KENDİ PROJE YOLUNLA DEĞİŞTİR
+            git pull origin main
+            # Eğer backend kullanıyorsan (örn: pm2 restart veya systemctl restart)
+            # sudo systemctl restart nginx
