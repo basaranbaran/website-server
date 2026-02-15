@@ -7,7 +7,7 @@ Ana Flask uygulaması. Tüm projeleri tek bir web uygulamasında birleştirir.
 from flask import (
     Flask, render_template, request, jsonify,
     Response, send_file, send_from_directory,
-    stream_with_context
+    stream_with_context, redirect
 )
 import os
 import re
@@ -18,6 +18,16 @@ import shutil
 import tempfile
 import threading
 import zipfile
+import sys
+
+# Process manager'ı import et
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'utils'))
+try:
+    from process_manager import PM2Manager
+    PM2_AVAILABLE = True
+except ImportError:
+    PM2_AVAILABLE = False
+    print("⚠️  PM2Manager bulunamadı, on-demand başlatma devre dışı")
 
 # ============================================================
 # Flask App Yapılandırması
@@ -479,34 +489,108 @@ def gastropod_info():
 
 @app.route('/gastropod-app')
 def gastropod_app():
-    """GastroPod Next.js uygulaması (Reverse proxy gerekli - Nginx üzerinden)"""
-    return '''
-    <html>
-    <head><title>GastroPod Redirect</title></head>
-    <body style="font-family: system-ui; text-align: center; padding: 50px;">
-        <h1>🍕 GastroPod</h1>
-        <p>GastroPod uygulaması port 3001'de çalışmalıdır.</p>
-        <p>Lütfen Nginx yapılandırmasında <code>/gastropod-app</code> için reverse proxy ayarlarını kontrol edin.</p>
-        <a href="/gastropod">← Bilgilendirme Sayfasına Dön</a>
-    </body>
-    </html>
-    ''', 503
+    """GastroPod Next.js uygulaması - On-demand başlatma"""
+    if not PM2_AVAILABLE:
+        return render_template('service_error.html', 
+                             service_name='GastroPod',
+                             error='PM2 yöneticisi mevcut değil'), 503
+    
+    # Servisi başlat (zaten çalışıyorsa skip)
+    result = PM2Manager.start_service('gastropod')
+    
+    if not result.get('success'):
+        return render_template('service_error.html',
+                             service_name='GastroPod',
+                             error=result.get('message')), 503
+    
+    # Son erişim zamanını kaydet
+    PM2Manager.update_last_access('gastropod')
+    
+    # Zaten çalışıyorsa direkt yönlendir
+    if result.get('already_running'):
+        # Nginx reverse proxy'ye gider (/gastropod-app -> localhost:3001)
+        return render_template('service_loading.html',
+                             service_name='GastroPod',
+                             icon='🍕',
+                             redirect_url='/gastropod-app',
+                             startup_time=2,
+                             check_endpoint='/api/service-status/gastropod')
+    
+    # İlk kez başlatılıyor, yükleme ekranı göster
+    return render_template('service_loading.html',
+                         service_name='GastroPod',
+                         icon='🍕',
+                         redirect_url='/gastropod-app',
+                         startup_time=result.get('startup_time', 8),
+                         check_endpoint='/api/service-status/gastropod')
 
 
 @app.route('/gastromatch-app')
 def gastromatch_app():
-    """GastroMatch Next.js uygulaması (Reverse proxy gerekli - Nginx üzerinden)"""
-    return '''
-    <html>
-    <head><title>GastroMatch Redirect</title></head>
-    <body style="font-family: system-ui; text-align: center; padding: 50px;">
-        <h1>📊 GastroMatch</h1>
-        <p>GastroMatch uygulaması port 3002'de çalışmalıdır.</p>
-        <p>Lütfen Nginx yapılandırmasında <code>/gastromatch-app</code> için reverse proxy ayarlarını kontrol edin.</p>
-        <a href="/gastropod">← Bilgilendirme Sayfasına Dön</a>
-    </body>
-    </html>
-    ''', 503
+    """GastroMatch Next.js uygulaması - On-demand başlatma"""
+    if not PM2_AVAILABLE:
+        return render_template('service_error.html',
+                             service_name='GastroMatch',
+                             error='PM2 yöneticisi mevcut değil'), 503
+    
+    # Servisi başlat (zaten çalışıyorsa skip)
+    result = PM2Manager.start_service('gastromatch')
+    
+    if not result.get('success'):
+        return render_template('service_error.html',
+                             service_name='GastroMatch',
+                             error=result.get('message')), 503
+    
+    # Son erişim zamanını kaydet
+    PM2Manager.update_last_access('gastromatch')
+    
+    # Zaten çalışıyorsa direkt yönlendir
+    if result.get('already_running'):
+        return render_template('service_loading.html',
+                             service_name='GastroMatch',
+                             icon='📊',
+                             redirect_url='/gastromatch-app',
+                             startup_time=2,
+                             check_endpoint='/api/service-status/gastromatch')
+    
+    # İlk kez başlatılıyor, yükleme ekranı göster
+    return render_template('service_loading.html',
+                         service_name='GastroMatch',
+                         icon='📊',
+                         redirect_url='/gastromatch-app',
+                         startup_time=result.get('startup_time', 8),
+                         check_endpoint='/api/service-status/gastromatch')
+
+
+@app.route('/api/service-status/<service_name>')
+def service_status_check(service_name):
+    """PM2 servis durumunu kontrol et (AJAX için)"""
+    if not PM2_AVAILABLE:
+        return jsonify({'status': 'error', 'message': 'PM2 mevcut değil'}), 503
+    
+    if service_name not in ['gastropod', 'gastromatch']:
+        return jsonify({'status': 'error', 'message': 'Geçersiz servis'}), 400
+    
+    status = PM2Manager.get_process_status(service_name)
+    
+    if status.get('status') == 'online':
+        # Son erişim zamanını güncelle
+        PM2Manager.update_last_access(service_name)
+        return jsonify({
+            'status': 'ready',
+            'message': 'Servis hazır',
+            'uptime': status.get('uptime', 0)
+        })
+    elif status.get('status') in ['stopped', 'errored']:
+        return jsonify({
+            'status': 'error',
+            'message': 'Servis başlatılamadı'
+        })
+    else:
+        return jsonify({
+            'status': 'starting',
+            'message': 'Başlatılıyor...'
+        })
 
 
 # ============================================================

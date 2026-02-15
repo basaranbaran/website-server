@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service_name }} - Hata{% endblock %}
+
+{% block content %}
+<style>
+    .error-container {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .error-icon {
+        font-size: 5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .error-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ff4444;
+        margin-bottom: 1rem;
+    }
+    
+    .error-details {
+        background: rgba(255, 68, 68, 0.1);
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem auto;
+        max-width: 600px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #ff6666;
+    }
+    
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: var(--primary);
+        color: var(--bg-dark);
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(57, 255, 20, 0.3);
+    }
+</style>
+
+<div class="error-container">
+    <div class="error-icon">⚠️</div>
+    
+    <h1 class="error-title">{{ service_name }} Başlatılamadı</h1>
+    
+    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+        Uygulama şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.
+    </p>
+    
+    <div class="error-details">
+        <strong>Hata Detayı:</strong><br>
+        {{ error }}
+    </div>
+    
+    <div class="error-actions">
+        <a href="/gastropod" class="btn btn-primary">← Bilgi Sayfasına Dön</a>
+        <a href="javascript:location.reload()" class="btn btn-secondary">🔄 Tekrar Dene</a>
+    </div>
+</div>
+
+{% endblock %}
+

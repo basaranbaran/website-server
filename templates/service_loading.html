@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service_name }} Başlatılıyor...{% endblock %}
+
+{% block content %}
+<style>
+    .loading-container {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .loading-icon {
+        font-size: 6rem;
+        margin-bottom: 2rem;
+        animation: bounce 1s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .loading-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+    
+    .loading-message {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+    
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(57, 255, 20, 0.1);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 2rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-progress {
+        width: 300px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 0 auto 1rem;
+    }
+    
+    .loading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        width: 0%;
+        transition: width 0.5s ease;
+        border-radius: 10px;
+    }
+    
+    .loading-timer {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-family: 'Courier New', monospace;
+    }
+    
+    .error-message {
+        color: #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="loading-container">
+    <div class="loading-icon">{{ icon }}</div>
+    
+    <h1 class="loading-title">{{ service_name }}</h1>
+    
+    <p class="loading-message" id="statusMessage">Uygulama başlatılıyor...</p>
+    
+    <div class="loading-spinner"></div>
+    
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="progressBar"></div>
+    </div>
+    
+    <p class="loading-timer">
+        <span id="elapsed">0</span>s / <span id="total">{{ startup_time }}</span>s
+    </p>
+    
+    <div id="errorContainer" style="display: none;">
+        <p class="error-message" id="errorMessage"></p>
+        <a href="/gastropod" class="btn">← Bilgi Sayfasına Dön</a>
+    </div>
+</div>
+
+<script>
+    const startTime = Date.now();
+    const totalTime = {{ startup_time }} * 1000; // ms
+    const checkEndpoint = '{{ check_endpoint }}';
+    const redirectUrl = '{{ redirect_url }}';
+    
+    let checkInterval;
+    let progressInterval;
+    
+    // Progress bar animasyonu
+    function updateProgress() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min((elapsed / totalTime) * 100, 95);
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('elapsed').textContent = Math.floor(elapsed / 1000);
+        
+        if (elapsed > totalTime * 1.5) {
+            // Zaman aşımı
+            clearInterval(progressInterval);
+            clearInterval(checkInterval);
+            showError('Başlatma zaman aşımına uğradı. Lütfen tekrar deneyin.');
+        }
+    }
+    
+    // Status kontrolü
+    function checkStatus() {
+        fetch(checkEndpoint)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ready') {
+                    document.getElementById('statusMessage').textContent = '✓ Hazır! Yönlendiriliyorsunuz...';
+                    document.getElementById('progressBar').style.width = '100%';
+                    clearInterval(checkInterval);
+                    clearInterval(progressInterval);
+                    
+                    // 500ms sonra yönlendir
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                    
+                } else if (data.status === 'error') {
+                    clearInterval(checkInterval);
+                    clearInterval(progressInterval);
+                    showError(data.message || 'Servis başlatılamadı');
+                } else {
+                    // Hala başlatılıyor
+                    document.getElementById('statusMessage').textContent = data.message || 'Başlatılıyor...';
+                }
+            })
+            .catch(err => {
+                console.error('Status check failed:', err);
+            });
+    }
+    
+    function showError(message) {
+        document.querySelector('.loading-spinner').style.display = 'none';
+        document.getElementById('statusMessage').textContent = '✗ Hata';
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorContainer').style.display = 'block';
+    }
+    
+    // Başlat
+    progressInterval = setInterval(updateProgress, 100);
+    checkInterval = setInterval(checkStatus, 2000);
+    
+    // İlk kontrolü hemen yap
+    setTimeout(checkStatus, 1000);
+</script>
+
+{% endblock %}
+
