@@ -437,7 +437,7 @@ def yt_cancel():
 # ============================================================
 @app.route('/docker')
 def docker_page():
-    docker_dir = os.path.join(BASE_DIR, 'docker-hardened-image')
+    docker_dir = os.path.join(BASE_DIR, 'projects', 'docker-hardened-image')
 
     standard = hardened = app_code = ''
     try:
@@ -464,8 +464,49 @@ def docker_page():
 
 @app.route('/docker/images/<path:filename>')
 def docker_images(filename):
-    img_dir = os.path.join(BASE_DIR, 'docker-hardened-image', 'images')
+    img_dir = os.path.join(BASE_DIR, 'projects', 'docker-hardened-image', 'images')
     return send_from_directory(img_dir, filename)
+
+
+# ============================================================
+# Route: GastroPod & GastroMatch (Solid Protocol Demo)
+# ============================================================
+@app.route('/gastropod')
+def gastropod_info():
+    """GastroPod proje bilgilendirme sayfası"""
+    return render_template('gastropod.html')
+
+
+@app.route('/gastropod-app')
+def gastropod_app():
+    """GastroPod Next.js uygulaması (Reverse proxy gerekli - Nginx üzerinden)"""
+    return '''
+    <html>
+    <head><title>GastroPod Redirect</title></head>
+    <body style="font-family: system-ui; text-align: center; padding: 50px;">
+        <h1>🍕 GastroPod</h1>
+        <p>GastroPod uygulaması port 3001'de çalışmalıdır.</p>
+        <p>Lütfen Nginx yapılandırmasında <code>/gastropod-app</code> için reverse proxy ayarlarını kontrol edin.</p>
+        <a href="/gastropod">← Bilgilendirme Sayfasına Dön</a>
+    </body>
+    </html>
+    ''', 503
+
+
+@app.route('/gastromatch-app')
+def gastromatch_app():
+    """GastroMatch Next.js uygulaması (Reverse proxy gerekli - Nginx üzerinden)"""
+    return '''
+    <html>
+    <head><title>GastroMatch Redirect</title></head>
+    <body style="font-family: system-ui; text-align: center; padding: 50px;">
+        <h1>📊 GastroMatch</h1>
+        <p>GastroMatch uygulaması port 3002'de çalışmalıdır.</p>
+        <p>Lütfen Nginx yapılandırmasında <code>/gastromatch-app</code> için reverse proxy ayarlarını kontrol edin.</p>
+        <a href="/gastropod">← Bilgilendirme Sayfasına Dön</a>
+    </body>
+    </html>
+    ''', 503
 
 
 # ============================================================
