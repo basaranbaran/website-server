@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Baran Basaran{% endblock %}</title>
+    <meta name="description" content="Baran Basaran - Kişisel Portfolio ve Proje Sunucusu">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="/" class="nav-logo">
+            <span class="logo-monogram">BB</span>
+            <span class="logo-name">Baran Basaran</span>
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="/#projects" class="nav-link">Projeler</a>
+            <a href="/yt-downloader" class="nav-link">YT Downloader</a>
+            <a href="/docker" class="nav-link">Docker</a>
+            <a href="/wiki-speedrun" class="nav-link">Wiki Speedrun</a>
+            <div class="nav-divider"></div>
+            <a href="{{ info.github }}" target="_blank" class="nav-link nav-icon-link">
+                <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="{{ info.linkedin }}" target="_blank" class="nav-link nav-icon-link">
+                <i class="fa-brands fa-linkedin"></i>
+            </a>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Menü">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>© 2025 Baran Basaran — Debian 12 sunucusunda ❤️ ile çalışıyor</p>
+            <div class="footer-links">
+                <a href="{{ info.github }}" target="_blank"><i class="fa-brands fa-github"></i></a>
+                <a href="{{ info.linkedin }}" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                const icon = navToggle.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-xmark');
+            });
+        }
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

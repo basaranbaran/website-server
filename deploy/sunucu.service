@@ -1,0 +1,40 @@
+# /etc/systemd/system/sunucu.service
+# ====================================
+# Systemd service for baranbasaran.com Flask app
+#
+# Kullanım:
+#   sudo systemctl enable sunucu    # Otomatik başlatma
+#   sudo systemctl start sunucu     # Başlat
+#   sudo systemctl stop sunucu      # Durdur
+#   sudo systemctl restart sunucu   # Yeniden başlat
+#   sudo systemctl status sunucu    # Durum kontrol
+#   journalctl -u sunucu -f         # Logları izle
+
+[Unit]
+Description=Baran Basaran Personal Server (baranbasaran.com)
+After=network.target
+
+[Service]
+Type=simple
+User=baran
+Group=baran
+WorkingDirectory=/home/baran/sunucu
+Environment="PATH=/home/baran/sunucu/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/baran/sunucu/venv/bin/gunicorn \
+    --bind 127.0.0.1:5000 \
+    --workers 3 \
+    --timeout 600 \
+    --keep-alive 5 \
+    --access-logfile /home/baran/sunucu/logs/access.log \
+    --error-logfile /home/baran/sunucu/logs/error.log \
+    app:app
+Restart=always
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+

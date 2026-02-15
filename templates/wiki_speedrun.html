@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Wikipedia Speedrun AI - Baran Basaran{% endblock %}
+
+{% block content %}
+<div class="page-container wiki-page">
+    <div class="page-bg">
+        <div class="bg-blob bg-blob-1" style="background:#00b894;"></div>
+        <div class="bg-blob bg-blob-2" style="background:#00cec9;"></div>
+    </div>
+
+    <div class="page-inner">
+        <header class="page-header">
+            <div class="page-icon wiki-accent"><i class="fa-brands fa-wikipedia-w"></i></div>
+            <h1>Wikipedia Speedrun AI</h1>
+            <p>Bir Wikipedia sayfasından diğerine sadece linklere tıklayarak en kısa yolu bulsun!</p>
+        </header>
+
+        <!-- Method Seçimi -->
+        <h3 class="subsection-title">Yöntem Seçin</h3>
+        <div class="method-grid">
+            <div class="method-card method-available selected" data-method="2">
+                <div class="method-badge badge-available">
+                    <i class="fa-solid fa-check"></i> Kullanılabilir
+                </div>
+                <div class="method-header">
+                    <span class="method-emoji">⚡</span>
+                    <h4>Method 2: Saf SBERT</h4>
+                </div>
+                <p>Kosinüs benzerliği ile en yakın linki anında seçer. Hızlı ve GPU gerektirmez.</p>
+                <div class="method-specs">
+                    <span><i class="fa-solid fa-microchip"></i> CPU</span>
+                    <span><i class="fa-solid fa-bolt"></i> &lt;1s/adım</span>
+                    <span><i class="fa-solid fa-chart-line"></i> %67 başarı</span>
+                </div>
+            </div>
+
+            <div class="method-card method-disabled" data-method="1">
+                <div class="method-badge badge-gpu">
+                    <i class="fa-solid fa-microchip"></i> GPU Gerekli
+                </div>
+                <div class="method-header">
+                    <span class="method-emoji">🏆</span>
+                    <h4>Method 1: Hibrit (SBERT + LLM)</h4>
+                </div>
+                <p>SBERT ile en yakın 10 linki bulur, Llama 3.1 en mantıklısını seçer. En güvenilir.</p>
+                <div class="method-specs">
+                    <span><i class="fa-solid fa-microchip"></i> GPU</span>
+                    <span><i class="fa-solid fa-bolt"></i> 3-5s/adım</span>
+                    <span><i class="fa-solid fa-chart-line"></i> %100 başarı</span>
+                </div>
+                <div class="gpu-notice">
+                    <i class="fa-solid fa-circle-info"></i>
+                    GPU gerekli!
+                    <a href="{{ info.github }}" target="_blank">GitHub reposundan</a>
+                    indirerek kendi bilgisayarınızda deneyebilirsiniz.
+                </div>
+            </div>
+
+            <div class="method-card method-disabled" data-method="3">
+                <div class="method-badge badge-gpu">
+                    <i class="fa-solid fa-microchip"></i> GPU Gerekli
+                </div>
+                <div class="method-header">
+                    <span class="method-emoji">🤔</span>
+                    <h4>Method 3: Düşünce Zinciri</h4>
+                </div>
+                <p>LLM ile akıl yürüterek açıklamalı seçim yapar. En kapsamlı analiz.</p>
+                <div class="method-specs">
+                    <span><i class="fa-solid fa-microchip"></i> GPU</span>
+                    <span><i class="fa-solid fa-bolt"></i> 10-15s/adım</span>
+                    <span><i class="fa-solid fa-chart-line"></i> %100 başarı</span>
+                </div>
+                <div class="gpu-notice">
+                    <i class="fa-solid fa-circle-info"></i>
+                    GPU gerekli!
+                    <a href="{{ info.github }}" target="_blank">GitHub reposundan</a>
+                    indirerek kendi bilgisayarınızda deneyebilirsiniz.
+                </div>
+            </div>
+        </div>
+
+        <!-- Speedrun Formu -->
+        <div class="speedrun-form">
+            <h3 class="subsection-title">Speedrun Ayarları</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startUrl">
+                        <i class="fa-solid fa-flag-checkered"></i> Başlangıç Wikipedia URL'si
+                    </label>
+                    <input type="text" id="startUrl"
+                           placeholder="https://en.wikipedia.org/wiki/Potato"
+                           value="https://en.wikipedia.org/wiki/Potato">
+                </div>
+                <div class="form-group">
+                    <label for="targetTopic">
+                        <i class="fa-solid fa-bullseye"></i> Hedef Konu
+                    </label>
+                    <input type="text" id="targetTopic"
+                           placeholder="Barack Obama"
+                           value="Barack Obama">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="keywords">
+                    <i class="fa-solid fa-key"></i> Anahtar Kelimeler
+                    <span class="label-hint">(opsiyonel — boş bırakılırsa hedef konu kullanılır)</span>
+                </label>
+                <input type="text" id="keywords"
+                       placeholder="Barack Obama president USA">
+            </div>
+            <button id="startBtn" class="action-btn start-btn">
+                <span class="btn-text"><i class="fa-solid fa-play"></i> Speedrun Başlat</span>
+                <span class="btn-loader"><i class="fa-solid fa-spinner fa-spin"></i> Çalışıyor...</span>
+            </button>
+        </div>
+
+        <!-- Sonuçlar -->
+        <div id="resultsArea" class="results-area hidden">
+            <h3 class="subsection-title">
+                <i class="fa-solid fa-route"></i> Yol İzleniyor...
+            </h3>
+
+            <!-- Yol Görselleştirmesi -->
+            <div id="pathVisualization" class="path-vis"></div>
+
+            <!-- Log Alanı -->
+            <div id="logArea" class="wiki-log"></div>
+
+            <!-- Son Sonuç -->
+            <div id="finalResult" class="final-result hidden"></div>
+        </div>
+
+        <!-- Nasıl Çalışır -->
+        <div class="how-it-works">
+            <h3 class="subsection-title">Nasıl Çalışır?</h3>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h4>Link Çıkarma</h4>
+                    <p>Wikipedia sayfasından tüm geçerli makale linkleri çıkarılır</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h4>Semantik Filtreleme</h4>
+                    <p>SBERT modeli ile hedef konuya en yakın linkler hesaplanır</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h4>Karar Verme</h4>
+                    <p>Kosinüs benzerliğine göre en iyi link seçilir</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <h4>Navigasyon</h4>
+                    <p>Hedefe ulaşılana veya max 15 adım olana kadar devam eder</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performans Tablosu -->
+        <div class="performance-section">
+            <h3 class="subsection-title">Performans Karşılaştırması</h3>
+            <div class="test-table-wrap">
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>Yöntem</th>
+                            <th>Başarı</th>
+                            <th>Ort. Süre</th>
+                            <th>Ort. Adım</th>
+                            <th>En İyi Kullanım</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Method 1 (Hibrit) 🏆</strong></td>
+                            <td class="cell-success">%100</td>
+                            <td>5.5s</td>
+                            <td>5.3</td>
+                            <td>Genel — en güvenilir</td>
+                        </tr>
+                        <tr class="row-highlight">
+                            <td><strong>Method 2 (SBERT) ⚡</strong></td>
+                            <td class="cell-warning">%67</td>
+                            <td>6.1s</td>
+                            <td>10</td>
+                            <td>Basit, doğrudan bağlantılar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Method 3 (CoT) 🤔</strong></td>
+                            <td class="cell-success">%100</td>
+                            <td>13.6s</td>
+                            <td>7</td>
+                            <td>Karmaşık, dolaylı yollar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/wiki-speedrun.js') }}"></script>
+{% endblock %}
+

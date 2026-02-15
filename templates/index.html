@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Baran Basaran - Portfolio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-avatar">
+            <span>BB</span>
+        </div>
+        <h1 class="hero-name">Baran Basaran</h1>
+        <p class="hero-subtitle">Software Developer & Tech Enthusiast</p>
+        <p class="hero-desc">Projelerimi keşfedin — hepsi bu sunucuda çalışıyor.</p>
+        <div class="hero-buttons">
+            <a href="{{ info.github }}" target="_blank" class="hero-btn github-btn">
+                <i class="fa-brands fa-github"></i> GitHub
+            </a>
+            <a href="{{ info.linkedin }}" target="_blank" class="hero-btn linkedin-btn">
+                <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="#projects" class="hero-btn projects-btn">
+                <i class="fa-solid fa-rocket"></i> Projeler
+            </a>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <i class="fa-solid fa-chevron-down"></i>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="projects" id="projects">
+    <div class="section-container">
+        <h2 class="section-title">
+            <span class="title-accent"></span>
+            Projelerim
+        </h2>
+        <p class="section-subtitle">Bu sunucuda çalışan interaktif projelerimi deneyin</p>
+
+        <div class="project-grid">
+            <!-- YouTube Downloader -->
+            <a href="/yt-downloader" class="project-card">
+                <div class="card-gradient yt-gradient"></div>
+                <div class="card-content">
+                    <div class="card-icon-wrap yt-icon">
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                    <h3>YouTube Downloader</h3>
+                    <p>YouTube videolarını ve müziklerini yüksek kalitede indirin. Tek video veya tüm playlist desteği ile MP4 ve MP3 formatlarında.</p>
+                    <div class="card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Flask</span>
+                        <span class="tag">yt-dlp</span>
+                    </div>
+                    <span class="card-cta">Dene <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Docker Hardened Image -->
+            <a href="/docker" class="project-card">
+                <div class="card-gradient docker-gradient"></div>
+                <div class="card-content">
+                    <div class="card-icon-wrap docker-icon">
+                        <i class="fa-brands fa-docker"></i>
+                    </div>
+                    <h3>Docker Hardened Image</h3>
+                    <p>Standart ve güçlendirilmiş Docker imajlarını karşılaştırın. Güvenlik farklarını keşfedin ve Dockerfile'ları düzenleyin.</p>
+                    <div class="card-tags">
+                        <span class="tag">Docker</span>
+                        <span class="tag">Security</span>
+                        <span class="tag">DevOps</span>
+                    </div>
+                    <span class="card-cta">İncele <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Wikipedia Speedrun -->
+            <a href="/wiki-speedrun" class="project-card">
+                <div class="card-gradient wiki-gradient"></div>
+                <div class="card-content">
+                    <div class="card-icon-wrap wiki-icon">
+                        <i class="fa-brands fa-wikipedia-w"></i>
+                    </div>
+                    <h3>Wikipedia Speedrun AI</h3>
+                    <p>AI destekli Wikipedia oyunu. Bir sayfadan diğerine sadece linklere tıklayarak en kısa yolu bulun.</p>
+                    <div class="card-tags">
+                        <span class="tag">AI/ML</span>
+                        <span class="tag">SBERT</span>
+                        <span class="tag">NLP</span>
+                    </div>
+                    <span class="card-cta">Oyna <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- About / Tech Stack -->
+<section class="about-section">
+    <div class="section-container">
+        <h2 class="section-title">
+            <span class="title-accent"></span>
+            Bu Sunucu Hakkında
+        </h2>
+        <div class="about-grid">
+            <div class="about-card">
+                <i class="fa-brands fa-debian"></i>
+                <h4>Debian 12</h4>
+                <p>Kararlı ve güvenilir Linux dağıtımı</p>
+            </div>
+            <div class="about-card">
+                <i class="fa-brands fa-python"></i>
+                <h4>Python & Flask</h4>
+                <p>Backend geliştirme ve API'ler</p>
+            </div>
+            <div class="about-card">
+                <i class="fa-solid fa-server"></i>
+                <h4>Nginx</h4>
+                <p>Reverse proxy ve SSL</p>
+            </div>
+            <div class="about-card">
+                <i class="fa-solid fa-lock"></i>
+                <h4>Let's Encrypt</h4>
+                <p>Ücretsiz SSL sertifikası</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

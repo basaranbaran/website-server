@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Docker Hardened vs Standard - Baran Basaran{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="page-container docker-page">
+    <div class="page-bg">
+        <div class="bg-blob bg-blob-1" style="background:#2496ed;"></div>
+        <div class="bg-blob bg-blob-2" style="background:#1a73e8;"></div>
+    </div>
+
+    <div class="page-inner">
+        <header class="page-header">
+            <div class="page-icon docker-accent"><i class="fa-brands fa-docker"></i></div>
+            <h1>Docker Hardened vs Standard Image</h1>
+            <p>Aynı uygulamayı iki farklı yöntemle paketleyip güvenlik farklarını keşfedin.</p>
+        </header>
+
+        <!-- Tab Navigasyon -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="comparison">
+                <i class="fa-solid fa-code-compare"></i> Karşılaştırma
+            </button>
+            <button class="tab-btn" data-tab="editor">
+                <i class="fa-solid fa-pen-to-square"></i> Editör
+            </button>
+            <button class="tab-btn" data-tab="results">
+                <i class="fa-solid fa-flask"></i> Test Sonuçları
+            </button>
+            <button class="tab-btn" data-tab="commands">
+                <i class="fa-solid fa-terminal"></i> Komutlar
+            </button>
+        </div>
+
+        <!-- Tab: Karşılaştırma -->
+        <div class="tab-content active" id="tab-comparison">
+            <div class="docker-grid">
+                <div class="docker-panel">
+                    <div class="panel-header danger-header">
+                        <i class="fa-solid fa-box"></i> Dockerfile.standard
+                        <span class="panel-badge badge-danger">Güvensiz</span>
+                    </div>
+                    <pre><code class="language-dockerfile">{{ standard }}</code></pre>
+                </div>
+                <div class="docker-panel">
+                    <div class="panel-header success-header">
+                        <i class="fa-solid fa-shield-halved"></i> Dockerfile.hardened
+                        <span class="panel-badge badge-success">Güvenli</span>
+                    </div>
+                    <pre><code class="language-dockerfile">{{ hardened }}</code></pre>
+                </div>
+            </div>
+
+            <!-- Farklar -->
+            <h3 class="subsection-title">Temel Güvenlik Farkları</h3>
+            <div class="diff-grid">
+                <div class="diff-card">
+                    <div class="diff-icon-wrap danger-bg">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h4>Çalışma Kullanıcısı</h4>
+                    <div class="diff-compare">
+                        <div class="diff-item diff-bad">
+                            <span class="diff-label">Standard</span>
+                            <code>root</code> — Tam yetki, tehlikeli!
+                        </div>
+                        <div class="diff-item diff-good">
+                            <span class="diff-label">Hardened</span>
+                            <code>nonroot</code> — Kısıtlı, güvenli
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-icon-wrap warning-bg">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <h4>Shell Erişimi</h4>
+                    <div class="diff-compare">
+                        <div class="diff-item diff-bad">
+                            <span class="diff-label">Standard</span>
+                            /bin/sh mevcut — Saldırgan komut çalıştırabilir
+                        </div>
+                        <div class="diff-item diff-good">
+                            <span class="diff-label">Hardened</span>
+                            Shell yok — Saldırgan eli boş döner
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-icon-wrap info-bg">
+                        <i class="fa-solid fa-weight-scale"></i>
+                    </div>
+                    <h4>İmaj Boyutu & Paketler</h4>
+                    <div class="diff-compare">
+                        <div class="diff-item diff-bad">
+                            <span class="diff-label">Standard</span>
+                            apt, curl, shell dahil (~150MB+)
+                        </div>
+                        <div class="diff-item diff-good">
+                            <span class="diff-label">Hardened</span>
+                            Sadece gerekli bileşenler (minimal)
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-icon-wrap success-bg">
+                        <i class="fa-solid fa-bug-slash"></i>
+                    </div>
+                    <h4>Güvenlik Açıkları (CVE)</h4>
+                    <div class="diff-compare">
+                        <div class="diff-item diff-bad">
+                            <span class="diff-label">Standard</span>
+                            Bilinen CVE'ler mevcut olabilir
+                        </div>
+                        <div class="diff-item diff-good">
+                            <span class="diff-label">Hardened</span>
+                            Zero-CVE — Bilinen açık yok
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uygulama Kodu -->
+            <h3 class="subsection-title">Test Uygulaması (app/main.py)</h3>
+            <div class="code-block-wrap">
+                <pre><code class="language-python">{{ app_code }}</code></pre>
+            </div>
+        </div>
+
+        <!-- Tab: Editör -->
+        <div class="tab-content" id="tab-editor">
+            <div class="editor-info">
+                <i class="fa-solid fa-info-circle"></i>
+                Dockerfile'ları düzenleyerek farkları keşfedin. Değişiklikleriniz sadece bu sayfada görünür, sunucuya etki etmez.
+            </div>
+            <div class="docker-grid">
+                <div class="docker-panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-box"></i> Dockerfile.standard
+                    </div>
+                    <textarea id="editorStandard" class="code-editor" spellcheck="false">{{ standard }}</textarea>
+                </div>
+                <div class="docker-panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-shield-halved"></i> Dockerfile.hardened
+                    </div>
+                    <textarea id="editorHardened" class="code-editor" spellcheck="false">{{ hardened }}</textarea>
+                </div>
+            </div>
+            <div class="editor-actions">
+                <button class="action-btn" id="resetBtn">
+                    <i class="fa-solid fa-rotate-left"></i> Sıfırla
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Test Sonuçları -->
+        <div class="tab-content" id="tab-results">
+            <div class="results-section">
+                <h3 class="subsection-title">Güvenlik Test Sonuçları</h3>
+                <div class="test-table-wrap">
+                    <table class="test-table">
+                        <thead>
+                            <tr>
+                                <th>Test Senaryosu</th>
+                                <th>Standard Image</th>
+                                <th>Hardened Image</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>whoami</code></td>
+                                <td class="cell-danger"><i class="fa-solid fa-triangle-exclamation"></i> root</td>
+                                <td class="cell-success"><i class="fa-solid fa-check"></i> nonroot</td>
+                            </tr>
+                            <tr>
+                                <td>Shell erişimi (<code>/bin/sh</code>)</td>
+                                <td class="cell-danger"><i class="fa-solid fa-triangle-exclamation"></i> Shell açılır</td>
+                                <td class="cell-success"><i class="fa-solid fa-check"></i> "no such file"</td>
+                            </tr>
+                            <tr>
+                                <td><code>/etc/shadow</code> okuma</td>
+                                <td class="cell-danger"><i class="fa-solid fa-triangle-exclamation"></i> ACCESSED</td>
+                                <td class="cell-success"><i class="fa-solid fa-check"></i> BLOCKED</td>
+                            </tr>
+                            <tr>
+                                <td><code>/etc/</code> dizinine yazma</td>
+                                <td class="cell-danger"><i class="fa-solid fa-triangle-exclamation"></i> Başarılı</td>
+                                <td class="cell-success"><i class="fa-solid fa-check"></i> Reddedildi</td>
+                            </tr>
+                            <tr>
+                                <td>Paket yöneticisi (apt)</td>
+                                <td class="cell-danger"><i class="fa-solid fa-triangle-exclamation"></i> Mevcut</td>
+                                <td class="cell-success"><i class="fa-solid fa-check"></i> Yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="subsection-title" style="margin-top:2rem;">Gerçek Test Çıktısı</h3>
+                <img src="/docker/images/docker%20hardened%20vs%20standart%20image%20test.png"
+                     alt="Docker Test Sonuçları" class="results-img"
+                     onerror="this.style.display='none'">
+            </div>
+        </div>
+
+        <!-- Tab: Komutlar -->
+        <div class="tab-content" id="tab-commands">
+            <div class="commands-section">
+                <h3 class="subsection-title">Kendi Bilgisayarınızda Deneyin</h3>
+                <p class="commands-intro">Aşağıdaki komutları Docker kurulu herhangi bir bilgisayarda çalıştırarak farkları görebilirsiniz.</p>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">1</span>
+                        Docker Hub ve DHI'a Giriş
+                    </div>
+                    <pre class="command-code"><code>docker login
+docker login dhi.io</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">2</span>
+                        İmajları Oluştur (Build)
+                    </div>
+                    <pre class="command-code"><code># Standard imaj
+docker build -f Dockerfile.standard -t demo-standard .
+
+# Hardened imaj
+docker build -f Dockerfile.hardened -t demo-hardened .</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">3</span>
+                        Test A: Kullanıcı Kontrolü
+                    </div>
+                    <pre class="command-code"><code>docker run --rm demo-standard whoami
+# Çıktı: root (Güvensiz!)
+
+docker run --rm demo-hardened whoami
+# Çıktı: nonroot (Güvenli!)</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">4</span>
+                        Test B: Shell Erişimi (Saldırı Senaryosu)
+                    </div>
+                    <pre class="command-code"><code>docker run --rm -it demo-standard /bin/sh
+# Shell açılır - tehlikeli!
+
+docker run --rm -it demo-hardened /bin/sh
+# "no such file or directory" - güvenli!</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">5</span>
+                        Test C: Dosya Yazma (Exploit Senaryosu)
+                    </div>
+                    <pre class="command-code"><code>docker run --rm demo-standard sh -c "touch /etc/hACKED && echo 'Sızdım!'"
+# Başarılı - root yetkisi var!
+
+docker run --rm demo-hardened sh -c "touch /etc/hACKED"
+# Başarısız - shell bile yok!</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script>
+    hljs.highlightAll();
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Reset editor
+    const origStandard = {{ standard | tojson }};
+    const origHardened = {{ hardened | tojson }};
+    document.getElementById('resetBtn')?.addEventListener('click', () => {
+        document.getElementById('editorStandard').value = origStandard;
+        document.getElementById('editorHardened').value = origHardened;
+    });
+</script>
+{% endblock %}
+

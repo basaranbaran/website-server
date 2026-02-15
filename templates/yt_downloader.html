@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube Downloader - Baran Basaran{% endblock %}
+
+{% block content %}
+<div class="page-container yt-page">
+    <div class="page-bg">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+        <div class="bg-blob bg-blob-3"></div>
+    </div>
+
+    <div class="page-inner">
+        <header class="page-header">
+            <div class="page-icon yt-accent"><i class="fa-brands fa-youtube"></i></div>
+            <h1>YouTube Downloader</h1>
+            <p>YouTube videolarını ve müziklerini yüksek kalitede doğrudan tarayıcınıza indirin.</p>
+        </header>
+
+        <!-- Başarı Mesajı -->
+        <div id="successMessage" class="alert alert-success hidden">
+            <i class="fa-solid fa-check-circle"></i>
+            <span id="successText">İndirme Başarılı!</span>
+        </div>
+
+        <!-- URL Giriş -->
+        <div class="search-box">
+            <div class="input-group">
+                <i class="fa-solid fa-link"></i>
+                <input type="text" id="urlInput" placeholder="YouTube linkini buraya yapıştırın..." autocomplete="off">
+                <button id="analyzeBtn" class="primary-btn">
+                    <span class="btn-text">Analiz Et</span>
+                    <span class="btn-loader"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+            <p id="errorMsg" class="error-msg"></p>
+        </div>
+
+        <!-- Sonuç Alanı -->
+        <div id="resultArea" class="result-card hidden">
+            <div class="video-info">
+                <img id="thumbnail" src="" alt="Thumbnail" class="thumbnail">
+                <div class="details">
+                    <h2 id="videoTitle">Video Başlığı</h2>
+                    <p class="meta">
+                        <i class="fa-solid fa-user"></i> <span id="uploader">Kanal</span>
+                        <span id="durationWrap"> • <i class="fa-solid fa-clock"></i> <span id="duration">00:00</span></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Playlist Alanı -->
+            <div id="playlistArea" class="playlist-card hidden">
+                <div class="playlist-info">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <div>
+                        <h3>Playlist Algılandı</h3>
+                        <p id="playlistCount">0 video bulundu</p>
+                    </div>
+                </div>
+                <div class="mode-toggle">
+                    <input type="radio" name="downloadMode" value="single" id="modeSingle" checked>
+                    <label for="modeSingle">Sadece Bu Video</label>
+                    <input type="radio" name="downloadMode" value="playlist" id="modePlaylist">
+                    <label for="modePlaylist">Tüm Playlist</label>
+                </div>
+
+                <!-- Playlist İlerleme -->
+                <div id="progressLog" class="progress-log hidden">
+                    <div class="log-header">
+                        <span>İndirme İlerlemesi</span>
+                        <span id="progressStats">0/0</span>
+                    </div>
+                    <div id="logContent" class="log-content"></div>
+                </div>
+            </div>
+
+            <!-- Format Seçenekleri -->
+            <div class="options">
+                <div class="option-group">
+                    <label>Format</label>
+                    <div class="toggle-switch">
+                        <input type="radio" name="fileType" value="video" id="typeVideo" checked>
+                        <label for="typeVideo" class="toggle-label"><i class="fa-solid fa-video"></i> Video</label>
+                        <input type="radio" name="fileType" value="audio" id="typeAudio">
+                        <label for="typeAudio" class="toggle-label"><i class="fa-solid fa-music"></i> Ses</label>
+                    </div>
+                </div>
+
+                <div class="option-group" id="qualityGroup">
+                    <label>Kalite</label>
+                    <select id="qualitySelect"></select>
+                </div>
+            </div>
+
+            <!-- İndir Butonu -->
+            <div class="download-buttons">
+                <button id="downloadBtn" class="download-btn">
+                    <span class="btn-text">İndir</span>
+                    <span class="btn-loader"><i class="fa-solid fa-circle-notch fa-spin"></i> İndiriliyor...</span>
+                </button>
+                <button id="cancelBtn" class="cancel-btn hidden">
+                    <i class="fa-solid fa-xmark"></i> İptal
+                </button>
+            </div>
+        </div>
+
+        <div class="info-note">
+            <i class="fa-solid fa-info-circle"></i>
+            Dosyalar doğrudan tarayıcınıza indirilir — sunucuda saklanmaz.
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/yt-downloader.js') }}"></script>
+{% endblock %}
+

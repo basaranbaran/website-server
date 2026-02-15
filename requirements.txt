@@ -1,0 +1,20 @@
+# baranbasaran.com - Server Dependencies
+# ======================================
+
+# Web Framework
+flask==3.0.0
+gunicorn==21.2.0
+
+# YouTube Downloader
+yt-dlp
+
+# Wikipedia Speedrun (SBERT - CPU only)
+requests
+beautifulsoup4
+sentence-transformers
+numpy
+
+# PyTorch CPU version (GPU yok, boyut küçülsün)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
