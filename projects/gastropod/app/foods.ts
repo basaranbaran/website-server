@@ -1,0 +1,23 @@
+// app/foods.ts
+export const FOODS = [
+  { id: "pizza", name: "Pizza", emoji: "🍕" },
+  { id: "hamburger", name: "Hamburger", emoji: "🍔" },
+  { id: "kebab", name: "Adana Kebap", emoji: "🍢" },
+  { id: "spinach", name: "Ispanak", emoji: "🥬" },
+  { id: "sushi", name: "Sushi", emoji: "🍣" },
+  { id: "pasta", name: "Makarna", emoji: "🍝" },
+  { id: "salad", name: "Sezar Salata", emoji: "🥗" },
+  { id: "lahmacun", name: "Lahmacun", emoji: "🥙" },
+  { id: "taco", name: "Taco", emoji: "🌮" },
+  { id: "steak", name: "Biftek", emoji: "🥩" },
+  { id: "chicken", name: "Kızarmış Tavuk", emoji: "🍗" },
+  { id: "soup", name: "Mercimek Çorbası", emoji: "🥣" },
+  { id: "beans", name: "Kuru Fasulye", emoji: "🥘" },
+  { id: "doner", name: "Döner", emoji: "🌯" },
+  { id: "manti", name: "Mantı", emoji: "🥟" },
+  { id: "fish", name: "Izgara Balık", emoji: "🐟" },
+  { id: "meatballs", name: "Köfte", emoji: "🧆" },
+  { id: "pide", name: "Kıymalı Pide", emoji: "🥖" },
+  { id: "ramen", name: "Ramen", emoji: "🍜" },
+  { id: "falafel", name: "Falafel", emoji: "🧆" },
+];

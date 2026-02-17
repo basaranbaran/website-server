@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+sentence-transformers
+ollama
+numpy
+# Not: torch kütüphanesini CUDA destekli kurmak için:
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+torch
