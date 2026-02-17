@@ -87,12 +87,13 @@ class PM2Manager:
                     timeout=15
                 )
             else:
-                # İlk kez başlatılıyor
+                # İlk kez başlatılıyor - port argümanı ile
                 result = subprocess.run(
-                    ['pm2', 'start', 'npm', '--name', service_name, '--', 'start', '--', '-p', str(service['port'])],
+                    ['pm2', 'start', 'npm', '--name', service_name,
+                     '--cwd', service['dir'],
+                     '--', 'start', '--', '-p', str(service['port'])],
                     capture_output=True,
                     text=True,
-                    cwd=service['dir'],
                     timeout=15
                 )
             

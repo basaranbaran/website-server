@@ -146,7 +146,7 @@
                     
                     // 500ms sonra yönlendir
                     setTimeout(() => {
-                        window.location.reload();
+                        window.location.href = redirectUrl + '/';
                     }, 500);
                     
                 } else if (data.status === 'error') {
