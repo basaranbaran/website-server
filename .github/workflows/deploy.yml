@@ -18,6 +18,11 @@ jobs:
           port: 22
           script: |
             cd /home/baran/sunucu
-            git pull origin main
-            # Eğer backend kullanıyorsan (örn: pm2 restart veya systemctl restart)
-            # sudo systemctl restart nginx
+            
+            # GitHub ile zorla eşitle (sunucudaki manuel değişiklikleri ezecek)
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd --exclude=venv/ --exclude=node_modules/ --exclude=.next/ --exclude=logs/ --exclude=__pycache__/
+            
+            # Flask'ı yeniden başlat
+            sudo systemctl restart sunucu
