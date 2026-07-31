@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Microsoft AI-103 Quiz - Baran Başaran{% endblock %}
+
+{% block content %}
+<div class="page-container ai103-page">
+    <div class="page-bg">
+        <div class="bg-blob bg-blob-1" style="background:#00a4ef;"></div>
+        <div class="bg-blob bg-blob-2" style="background:#7fba00;"></div>
+    </div>
+
+    <div class="page-inner">
+        <header class="page-header">
+            <div class="page-icon ai103-accent"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h1>Microsoft AI-103 Quiz & Eğitim Merkezi</h1>
+            <p>117 soruluk interaktif soru bankası + Türkçe eğitim özet notları. Üç farklı şekilde deneyin.</p>
+        </header>
+
+        <!-- Tab Navigasyon -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="run">
+                <i class="fa-solid fa-play"></i> Sunucuda Çalıştır
+            </button>
+            <button class="tab-btn" data-tab="github">
+                <i class="fa-brands fa-github"></i> GitHub Reposu
+            </button>
+            <button class="tab-btn" data-tab="docker">
+                <i class="fa-brands fa-docker"></i> Docker İmajı
+            </button>
+        </div>
+
+        <!-- Tab 1: Bu sunucudan kullan -->
+        <div class="tab-content active" id="tab-run">
+            <div class="content-block center-text">
+                <h2><i class="fa-solid fa-server"></i> Bu Sunucuda Doğrudan Çalıştır</h2>
+                <p>
+                    Kurulum yapmadan, tarayıcıdan doğrudan deneyin. Uygulama bu sunucuda
+                    <strong>on-demand</strong> olarak başlatılır (ilk istekte ~3 saniyede ayağa kalkar,
+                    20 dakika boyunca kullanılmazsa otomatik olarak durur).
+                </p>
+                <a href="/microsoft-ai-103-quiz-app" class="ai103-launch-btn" style="margin-top:1.5rem;">
+                    <i class="fa-solid fa-play"></i> Quiz'i Başlat
+                </a>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-title">Neler Var?</h3>
+                <div class="two-column-grid">
+                    <div class="info-card">
+                        <h3>❓ Soru Bankası & Quiz</h3>
+                        <ul>
+                            <li>117 soru, tek tek veya karışık sırayla çözülebilir</li>
+                            <li>Doğru/Yanlış/Favori işaretleme ve ilerleme takibi</li>
+                            <li>Klavye kısayolları ile hızlı çözüm (← → A-F Enter)</li>
+                            <li>İlerleme tarayıcıda saklanır, istediğin an sıfırlayabilirsin</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>📚 Eğitim Özet Notları</h3>
+                        <ul>
+                            <li>Generative AI Apps on Azure (Türkçe özet)</li>
+                            <li>Develop AI Agents on Azure</li>
+                            <li>Natural Language Solutions on Azure</li>
+                            <li>Extract Insights from Visual Data + önemli servisler notları</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: GitHub -->
+        <div class="tab-content" id="tab-github">
+            <div class="content-block">
+                <h2><i class="fa-brands fa-github"></i> Kendi Bilgisayarında Çalıştır</h2>
+                <p class="commands-intro">
+                    Kaynak kod tamamen açık. Klonlayıp bağımlılık kurmadan (sadece Python standart
+                    kütüphanesi kullanılıyor) doğrudan çalıştırabilirsin.
+                </p>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">1</span>
+                        Repoyu Klonla
+                    </div>
+                    <pre class="command-code"><code>git clone {{ info.github }}/microsoft-ai-103-quiz.git
+cd microsoft-ai-103-quiz</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">2</span>
+                        Sunucuyu Başlat
+                    </div>
+                    <pre class="command-code"><code># Ekstra bağımlılık yok, sadece Python 3 yeterli
+python3 server.py
+# -> http://localhost:6321</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">3</span>
+                        Tarayıcıda Aç
+                    </div>
+                    <pre class="command-code"><code>http://localhost:6321</code></pre>
+                </div>
+
+                <div class="content-block center-text" style="padding-top:0;">
+                    <a href="{{ info.github }}/microsoft-ai-103-quiz" target="_blank" class="github-source-btn">
+                        <i class="fa-brands fa-github"></i> GitHub'da Kaynak Kodunu İncele
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Docker -->
+        <div class="tab-content" id="tab-docker">
+            <div class="content-block">
+                <h2><i class="fa-brands fa-docker"></i> Docker İmajı Olarak Çalıştır</h2>
+                <p class="commands-intro">
+                    Repo, hazır bir <code>Dockerfile</code> ve <code>docker-compose.yml</code> ile geliyor.
+                    Docker kurulu herhangi bir makinede saniyeler içinde ayağa kaldırabilirsin.
+                </p>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">1</span>
+                        Repoyu Klonla ve İmajı Build Et
+                    </div>
+                    <pre class="command-code"><code>git clone {{ info.github }}/microsoft-ai-103-quiz.git
+cd microsoft-ai-103-quiz
+docker build -t microsoft-ai-103-quiz .</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">2</span>
+                        Container'ı Çalıştır
+                    </div>
+                    <pre class="command-code"><code>docker run -d -p 6321:6321 --name ai103-quiz microsoft-ai-103-quiz
+# -> http://localhost:6321</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">3</span>
+                        Ya da docker-compose ile
+                    </div>
+                    <pre class="command-code"><code>docker compose up -d
+# -> http://localhost:6321</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">4</span>
+                        Sağlık Kontrolü
+                    </div>
+                    <pre class="command-code"><code>curl http://localhost:6321/api/health
+# {"status": "healthy", ...}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

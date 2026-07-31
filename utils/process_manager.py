@@ -18,13 +18,23 @@ class PM2Manager:
             'name': 'gastropod',
             'port': 3001,
             'dir': '/home/baran/sunucu/projects/gastropod',
-            'startup_time': 8  # Başlatma süresi (saniye)
+            'startup_time': 8,  # Başlatma süresi (saniye)
+            'runtime': 'node'
         },
         'gastromatch': {
             'name': 'gastromatch',
             'port': 3002,
             'dir': '/home/baran/sunucu/projects/gastromatch',
-            'startup_time': 8
+            'startup_time': 8,
+            'runtime': 'node'
+        },
+        'microsoft-ai-103-quiz': {
+            'name': 'microsoft-ai-103-quiz',
+            'port': 6321,
+            'dir': '/home/baran/sunucu/projects/microsoft-ai-103-quiz',
+            'startup_time': 3,
+            'runtime': 'python',
+            'script': 'server.py'
         }
     }
     
@@ -85,6 +95,16 @@ class PM2Manager:
                     capture_output=True,
                     text=True,
                     timeout=15
+                )
+            elif service.get('runtime') == 'python':
+                # Python script - port ENV değişkeni ile
+                result = subprocess.run(
+                    ['pm2', 'start', service['script'], '--name', service_name,
+                     '--cwd', service['dir'], '--interpreter', 'python3'],
+                    capture_output=True,
+                    text=True,
+                    timeout=15,
+                    env={**os.environ, 'PORT': str(service['port'])}
                 )
             else:
                 # İlk kez başlatılıyor - port argümanı ile

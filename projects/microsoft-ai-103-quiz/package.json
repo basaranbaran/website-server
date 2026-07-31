@@ -1,0 +1,13 @@
+{
+  "name": "examtopics-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ExamTopics soru scraper -> PDF (kisisel/sirket ici kullanim icin)",
+  "type": "commonjs",
+  "scripts": {
+    "scrape": "node src/scrape.js"
+  },
+  "dependencies": {
+    "playwright": "1.55.1"
+  }
+}

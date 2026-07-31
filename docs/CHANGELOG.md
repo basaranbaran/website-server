@@ -1,5 +1,36 @@
 # Değişiklik Günlüğü (Changelog)
 
+## 2026-07-31 — Microsoft AI-103 Quiz Entegrasyonu
+
+### 1. Yeni Dosyalar Eklendi
+
+| Dosya | Açıklama |
+|-------|----------|
+| `projects/microsoft-ai-103-quiz/` | `github.com/basaranbaran/microsoft-ai-103-quiz` reposunun klonu (Python stdlib http.server, port 6321, sıfır bağımlılık). Hazır `Dockerfile` + `docker-compose.yml` içeriyor. |
+| `templates/ai103_quiz.html` | Proje tanıtım/landing sayfası (/microsoft-ai-103-quiz) — 3 sekme: (1) sunucuda çalıştır, (2) GitHub reposu + kurulum, (3) Docker imajı + komutlar |
+
+### 2. Değiştirilen Dosyalar
+
+| Dosya | Değişiklik |
+|-------|------------|
+| `app.py` | `/microsoft-ai-103-quiz` (bilgi sayfası) ve `/microsoft-ai-103-quiz-app` (on-demand başlatma) route'ları eklendi. `service_status_check` izin listesine `microsoft-ai-103-quiz` eklendi. |
+| `utils/process_manager.py` | `PM2Manager.SERVICES`'e python runtime desteği eklendi (`runtime`/`script` alanları). `start_service`, node (`npm start`) dışında python script'lerini de `pm2 start <script> --interpreter python3` ile başlatabiliyor. `microsoft-ai-103-quiz` servisi (port 6321) kaydedildi. |
+| `templates/index.html` | Ana sayfaya Microsoft AI-103 Quiz proje kartı eklendi |
+| `static/css/main.css` | `--ai103-color`, `.ai103-gradient`, `.ai103-icon`, `.ai103-accent`, `.ai103-launch-btn` stilleri eklendi |
+| `deploy/nginx.conf` | `/microsoft-ai-103-quiz-app/` için reverse proxy bloğu eklendi (port 6321, prefix nginx tarafından soyuluyor çünkü backend basePath desteklemiyor) + `@flask_fallback` |
+| `projects/microsoft-ai-103-quiz/static/index.html`, `static/app.js`, `egitim-ozet/egitim-merkezi.html` | Mutlak (`/static/...`, `/api/...`, `/egitim-ozet/...`) yol referansları göreli hale getirildi — hem `http://localhost:6321/` kökünde hem de `/microsoft-ai-103-quiz-app/` alt yolunda (nginx prefix-stripping ile) çalışabilsin diye. Standalone/Docker kullanımını bozmuyor. |
+
+### 3. Mimari Not
+
+```
+Kullanıcı → Nginx → /microsoft-ai-103-quiz-app/... → localhost:6321 (Python http.server, prefix nginx'te soyulur)
+                  → /microsoft-ai-103-quiz-app (trailing slash'siz) → Flask fallback → PM2 ile başlat → redirect
+```
+
+GastroPod/GastroMatch'ten farkı: Next.js `basePath` ile prefix'i kendi biliyor, bu proje ise prefix'ten habersiz
+sade bir Python sunucusu olduğu için nginx `location /microsoft-ai-103-quiz-app/ { proxy_pass http://localhost:6321/; }`
+ile prefix'i backend'e ulaşmadan siliyor (trailing slash'li proxy_pass = prefix stripping).
+
 ## 2025-02-17 — GastroPod & GastroMatch Entegrasyonu + Sistem Düzeltmeleri
 
 ### 1. Yeni Dosyalar Eklendi

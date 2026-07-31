@@ -5,7 +5,7 @@
 # ============================================================
 
 IDLE_MINUTES=20
-SERVICES=("gastropod" "gastromatch")
+SERVICES=("gastropod" "gastromatch" "microsoft-ai-103-quiz")
 
 check_and_stop_service() {
     local service_name=$1

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Develop Natural Language Solutions in Azure — Türkçe Rehber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0b1420;
+  --bg-panel: #101c2c;
+  --bg-panel-2: #142234;
+  --line: #223244;
+  --azure: #3fb6ff;
+  --azure-dim: #1c4a66;
+  --amber: #ffb454;
+  --text: #dbe6f0;
+  --text-dim: #8fa3b8;
+  --text-faint: #5c7188;
+  --ok: #6fd6a0;
+  --warn: #ff8f6b;
+  --teal: #2dd4bf;
+  --teal-dim: #124a44;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(45,212,191,0.10), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:'Inter', sans-serif;
+  line-height:1.6;
+  min-height:100vh;
+}
+::selection{background:var(--teal-dim); color:#fff;}
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--bg-panel);
+  border-right:1px solid var(--line);
+  padding:28px 18px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.hub-link{
+  display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim);
+  text-decoration:none; padding:9px 11px; border:1px solid var(--line); border-radius:9px;
+  margin-bottom:18px; transition:.15s; font-family:'IBM Plex Mono', monospace;
+}
+.hub-link:hover{border-color:var(--teal); color:#fff;}
+.brand{
+  font-family:'Space Grotesk', sans-serif;
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--teal); margin-bottom:4px; font-weight:600;
+}
+.brand-sub{
+  font-size:12px; color:var(--text-faint); margin-bottom:26px; line-height:1.5;
+}
+.nav-group-label{
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text-faint); margin:18px 0 8px 4px; font-weight:600;
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:8px; cursor:pointer;
+  font-size:13.5px; color:var(--text-dim);
+  border:1px solid transparent;
+  transition:.15s;
+  margin-bottom:3px;
+}
+.nav-item .num{
+  font-family:'IBM Plex Mono', monospace; font-size:11px;
+  color:var(--text-faint); width:18px; flex-shrink:0;
+}
+.nav-item:hover{background:var(--bg-panel-2); color:var(--text);}
+.nav-item.active{
+  background:linear-gradient(90deg, rgba(45,212,191,0.14), rgba(45,212,191,0.03));
+  border-color:var(--teal-dim); color:#fff;
+}
+.nav-item.active .num{color:var(--teal);}
+.main{flex:1; min-width:0; padding:48px 56px 100px; max-width:930px;}
+@media (max-width:900px){
+  .shell{flex-direction:column;}
+  .sidebar{width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--line);}
+  .main{padding:28px 20px 80px;}
+}
+.section{display:none;}
+.section.active{display:block; animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--teal);
+  text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px;
+}
+h1{
+  font-family:'Space Grotesk', sans-serif; font-size:31px; font-weight:700;
+  margin:0 0 6px; color:#fff; letter-spacing:-.01em;
+}
+h1 span.sub{display:block; font-size:15px; color:var(--text-dim); font-weight:400; margin-top:8px; font-family:'Inter',sans-serif;}
+h2{
+  font-family:'Space Grotesk', sans-serif; font-size:21px; color:#fff; margin:40px 0 14px;
+  padding-top:6px; border-top:1px solid var(--line); font-weight:600;
+}
+.section > h2:first-of-type{border-top:none; margin-top:28px;}
+h3{font-size:16px; color:var(--teal); margin:22px 0 8px; font-weight:600;}
+p{color:var(--text); font-size:15px; margin:0 0 14px;}
+p, li{color:#c7d6e4;}
+ul, ol{margin:0 0 16px; padding-left:22px;}
+li{margin-bottom:6px; font-size:15px;}
+strong{color:#fff; font-weight:600;}
+code{
+  font-family:'IBM Plex Mono', monospace; background:#0d1826; color:var(--amber);
+  padding:2px 6px; border-radius:4px; font-size:13px; border:1px solid var(--line);
+}
+pre{
+  background:#0a1420; border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; font-family:'IBM Plex Mono', monospace;
+  font-size:12.8px; color:#c9e6ff; margin:0 0 18px;
+}
+pre code{background:none; border:none; padding:0; color:inherit;}
+.card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; margin:16px 0;
+}
+.card.tip{border-left:3px solid var(--teal);}
+.card.warn{border-left:3px solid var(--warn);}
+.card.pitfall{border-left:3px solid #ff6b6b;}
+.card-label{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase;
+  letter-spacing:.08em; margin-bottom:8px; font-weight:600;
+}
+.card.tip .card-label{color:var(--teal);}
+.card.warn .card-label{color:var(--amber);}
+.card.pitfall .card-label{color:#ff8080;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+.term{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+}
+.term .en{
+  font-family:'IBM Plex Mono', monospace; color:var(--teal); font-size:13px; margin-bottom:4px; display:block;
+}
+.term .tr{font-size:13.5px; color:var(--text-dim);}
+.qa{
+  border:1px solid var(--line); border-radius:10px; margin-bottom:10px; overflow:hidden;
+  background:var(--bg-panel);
+}
+.qa summary{
+  padding:13px 16px; cursor:pointer; font-size:14.5px; font-weight:500; color:#fff;
+  list-style:none; display:flex; gap:10px; align-items:flex-start;
+}
+.qa summary::-webkit-details-marker{display:none;}
+.qa summary::before{content:"›"; color:var(--teal); font-weight:700; font-size:17px; transform:rotate(0deg); transition:.2s; flex-shrink:0;}
+.qa[open] summary::before{transform:rotate(90deg);}
+.qa .a{padding:0 16px 16px 40px; color:#b7c7d8; font-size:14px;}
+.qa .a code{font-size:12.5px;}
+a{color:var(--azure);}
+.badge{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px;
+  padding:2px 8px; border-radius:20px; border:1px solid var(--teal-dim); color:var(--teal);
+  margin-left:8px; vertical-align:middle;
+}
+table{width:100%; border-collapse:collapse; margin-bottom:18px; font-size:13.5px;}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);}
+th{color:var(--text-faint); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em;}
+td{color:#c7d6e4;}
+.mini{font-size:12.5px; color:var(--text-faint);}
+.code-block{position:relative; margin:0 0 18px;}
+.code-head{
+  display:flex; align-items:center; justify-content:space-between;
+  background:#0e1a28; border:1px solid var(--line); border-bottom:none;
+  border-radius:10px 10px 0 0; padding:8px 14px;
+}
+.code-filename{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--text-dim);
+}
+.code-filename::before{content:"◆ "; color:var(--teal);}
+.copy-btn{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim);
+  background:transparent; border:1px solid var(--line); border-radius:6px;
+  padding:4px 10px; cursor:pointer; transition:.15s;
+}
+.copy-btn:hover{border-color:var(--teal); color:var(--teal);}
+.copy-btn.copied{border-color:var(--ok); color:var(--ok);}
+.code-block pre{margin:0; border-radius:0 0 10px 10px;}
+.code-block .code-head + pre{border-top:none;}
+.steps{list-style:none; margin:0 0 18px; padding:0; counter-reset:step;}
+.steps li{
+  counter-increment:step; position:relative; padding-left:38px; margin-bottom:14px;
+  font-size:14.5px; color:#c7d6e4;
+}
+.steps li::before{
+  content:counter(step); position:absolute; left:0; top:-1px;
+  width:26px; height:26px; border-radius:50%; background:var(--bg-panel-2);
+  border:1px solid var(--teal-dim); color:var(--teal);
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+}
+.env-note{
+  display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11.5px;
+  color:var(--amber); background:#241a0d; border:1px solid #4a3a1c; border-radius:5px;
+  padding:1px 7px; margin:0 2px;
+}
+.diagram{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; margin:0 0 18px; font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; color:var(--text-dim); overflow-x:auto; white-space:pre;
+}
+.quiz-block{margin:0 0 20px;}
+.quiz-q{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px;
+  padding:15px 17px; margin-bottom:12px;
+}
+.quiz-q .qnum{
+  font-family:'IBM Plex Mono', monospace; color:var(--teal); font-size:11px;
+  text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; display:block; font-weight:600;
+}
+.quiz-q .qtext{color:#fff; font-weight:500; margin-bottom:11px; font-size:14.5px; line-height:1.5;}
+.quiz-opt{
+  padding:8px 12px; border-radius:7px; margin-bottom:5px; font-size:13.5px;
+  color:var(--text-dim); border:1px solid var(--line); background:var(--bg-panel);
+}
+.quiz-opt.correct{
+  background:rgba(111,214,160,0.10); border-color:var(--ok); color:#eafff3;
+}
+.quiz-opt.correct::before{content:"✓  "; color:var(--ok); font-weight:700;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="hub-link" href="egitim-merkezi.html">← Eğitim Merkezi</a>
+    <div class="brand">AI-3015</div>
+    <div class="brand-sub">Develop natural language solutions in Azure<br>Türkçe çalışma rehberi — 7 modül</div>
+    <div class="nav-group-label">Başlangıç</div>
+    <div class="nav-item" data-target="giris"><span class="num">·</span> Bu rehber nasıl kullanılır</div>
+    <div class="nav-item" data-target="ortam"><span class="num">·</span> Ortam kurulumu</div>
+    <div class="nav-group-label">7 Modül</div>
+    <div class="nav-item" data-target="m1"><span class="num">01</span> Azure Language ile metin analizi</div>
+    <div class="nav-item" data-target="m2"><span class="num">02</span> Language MCP server ile agent</div>
+    <div class="nav-item" data-target="m3"><span class="num">03</span> GPT-4o ile konuşma yeteneği ekleme</div>
+    <div class="nav-item" data-target="m4"><span class="num">04</span> Azure Speech SDK ile uygulama</div>
+    <div class="nav-item" data-target="m5"><span class="num">05</span> Speech MCP server ile agent</div>
+    <div class="nav-item" data-target="m6"><span class="num">06</span> Voice Live agent geliştirme</div>
+    <div class="nav-item" data-target="m7"><span class="num">07</span> Metin ve konuşma çevirisi</div>
+    <div class="nav-group-label">Kapanış</div>
+    <div class="nav-item" data-target="ozet"><span class="num">·</span> Sınav özet tablosu</div>
+  </nav>
+
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="section active" id="giris">
+      <div class="eyebrow">Giriş</div>
+      <h1>Develop natural language solutions in Azure<span class="sub">Metni anlama, sesi yazıya (ve yazıyı sese) dönüştürme, gerçek-zamanlı sesli agent'lar ve çeviri — 7 modülün tamamı, sıfırdan, Türkçe.</span></h1>
+
+      <p>Bu, sertifika yolundaki üçüncü kurs. İlk ikisi genel amaçlı AI uygulamaları ve agent'lar hakkındaydı; bu kurs ise <strong>doğal dil</strong>e (yazılı ve sözlü) odaklanıyor: metinden anlam çıkarma, sesi tanıma/üretme, ve bunları hem "klasik" Azure servisleriyle hem de agent'lara MCP üzerinden bağlayarak yapma. 7 modülün ekran görüntülerini OCR ile okudum, Microsoft Learn'ün resmi sayfalarını ve ilgili SDK'ların (azure-ai-textanalytics, azure-cognitiveservices-speech, azure-ai-voicelive, azure-ai-translation-text) güncel dokümantasyonunu doğruladım.</p>
+
+      <div class="card tip">
+        <div class="card-label">Nasıl çalışalım</div>
+        <p style="margin:0">Soldaki menüden modül modül ilerle. Her modülde <strong>"💻 Çalışır kod"</strong> ve sonunda <strong>"Sık karıştırılan noktalar"</strong> (senin quiz sorularından) var. Takıldığın yerde modül adını söyle, konuşarak netleştiririz.</p>
+      </div>
+
+      <h2>Önce büyük resim: 7 modül nasıl bir örgü oluşturuyor?</h2>
+      <p>Bu kursta iki paralel hikaye var — biri <strong>metin</strong> için, biri <strong>ses</strong> için — ve her ikisi de aynı 3 aşamadan geçiyor: <em>klasik SDK ile doğrudan kullanım → MCP server üzerinden agent'a bağlama → daha ileri/gerçek-zamanlı senaryolar.</em></p>
+      <div class="diagram">METİN HATTI                          SES HATTI
+─────────────                        ─────────
+Modül 1: Azure Language SDK          Modül 3: GPT-4o ses modelleri (basit)
+  (dil algıla, entity, PII)            Modül 4: Klasik Azure Speech SDK
+Modül 2: Language MCP + agent          (SpeechRecognizer/Synthesizer, SSML)
+                                      Modül 5: Speech MCP + agent
+                                      Modül 6: Voice Live (gerçek-zamanlı, canlı konuşma)
+
+                    Modül 7: Her ikisini birleştirir — TEXT ve SPEECH çevirisi</div>
+
+      <ol>
+        <li><strong>Modül 1</strong> — Azure Language ile metinden dil, varlık (entity) ve kişisel bilgi (PII) çıkar.</li>
+        <li><strong>Modül 2</strong> — Bu yetenekleri bir Foundry agent'ına MCP server üzerinden bağla.</li>
+        <li><strong>Modül 3</strong> — GPT-4o'nun ses modelleriyle (transcribe/tts) generative AI uygulamana konuşma yeteneği ekle.</li>
+        <li><strong>Modül 4</strong> — Klasik Azure Speech SDK ile tam kontrollü speech-to-text ve text-to-speech (SSML dahil).</li>
+        <li><strong>Modül 5</strong> — Speech yeteneklerini de bir agent'a MCP server üzerinden bağla.</li>
+        <li><strong>Modül 6</strong> — Voice Live API ile kesintiye açık, gerçek-zamanlı sesli bir agent kur.</li>
+        <li><strong>Modül 7</strong> — Hem metni hem konuşmayı bir dilden diğerine çevir.</li>
+      </ol>
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/paths/develop-language-solutions-azure-ai/" target="_blank">learn.microsoft.com — Develop natural language solutions in Azure</a></p>
+    </section>
+
+    <!-- ORTAM KURULUMU -->
+    <section class="section" id="ortam">
+      <div class="eyebrow">Ortam Kurulumu</div>
+      <h1>Bilgisayarında çalışır hale getirme<span class="sub">Bu kursta 3 farklı Azure kaynağı kullanacaksın: Language, Speech, Translator (üçü de Foundry Tools şemsiyesi altında).</span></h1>
+
+      <ol class="steps">
+        <li><strong>Azure kaynaklarını oluştur.</strong> Bu kurs için en pratiği, hepsini içeren bir "Azure AI multi-service" (Foundry/Cognitive Services) kaynağı açmak — böylece tek bir endpoint + key ile Language, Speech ve Translator'a birden erişirsin.
+          <div class="code-block">
+            <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+            <pre><code>az login
+az group create --name rg-dil-egitim --location eastus
+
+az cognitiveservices account create \
+  --name egitim-ai-services \
+  --resource-group rg-dil-egitim \
+  --kind AIServices \
+  --sku S0 \
+  --location eastus \
+  --custom-domain egitim-ai-services
+
+# Endpoint ve anahtarı al
+az cognitiveservices account show --name egitim-ai-services --resource-group rg-dil-egitim --query properties.endpoint -o tsv
+az cognitiveservices account keys list --name egitim-ai-services --resource-group rg-dil-egitim --query key1 -o tsv</code></pre>
+          </div>
+          <p class="mini">Not: Voice Live (Modül 6) ve bazı MCP senaryoları (Modül 5) için ayrıca bir Azure Storage hesabı gerekecek — o modülde ayrıca belirtiyorum.</p>
+        </li>
+        <li><strong>Python paketlerini kur.</strong></li>
+      </ol>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# Modül 1-2: metin analizi
+pip install azure-ai-textanalytics azure-identity python-dotenv
+
+# Modül 3: GPT-4o ses modelleri (Responses/Audio API)
+pip install openai
+
+# Modül 4-5: klasik Speech SDK
+pip install azure-cognitiveservices-speech
+
+# Modül 6: Voice Live (gerçek-zamanlı, async)
+pip install "azure-ai-voicelive[aiohttp]" pyaudio
+
+# Modül 7: metin ve konuşma çevirisi
+pip install azure-ai-translation-text
+
+# Modül 1-6 arası Foundry agent bağlantıları için
+pip install azure-ai-projects</code></pre>
+      </div>
+
+      <ol class="steps" start="3">
+        <li><strong>.env dosyası oluştur.</strong></li>
+      </ol>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">.env</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code># Ortak Azure AI Services / Foundry Tools kaynağı (Language + Speech + Translator)
+AZURE_LANGUAGE_ENDPOINT=https://egitim-ai-services.cognitiveservices.azure.com/
+AZURE_LANGUAGE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+SPEECH_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SPEECH_REGION=eastus
+
+# Metin çevirisi (Translator ayrı bölge gerektirebilir)
+TRANSLATOR_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TRANSLATOR_REGION=eastus
+
+# GPT-4o ses modelleri için (Modül 3) — ayrı bir Azure OpenAI/Foundry deployment
+AZURE_OPENAI_ENDPOINT=https://egitim-ai-services.openai.azure.com/openai/v1/
+AZURE_OPENAI_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Voice Live (Modül 6)
+AZURE_VOICELIVE_ENDPOINT=wss://egitim-ai-services.cognitiveservices.azure.com/voice-live/realtime
+AZURE_VOICELIVE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Foundry proje endpoint'i (Modül 2 ve 5'te agent oluşturmak için)
+FOUNDRY_PROJECT_ENDPOINT=https://egitim-ai-services.services.ai.azure.com/api/projects/egitim-proje</code></pre>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">Bölge (region) çok önemli</div>
+        <p style="margin:0">Speech SDK ve Translator, çoğu çağrıda hem <strong>key</strong> hem <strong>region</strong> ister (endpoint tek başına yetmez). Kaynağını hangi Azure bölgesinde oluşturduysan (<code>eastus</code>, <code>westeurope</code> vb.), <code>SPEECH_REGION</code>/<code>TRANSLATOR_REGION</code> değerini ona göre ayarla — yanlış bölge, en sık karşılaşılan "401/404" hatasının sebebidir.</p>
+      </div>
+
+      <h3>Hızlı doğrulama testi</h3>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">test_baglanti.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
+
+load_dotenv()
+client = TextAnalyticsClient(
+    endpoint=os.environ["AZURE_LANGUAGE_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["AZURE_LANGUAGE_KEY"]),
+)
+result = client.detect_language(documents=["Merhaba, bu bir test cümlesidir."])[0]
+print(f"Bağlantı başarılı. Algılanan dil: {result.primary_language.name}")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python test_baglanti.py</code></p>
+    </section>
+
+    <!-- MODULE 1 -->
+    <section class="section" id="m1">
+      <div class="eyebrow">Modül 01 / 07</div>
+      <h1>Analyze text with Azure Language in Foundry Tools<span class="sub">Metinden dil, varlık (entity) ve kişisel bilgi (PII) çıkarma — bu kursun "metin" hattının ilk adımı.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p><strong>Azure Language</strong>, Foundry Tools şemsiyesi altındaki hazır bir NLP servisidir (önceki kurslardaki "Foundry Tools" kavramını hatırla). Bir generative AI modeline "bu metindeki kişi/yer isimlerini bul" demek yerine, bunun için özel olarak eğitilmiş, deterministik ve hızlı bir servis kullanırsın.</p>
+
+      <h3>3 temel yetenek</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Detect language</span><span class="tr">Metnin hangi dilde yazıldığını algılar</span></div>
+        <div class="term"><span class="en">Extract entities</span><span class="tr">Metindeki kişi, yer, tarih, organizasyon gibi <strong>adlandırılmış varlıkları</strong> (named entities) bulur</span></div>
+        <div class="term"><span class="en">Extract PII</span><span class="tr">Kişisel bilgileri (isim, telefon, TC no vb.) bulur ve isteğe bağlı olarak <strong>redakte eder</strong> (üstünü çizer)</span></div>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">Quiz'de sorulan iki senaryo — doğru aracı seçme</div>
+        <p style="margin:0">"Haber makalelerini analiz edip indeksleme için kişi, yer, tarih çıkaran bir uygulama nasıl yaparsın?" → Generative AI modeline regex tool eklemek <strong>değil</strong>, PII değil — <strong>named entity extraction</strong> kullanırsın (Azure Language).<br><br>
+        "Müşteri yorumlarını web sitesinde yayınlamadan önce kişisel bilgileri temizlemen gerekiyor" → Dili algılayıp sadece İngilizce olanları yayınlamak değil, yapay yorumlar üretmek hiç değil — <strong>PII entity'lerini bulup redakte etmek.</strong></p>
+      </div>
+
+      <h2>💻 Çalışır kod: Üç yeteneği de tek script'te dene</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">metin_analizi.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
+
+load_dotenv()
+client = TextAnalyticsClient(
+    endpoint=os.environ["AZURE_LANGUAGE_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["AZURE_LANGUAGE_KEY"]),
+)
+
+metin = "Ahmet Yilmaz, 15 Mart 2024'te Istanbul'dan Ankara'ya seyahat etti. Telefonu 0532-555-1234."
+
+# --- 1) Dil algılama ---
+dil_sonucu = client.detect_language(documents=[metin])[0]
+print(f"Algılanan dil: {dil_sonucu.primary_language.name} (güven: {dil_sonucu.primary_language.confidence_score:.2f})")
+
+# --- 2) Named entity extraction ---
+entity_sonucu = client.recognize_entities(documents=[metin])[0]
+print("\nBulunan varlıklar (entities):")
+for entity in entity_sonucu.entities:
+    print(f" - {entity.text} ({entity.category}, güven: {entity.confidence_score:.2f})")
+
+# --- 3) PII tespiti ve redaksiyon ---
+pii_sonucu = client.recognize_pii_entities(documents=[metin])[0]
+print("\nBulunan kişisel bilgiler (PII):")
+for entity in pii_sonucu.entities:
+    print(f" - {entity.text} ({entity.category})")
+print(f"\nRedakte edilmiş metin: {pii_sonucu.redacted_text}")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python metin_analizi.py</code></p>
+
+      <div class="card tip">
+        <div class="card-label">Neden generative AI değil de bu servis?</div>
+        <p style="margin:0">GPT tabanlı bir modele "bu metindeki kişileri bul" desen de çalışabilir, ama <strong>Azure Language deterministiktir</strong> (aynı girdi her zaman aynı çıktıyı verir), çok daha ucuzdur ve token limiti gibi kısıtları yoktur. Bu yüzden production'da toplu metin işleme için genelde önce bu servisler tercih edilir; generative AI, daha "yaratıcı" görevler için saklanır.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Haber makalelerinden indeksleme için kişi/yer/tarih çıkaran bir uygulamayı nasıl kurarsın?</summary>
+        <div class="a"><strong>Azure Language ile named entity extraction</strong> kullanırsın. Regex tabanlı bir generative AI tool'u ya da PII extraction (bu, gizlemek için kullanılır, indekslemek için değil) doğru yaklaşım değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Müşteri testimonial'larını yayınlamadan önce kişisel detayları kaldırman gerekiyor, ne yaparsın?</summary>
+        <div class="a">Azure Language ile <strong>PII entity'lerini bulup redakte edersin.</strong> Sadece İngilizce olanları yayınlamak (dil filtreleme, konuyla ilgisiz) ya da yapay yorumlar üretmek (orijinal içeriği değiştirir, amaç bu değil) yanlış yaklaşımlardır.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">How should you create an application that analyzes news articles and extracts key people, places, and dates that are mentioned for indexing?</div>
+          <div class="quiz-opt">Use a generative AI model with a custom function tool that matches strings using a regular expression.</div>
+          <div class="quiz-opt">Use Azure Language in Foundry Tools to extract PII entities.</div>
+          <div class="quiz-opt correct">Use Azure Language in Foundry Tools to extract named entities.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">You want to publish extracts from customer testimonials on a web site. You need to remove personal details from the text before publishing it. What should you do?</div>
+          <div class="quiz-opt correct">Use Azure Language in Foundry Tools to find and redact PII entities.</div>
+          <div class="quiz-opt">Use Azure Language in Foundry Tools to detect the language and publish only the testimonials in English.</div>
+          <div class="quiz-opt">Use a gpt-4.1 model to create new AI-generated customer reviews.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/analyze-text-ai-language/" target="_blank">learn.microsoft.com — Analyze text with Azure Language in Foundry Tools</a></p>
+    </section>
+
+    <!-- MODULE 2 -->
+    <section class="section" id="m2">
+      <div class="eyebrow">Modül 02 / 07</div>
+      <h1>Develop a text analysis agent with the Azure Language MCP server<span class="sub">Modül 1'deki yetenekleri, kod yazmadan bir agent'ın "araç kataloğuna" ekleme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 1'de <code>TextAnalyticsClient</code> ile doğrudan SDK çağrısı yaptın. Bu modülde aynı yetenekleri (dil algılama, entity, PII) bir <strong>MCP server</strong> aracılığıyla bir Foundry agent'ına sunuyorsun — agent, kullanıcının doğal dil isteğine göre hangi aracı çağıracağına kendisi karar veriyor (2. kursun Modül 3'ünü hatırla: MCP server barındırır, client keşfeder).</p>
+
+      <h3>Azure Language MCP server'ın rolü</h3>
+      <p>Birincil rolü: <strong>Azure Language'ın metin analizi yeteneklerini, agent'ların kullanabileceği MCP araçları olarak sunmak.</strong> Özel dil modelleri eğitmek ya da Azure aboneliğinde büyük dil modelleri deploy/yönetmek değildir — sadece var olan Language yeteneklerini MCP protokolüyle "paketler".</p>
+
+      <h3>Agent hangi aracı çağıracağına nasıl karar verir?</h3>
+      <p><strong>Agent, MCP server'dan aldığı araç açıklamalarını (tool descriptions) kullanıcının prompt'uyla eşleştirir.</strong> Geliştirici her prompt için özel yönlendirme mantığı yazmaz, MCP server da prompt'u analiz edip otomatik yönlendirme yapmaz — karar mekanizması modelin kendisindedir (2. kursun "function calling" mantığını hatırla: model, açıklamaları okuyup karar verir).</p>
+
+      <h3>Kimlik doğrulama</h3>
+      <p>Azure Language MCP server'ı bir Foundry agent'ına bağlarken kullanılan yöntem: <strong>anahtar tabanlı kimlik doğrulama, <code>Ocp-Apim-Subscription-Key</code> credential'ı ile.</strong> OAuth 2.0 + istemci sertifikası değil, anonim erişim de değil.</p>
+
+      <h2>💻 Çalışır kod: Language MCP server'ı Foundry agent'ına bağlama</h2>
+      <p>Bağlantı, Foundry portalında (Agent tanımına "Connect a tool → MCP" ile) veya SDK'da bir <code>mcp</code> tool tanımıyla yapılır. Anahtar, MCP sunucusuna giden isteklerde bir header olarak eklenir:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">language_mcp_agent.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
+
+load_dotenv()
+project = AIProjectClient(
+    endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+    credential=DefaultAzureCredential(),
+)
+
+# Azure Language MCP server'ını agent'a bir araç olarak tanıt.
+# headers içindeki Ocp-Apim-Subscription-Key, MCP server'ın kendisini
+# doğrulamak için kullandığı anahtar tabanlı kimlik doğrulamadır.
+agent = project.agents.create_version(
+    agent_name="MetinAnaliziAgent",
+    definition=PromptAgentDefinition(
+        model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+        instructions=(
+            "Sen metin analizi yapan bir asistansın. Kullanıcının metinlerinde "
+            "dil algılama, varlık çıkarma veya kişisel bilgi tespiti gerektiğinde "
+            "Azure Language araçlarını kullan."
+        ),
+        tools=[
+            {
+                "type": "mcp",
+                "server_label": "azure-language",
+                "server_url": "https://&lt;bolgen&gt;.api.cognitive.microsoft.com/language/mcp",
+                "headers": {"Ocp-Apim-Subscription-Key": os.environ["AZURE_LANGUAGE_KEY"]},
+            }
+        ],
+    ),
+)
+print(f"Agent oluşturuldu: {agent.name}")</code></pre>
+      </div>
+
+      <h3>Agent'ı OpenAI Responses API ile çağırma</h3>
+      <p>Python istemci uygulamasında, önceki kurstan (2. kurs, Modül 1) hatırlayacağın gibi bir Foundry agent'ını Responses API ile çağırırken agent'ı <strong><code>extra_body</code> içindeki <code>agent_reference</code> alanında adıyla</strong> belirtirsin — API key'i header olarak geçmek ya da endpoint URL'sini model parametresi olarak vermek değil:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">agent_cagir.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+project = AIProjectClient(
+    endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+    credential=DefaultAzureCredential(),
+)
+openai_client = project.get_openai_client()
+
+response = openai_client.responses.create(
+    input="Şu metindeki kişi ve yer isimlerini bul: 'Ayşe, geçen hafta İzmir'e gitti.'",
+    extra_body={
+        "agent_reference": {"name": "MetinAnaliziAgent", "type": "agent_reference"}
+    },
+)
+print(response.output_text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python agent_cagir.py</code> (önce <code>language_mcp_agent.py</code>'yi çalıştırıp agent'ı oluşturmuş olmalısın)</p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Azure Language MCP server'ın birincil rolü nedir?</summary>
+        <div class="a">Azure Language'ın metin analizi yeteneklerini <strong>agent'lar için MCP araçları olarak sunmaktır.</strong> Özel dil modelleri eğitmek/fine-tune etmek ya da büyük dil modellerini deploy/yönetmek değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir agent, kullanıcı prompt'unu işlerken hangi Azure Language MCP aracını çağıracağına nasıl karar verir?</summary>
+        <div class="a"><strong>Agent, prompt'u MCP server'dan aldığı araç açıklamalarıyla eşleştirir.</strong> Geliştirici her prompt için özel yönlendirme mantığı yazmaz; MCP server da otomatik yönlendirme yapmaz.</div>
+      </details>
+      <details class="qa">
+        <summary>Python istemci uygulamasında, OpenAI Responses API çağrısında bir Foundry agent'ına nasıl referans verirsin?</summary>
+        <div class="a"><strong><code>extra_body</code> içindeki <code>agent_reference</code> alanında agent adını belirterek.</strong> API key'i header olarak geçmek veya endpoint URL'sini model parametresi yapmak doğru değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Azure Language MCP server'ı bir Foundry agent'ına bağlarken hangi kimlik doğrulama yöntemi kullanılır?</summary>
+        <div class="a"><strong>Anahtar tabanlı kimlik doğrulama, <code>Ocp-Apim-Subscription-Key</code> credential'ı ile.</strong> OAuth 2.0 + istemci sertifikası + tenant ID değil, anonim erişim de değil.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What is the primary role of the Azure Language MCP server?</div>
+          <div class="quiz-opt">To train and fine-tune custom language models for use by AI agents.</div>
+          <div class="quiz-opt correct">To expose Azure Language text analysis capabilities as MCP tools for agents.</div>
+          <div class="quiz-opt">To deploy and manage large language models in an Azure subscription.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">How does an agent determine which Azure Language MCP tool to call when processing a user's prompt?</div>
+          <div class="quiz-opt">The developer writes routing logic to direct each prompt to a specific tool.</div>
+          <div class="quiz-opt correct">The agent matches the prompt to tool descriptions received from the MCP server.</div>
+          <div class="quiz-opt">The MCP server analyzes the prompt and automatically routes it to a tool.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">When building a Python client application, how do you reference a Foundry agent when calling the OpenAI Responses API?</div>
+          <div class="quiz-opt">By passing the agent's API key as a request header to the endpoint.</div>
+          <div class="quiz-opt correct">By specifying the agent name in the agent_reference field in extra_body.</div>
+          <div class="quiz-opt">By passing the agent's endpoint URL as the model parameter value.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 4</span>
+          <div class="qtext">What authentication method is used when connecting the Azure Language MCP server to a Foundry agent?</div>
+          <div class="quiz-opt">OAuth 2.0 authentication with a client certificate and tenant ID.</div>
+          <div class="quiz-opt correct">Key-based authentication using the Ocp-Apim-Subscription-Key credential.</div>
+          <div class="quiz-opt">Anonymous access that requires no authentication or credentials.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/develop-text-analysis-agent-language-mcp/" target="_blank">learn.microsoft.com — Develop a text analysis agent with the Azure Language MCP server</a></p>
+    </section>
+
+    <!-- MODULE 3 -->
+    <section class="section" id="m3">
+      <div class="eyebrow">Modül 03 / 07</div>
+      <h1>Develop a speech-capable generative AI application<span class="sub">"Ses" hattının ilk adımı — GPT-4o ailesinin ses modelleriyle en basit yol.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Klasik Azure Speech SDK'sına geçmeden önce (Modül 4), bu modül daha yeni ve daha basit bir yolu gösteriyor: <strong>Azure OpenAI'ın GPT-4o tabanlı ses modelleri</strong>, önceki kurslarda öğrendiğin <code>openai</code> Python paketiyle, neredeyse metin modelleriyle aynı kolaylıkta çağrılabilir.</p>
+
+      <h3>İki model, iki yön</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">gpt-4o-mini-transcribe</span><span class="tr">Sesten metin üretir (speech-to-text) — <code>audio.transcriptions</code> endpoint'i</span></div>
+        <div class="term"><span class="en">gpt-4o-mini-tts</span><span class="tr">Metinden doğal sesli ses üretir (text-to-speech) — <code>audio.speech</code> endpoint'i, <strong>ton talimatı</strong> verilebilir</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Quiz'de doğrudan sorulan model eşleştirmesi</div>
+        <p style="margin:0">"Sesten metin üretmek için hangi model?" → <strong>gpt-4o-mini-transcribe</strong> (gpt-4o-mini veya gpt-4o-mini-tts değil).<br>"Metinden ses sentezlemek için hangi model?" → <strong>gpt-4o-mini-tts</strong> (transcribe değil — isimlerdeki "transcribe" ve "tts" son ekleri yönü gösterir).</p>
+      </div>
+
+      <h3>Ortak kod deseni ("The Code Pattern")</h3>
+      <p>Modülün kendi anlatımına göre, TTS ile STT <strong>aynı 4 adımlı akışı</strong> takip eder, sadece yön tersine döner:</p>
+      <div class="diagram">1) İstemciyi oluştur   → AzureOpenAI(endpoint, key, api_version)
+2) API'yi çağır        → client.audio.speech.with_streaming_response.create(...)
+                          (STT için: client.audio.transcriptions.create(...))
+3) Yapılandır           → model adı, ses (voice), metin, opsiyonel ton talimatı
+4) Dosyaya akıt (stream)→ Cevap doğrudan bir ses dosyasına yazılır</div>
+
+      <h2>💻 Çalışır kod: Metinden sese (TTS)</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">metin_den_ses.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from pathlib import Path
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+
+load_dotenv()
+client = AzureOpenAI(
+    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    api_version="2025-03-01-preview",
+)
+
+speech_file_path = Path(__file__).parent / "cikti.mp3"
+
+with client.audio.speech.with_streaming_response.create(
+    model="gpt-4o-mini-tts",       # text-to-speech modeli
+    voice="coral",
+    input="Bugün harika bir gün, hadi bir şeyler inşa edelim!",
+    instructions="Neşeli ve pozitif bir tonda konuş.",   # sadece gpt-4o-mini-tts'de var
+) as response:
+    response.stream_to_file(speech_file_path)
+
+print(f"Ses dosyası oluşturuldu: {speech_file_path}")</code></pre>
+      </div>
+
+      <h2>💻 Çalışır kod: Sesten metne (STT)</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">ses_den_metin.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+
+load_dotenv()
+client = AzureOpenAI(
+    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    api_version="2025-03-01-preview",
+)
+
+with open("cikti.mp3", "rb") as audio_file:
+    transkript = client.audio.transcriptions.create(
+        model="gpt-4o-mini-transcribe",   # speech-to-text modeli
+        file=audio_file,
+    )
+
+print("Transkript:", transkript.text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: önce <code>python metin_den_ses.py</code> (bir mp3 üretir), sonra <code>python ses_den_metin.py</code> (aynı mp3'ü metne çevirir) — böylece döngüyü uçtan uca görürsün.</p>
+
+      <div class="card tip">
+        <div class="card-label">Modül 4 ile farkı ne olacak?</div>
+        <p style="margin:0">Bu modüldeki yaklaşım <strong>generative AI ekosisteminin</strong> (OpenAI API ailesi) bir parçasıdır — hızlı, basit, "instructions" ile ton kontrolü sağlar. Bir sonraki modülde göreceğin <strong>klasik Azure Speech SDK</strong> ise daha "geleneksel" bir speech servisidir: SSML ile milimetrik kontrol, gerçek zamanlı mikrofon akışı, 400'den fazla nöral ses ve dil desteği sunar. İkisi de geçerli yollar — seçim, ihtiyacın olan kontrol seviyesine göre değişir.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Sesten metin üretmek için hangi modeli kullanırsın?</summary>
+        <div class="a"><strong>gpt-4o-mini-transcribe.</strong> gpt-4o-mini (ses özelliği olmayan genel model) veya gpt-4o-mini-tts (ters yönde çalışır) değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Metinden ses sentezlemek için hangi modeli kullanırsın?</summary>
+        <div class="a"><strong>gpt-4o-mini-tts.</strong> gpt-4o-mini-transcribe sesten metne çevirir, ters yönde çalışmaz.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which model can you use to generate text from speech?</div>
+          <div class="quiz-opt">gpt-4o-mini</div>
+          <div class="quiz-opt">gpt-4o-mini-tts</div>
+          <div class="quiz-opt correct">gpt-4o-mini-transcribe</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which model can you use to synthesize speech from text?</div>
+          <div class="quiz-opt">gpt-4o-mini</div>
+          <div class="quiz-opt correct">gpt-4o-mini-tts</div>
+          <div class="quiz-opt">gpt-4o-mini-transcribe</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/develop-generative-ai-audio-apps/" target="_blank">learn.microsoft.com — Develop a speech-capable generative AI application</a></p>
+    </section>
+
+    <!-- MODULE 4 -->
+    <section class="section" id="m4">
+      <div class="eyebrow">Modül 04 / 07</div>
+      <h1>Create speech-enabled apps with Azure Speech in Microsoft Foundry Tools<span class="sub">Klasik, tam kontrollü Speech SDK — mikrofon/dosya girişi, SSML, 400+ nöral ses.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 3'teki GPT-4o ses modelleri hızlı ve basitti ama sınırlıydı. <strong>Azure Speech SDK</strong> (<code>azure-cognitiveservices-speech</code> paketi), konuşma tanıma ve sentezinde çok daha eski, olgun ve ayrıntılı kontrol sunan bir servistir — özellikle SSML ile "milisaniye" seviyesinde ayarlanabilir.</p>
+
+      <h3>Foundry kaynağından SDK'yı kullanmak için ihtiyacın olan bilgi</h3>
+      <p>Azure Speech SDK'sını Foundry (Speech) kaynağınla kullanmak için ihtiyacın olan şey: <strong>endpoint ve key</strong> — birincil/ikincil anahtar (ikisi de aynı işi yapar, biri yedektir) ya da abonelik ID'si + kaynak grubu adı değil.</p>
+
+      <h3>Ortak SDK deseni (Modül 3'ten farklı — burada nesneler var)</h3>
+      <div class="diagram">SPEECH-TO-TEXT                          TEXT-TO-SPEECH
+───────────────                         ──────────────
+SpeechConfig (kimlik doğrulama)         SpeechConfig (kimlik doğrulama)
+        +                                        +
+AudioConfig (mikrofon/dosya girişi)     AudioConfig (hoparlör/dosya çıkışı)
+        ↓                                        ↓
+SpeechRecognizer  →  Metin sonucu       SpeechSynthesizer  →  Ses çıktısı</div>
+
+      <h3>SpeechRecognitionResult — kritik alan: Reason</h3>
+      <p>Bir tanıma işleminden sonra dönen sonucun en kritik alanı <code>reason</code>'dır — ne olduğunu söyler:</p>
+      <table>
+        <tr><th>Reason değeri</th><th>Anlamı</th></tr>
+        <tr><td><code>RecognizedSpeech</code></td><td>Transkripsiyon başarılı</td></tr>
+        <tr><td><code>NoMatch</code></td><td>Ses alındı ama tanınabilir bir şey bulunamadı</td></tr>
+        <tr><td><code>Canceled</code></td><td>Bir şeyler ters gitti (ağ hatası, kimlik doğrulama vb.)</td></tr>
+      </table>
+
+      <h2>💻 Çalışır kod: Dosyadan konuşma tanıma (Speech-to-Text)</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">konusma_tanima.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+import azure.cognitiveservices.speech as speechsdk
+
+load_dotenv()
+speech_config = speechsdk.SpeechConfig(
+    subscription=os.environ["SPEECH_KEY"],
+    region=os.environ["SPEECH_REGION"],
+)
+
+# AudioConfig: girdinin bir ses DOSYASI olduğunu belirtir (mikrofon değil)
+audio_config = speechsdk.audio.AudioConfig(filename="ornek_ses.wav")
+
+speech_recognizer = speechsdk.SpeechRecognizer(
+    speech_config=speech_config,
+    audio_config=audio_config,
+)
+
+result = speech_recognizer.recognize_once()
+
+# Kritik alan: result.reason
+if result.reason == speechsdk.ResultReason.RecognizedSpeech:
+    print(f"Tanınan metin: {result.text}")
+elif result.reason == speechsdk.ResultReason.NoMatch:
+    print("Konuşma tanınamadı.")
+elif result.reason == speechsdk.ResultReason.Canceled:
+    detay = result.cancellation_details
+    print(f"İptal edildi: {detay.reason} — {detay.error_details}")</code></pre>
+      </div>
+
+      <h2>💻 Çalışır kod: Metinden sese, ses seçerek (Text-to-Speech + SSML)</h2>
+      <p>Sesi değiştirmenin doğru yolu, <code>SpeechConfig</code> nesnesinin <code>speech_synthesis_voice_name</code> özelliğini istenen ses adına ayarlamaktır — <code>SpeechSynthesisOutputFormat</code> enum'u ya da <code>AudioConfig</code>'de dosya adı belirtmek değil (bunlar farklı şeyler kontrol eder).</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">konusma_sentezi.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+import azure.cognitiveservices.speech as speechsdk
+
+load_dotenv()
+speech_config = speechsdk.SpeechConfig(
+    subscription=os.environ["SPEECH_KEY"],
+    region=os.environ["SPEECH_REGION"],
+)
+
+# Sesi değiştirmenin doğru yolu: speech_synthesis_voice_name
+speech_config.speech_synthesis_voice_name = "tr-TR-EmelNeural"
+
+audio_config = speechsdk.audio.AudioOutputConfig(filename="tebrik.wav")
+synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+
+result = synthesizer.speak_text_async("Merhaba! Bugün harika bir gün.").get()
+
+if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+    print("Ses dosyası oluşturuldu: tebrik.wav")
+elif result.reason == speechsdk.ResultReason.Canceled:
+    print("Sentez iptal edildi:", result.cancellation_details.error_details)</code></pre>
+      </div>
+
+      <h3>SSML ile ince ayar</h3>
+      <p>SSML (Speech Synthesis Markup Language), sesin nasıl konuşacağını XML benzeri etiketlerle kontrol eder — ses seçimi, konuşma tarzı (cheerful, empathetic...), perde/hız, telaffuz, duraklamalar ve gömülü ses klipleri dahil:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">ssml_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+import azure.cognitiveservices.speech as speechsdk
+
+load_dotenv()
+speech_config = speechsdk.SpeechConfig(
+    subscription=os.environ["SPEECH_KEY"],
+    region=os.environ["SPEECH_REGION"],
+)
+audio_config = speechsdk.audio.AudioOutputConfig(filename="ssml_cikti.wav")
+synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+
+ssml = """&lt;speak xmlns="http://www.w3.org/2001/10/synthesis"
+       xmlns:mstts="http://www.w3.org/2001/mstts"
+       version="1.0" xml:lang="tr-TR"&gt;
+  &lt;voice name="tr-TR-EmelNeural"&gt;
+    &lt;mstts:express-as style="cheerful"&gt;
+      &lt;prosody rate="+5%" pitch="+2%"&gt;
+        Tebrikler! Bu modülü başarıyla tamamladın.
+      &lt;/prosody&gt;
+    &lt;/mstts:express-as&gt;
+  &lt;/voice&gt;
+&lt;/speak&gt;"""
+
+# SSML kullanırken speak_ssml_async çağrılır (speak_text_async değil)
+result = synthesizer.speak_ssml_async(ssml).get()
+print("Tamamlandı" if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted else "Hata")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-cognitiveservices-speech</code> sonra ilgili script'i çalıştır. Not: SSML kullanıldığında, <code>&lt;voice&gt;</code> etiketindeki ses adı, <code>SpeechConfig.speech_synthesis_voice_name</code>'i geçersiz kılar (öncelik SSML'dedir).</p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Foundry kaynağını Azure Speech SDK ile kullanmak için hangi bilgiye ihtiyacın var?</summary>
+        <div class="a"><strong>Endpoint ve key.</strong> Birincil/ikincil anahtar ayrımı (ikisi de eşdeğer, biri döndürme/rotasyon içindir) ya da Azure abonelik ID'si + kaynak grubu adı değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Ses dosyasından metne çevrilecek girdinin bir ses dosyası olduğunu hangi nesneyle belirtirsin?</summary>
+        <div class="a"><strong>AudioConfig.</strong> SpeechConfig kimlik doğrulama/genel ayarlar içindir; SpeechRecognizer ise tanıma işlemini yürüten nesnedir, girdi tipini o belirlemez.</div>
+      </details>
+      <details class="qa">
+        <summary>Konuşma sentezinde kullanılan sesi nasıl değiştirirsin?</summary>
+        <div class="a"><code>SpeechConfig</code> nesnesinin <strong><code>speech_synthesis_voice_name</code></strong> özelliğini istenen ses adına ayarlayarak. <code>SpeechSynthesisOutputFormat</code> enum'u ses formatını (örn. mp3/wav kalitesi) kontrol eder, sesi değil; <code>AudioConfig</code>'de dosya adı belirtmek çıktının nereye yazılacağıyla ilgilidir.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What information do you need from your Microsoft Foundry resource to consume it using the Azure Speech SDK?</div>
+          <div class="quiz-opt correct">The endpoint and key</div>
+          <div class="quiz-opt">The primary and secondary keys</div>
+          <div class="quiz-opt">The Azure subscription ID and resource group name</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which object should you use to specify that the speech input to be transcribed to text is in an audio file?</div>
+          <div class="quiz-opt">SpeechConfig</div>
+          <div class="quiz-opt correct">AudioConfig</div>
+          <div class="quiz-opt">SpeechRecognizer</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">How can you change the voice used in speech synthesis?</div>
+          <div class="quiz-opt">Specify a SpeechSynthesisOutputFormat enumeration in the SpeechConfig object.</div>
+          <div class="quiz-opt correct">Set the speech_synthesis_voice_name property of the SpeechConfig object to the desired voice name.</div>
+          <div class="quiz-opt">Specify a filename in the AudioConfig object.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/create-speech-enabled-apps/" target="_blank">learn.microsoft.com — Create speech-enabled apps with Azure Speech in Microsoft Foundry Tools</a></p>
+    </section>
+
+    <!-- MODULE 5 -->
+    <section class="section" id="m5">
+      <div class="eyebrow">Modül 05 / 07</div>
+      <h1>Develop a speech agent with the Azure Speech MCP server<span class="sub">Modül 2'nin ses hattındaki karşılığı — Speech yeteneklerini bir agent'a MCP ile bağlama.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 2'de Language yeteneklerini MCP ile bir agent'a bağlamıştın. Bu modül aynısını <strong>Speech</strong> için yapıyor — agent artık doğal dil isteğine göre "şunu sese çevir" ya da "bu ses dosyasını yazıya dök" diyebiliyor.</p>
+
+      <h3>Azure Speech MCP server'ın sunduğu 2 temel yetenek</h3>
+      <p>Agent'lara sunulan iki temel yetenek: <strong>speech-to-text tanıma ve text-to-speech sentezi.</strong> Dil çevirisi/özetleme veya varlık tanıma/duygu analizi değil — bunlar Language MCP server'ın işiydi (Modül 2).</p>
+
+      <h3>Neden bir Azure Storage hesabı gerekiyor?</h3>
+      <p>Azure Speech MCP server, <strong>giriş ses dosyalarını ve speech tool'larının ürettiği çıkış ses dosyalarını saklamak için</strong> bir Azure Storage hesabı gerektirir. Agent'ın talimatlarını/yapılandırmasını saklamak için değil, MCP araç tanımlarını daha hızlı keşif için önbelleğe almak için de değil — sebep tamamen <strong>ses dosyalarının (giriş/çıkış) fiziksel depolanması</strong>dır.</p>
+
+      <h3>Kimlik doğrulama: bu sefer iki parça birden</h3>
+      <p>Azure Speech MCP server'ı bir Foundry agent'ına bağlarken ihtiyacın olan kimlik bilgileri: <strong>bir Foundry kaynak anahtarı (resource key) VE bir blob container için SAS URL</strong> — sadece OAuth token + managed identity endpoint'i değil, sadece istemci sertifikası + abonelik ID'si de değil. İki farklı kaynağa (Speech servisi + Storage) erişim gerektiği için iki farklı kimlik bilgisi taşınır.</p>
+
+      <h3>Ses seçimi nasıl yapılır?</h3>
+      <p>Text-to-speech aracını agent üzerinden kullanırken belirli bir sesi seçmenin yolu: <strong>ses adını, agent'a verdiğin doğal dil prompt'unun içine dahil etmek</strong> ("...bunu tr-TR-EmelNeural sesiyle oku" gibi) — MCP server ayarlarında önceden yapılandırmak ya da istemci uygulamasında bir ortam değişkeni ayarlamak değil. Bu, MCP mimarisinin "dinamik, prompt-güdümlü" doğasının bir yansımasıdır.</p>
+
+      <h2>💻 Çalışır kod: Speech MCP server'ı agent'a bağlama</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">speech_mcp_agent.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
+
+load_dotenv()
+project = AIProjectClient(
+    endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+    credential=DefaultAzureCredential(),
+)
+
+agent = project.agents.create_version(
+    agent_name="SesliAsistan",
+    definition=PromptAgentDefinition(
+        model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+        instructions=(
+            "Sen sesli içerik üreten bir asistansın. Kullanıcı bir metni seslendirmeni "
+            "istediğinde text-to-speech aracını, bir ses dosyasını yazıya dökmeni "
+            "istediğinde speech-to-text aracını kullan. Kullanıcı belirli bir ses istemezse "
+            "varsayılan olarak doğal, net bir ses seç."
+        ),
+        tools=[
+            {
+                "type": "mcp",
+                "server_label": "azure-speech",
+                "server_url": "https://&lt;bolgen&gt;.api.cognitive.microsoft.com/speech/mcp",
+                "headers": {
+                    "Ocp-Apim-Subscription-Key": os.environ["SPEECH_KEY"],
+                    # Giriş/çıkış ses dosyalarının saklanacağı blob container için SAS URL
+                    "X-Storage-SAS-Url": os.environ["SPEECH_MCP_STORAGE_SAS_URL"],
+                },
+            }
+        ],
+    ),
+)
+print(f"Sesli agent oluşturuldu: {agent.name}")</code></pre>
+      </div>
+      <p class="mini">Not: <code>SPEECH_MCP_STORAGE_SAS_URL</code>, Azure Storage portalında blob container'ına sağ tıklayıp "Generate SAS" ile oluşturduğun, okuma/yazma izinli bir URL'dir — .env'e eklemen gerekir.</p>
+
+      <div class="card tip">
+        <div class="card-label">Kullanıcı isteğinde ses belirtme örneği</div>
+        <p style="margin:0">Agent'a "Bu metni tr-TR-AhmetNeural sesiyle, resmi bir tonda seslendir: '...'" gibi bir prompt gönderdiğinde, agent bu ses adını doğrudan MCP aracına parametre olarak geçirir — kod tarafında hiçbir ek yapılandırma gerekmez.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Azure Speech MCP server agent'lara hangi iki temel yeteneği sunar?</summary>
+        <div class="a"><strong>Speech-to-text tanıma ve text-to-speech sentezi.</strong> Dil çevirisi/özetleme veya named entity/duygu analizi değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Azure Speech MCP server neden bir Azure Storage hesabı gerektirir?</summary>
+        <div class="a">Speech tool'larının ürettiği <strong>giriş ve çıkış ses dosyalarını saklamak için.</strong> Agent talimatlarını saklamak ya da MCP araç tanımlarını önbelleğe almak için değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Azure Speech MCP server'ı bir Foundry agent'ına bağlarken hangi kimlik bilgileri gerekir?</summary>
+        <div class="a"><strong>Bir Foundry kaynak anahtarı VE bir blob container için SAS URL.</strong> OAuth token + managed identity endpoint'i ya da istemci sertifikası + abonelik ID'si değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Agent üzerinden text-to-speech kullanırken belirli bir sesi nasıl seçersin?</summary>
+        <div class="a">Ses adını <strong>agent'a verdiğin doğal dil prompt'unun içine dahil ederek.</strong> MCP server ayarlarında önceden yapılandırmak ya da istemci uygulamasında ortam değişkeni ayarlamak değil.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What two core capabilities does the Azure Speech MCP server expose to agents?</div>
+          <div class="quiz-opt">Language translation and text summarization.</div>
+          <div class="quiz-opt correct">Speech-to-text recognition and text-to-speech synthesis.</div>
+          <div class="quiz-opt">Named entity recognition and sentiment analysis.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Why does the Azure Speech MCP server require an Azure Storage account?</div>
+          <div class="quiz-opt">To store the agent's instructions and configuration settings.</div>
+          <div class="quiz-opt correct">To store input audio files and output audio files generated by the speech tools.</div>
+          <div class="quiz-opt">To cache the MCP server's tool definitions for faster discovery.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">What credentials are needed when connecting the Azure Speech MCP server to a Foundry agent?</div>
+          <div class="quiz-opt">An OAuth 2.0 token and a managed identity endpoint URL.</div>
+          <div class="quiz-opt correct">A Foundry resource key and a SAS URL for a blob container.</div>
+          <div class="quiz-opt">A client certificate and the Azure subscription ID.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 4</span>
+          <div class="qtext">How can you specify a particular voice when using the text-to-speech tool through the agent?</div>
+          <div class="quiz-opt">By configuring the voice in the MCP server settings before connecting.</div>
+          <div class="quiz-opt correct">By including the voice name in your natural language prompt to the agent.</div>
+          <div class="quiz-opt">By setting an environment variable in the client application code.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/develop-speech-agent-speech-mcp/" target="_blank">learn.microsoft.com — Develop a speech agent with the Azure Speech MCP server</a></p>
+    </section>
+
+    <!-- MODULE 6 -->
+    <section class="section" id="m6">
+      <div class="eyebrow">Modül 06 / 07</div>
+      <h1>Develop an Azure Speech Voice Live Agent in Microsoft Foundry<span class="sub">Gerçek zamanlı, kesintiye açık, konuşarak etkileşilen bir agent — bu kursun en "canlı" modülü.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Önceki modüllerdeki akış hep "kaydet → gönder → cevap al" şeklindeydi (dosya tabanlı, sıralı). <strong>Voice Live API</strong>, bunun yerine <strong>sürekli açık bir WebSocket bağlantısı</strong> üzerinden gerçek zamanlı, kesintiye uğrayabilen (kullanıcı araya girebilen) bir sesli konuşma deneyimi sağlar — bir telefon görüşmesi gibi.</p>
+
+      <h3>Kimlik doğrulama: iki yöntem</h3>
+      <p>Voice Live API'nin desteklediği iki kimlik doğrulama yöntemi: <strong>Microsoft Entra (anahtarsız/keyless) ve API key.</strong> OAuth 2.0 + JWT veya Basic auth + API key kombinasyonu değil.</p>
+
+      <h3>Avatar streaming için hangi protokol?</h3>
+      <p>Voice Live API'de avatar entegrasyonu (görsel, konuşan bir yüz) için kullanılan streaming protokolü: <strong>WebRTC</strong> — düşük gecikmeli, gerçek zamanlı video/ses akışı için tasarlanmış bir protokoldür (HTTP/2 veya gRPC değil).</p>
+
+      <h3>Foundry portalında test etme</h3>
+      <p>Voice Live agent entegrasyonunu Foundry portalında yapılandırıp test etmenin yolu: <strong>agent playground'unda "Voice mode"u etkinleştirmek</strong> — sadece REST API/Python SDK üzerinden erişilebilir olduğu ya da ayrı bir "Voice Live playground" olduğu doğru değildir; portal deneyimi doğrudan mevcut agent playground'una entegre edilmiştir.</p>
+
+      <h3>Kullanıcı araya girdiğinde (interrupt) ne olur?</h3>
+      <p>Bir kullanıcı, agent konuşurken araya girdiğinde ses çalmayı durdurmanın yolu: <strong><code>ServerEventType.INPUT_AUDIO_BUFFER_SPEECH_STARTED</code> event'ini yakalayıp işlemek</strong> — kullanıcının agent'ın bitirmesini beklemesi gerekmez, oturumu sıfırlamak/geçmişi temizlemek de gerekmez. Bu, gerçek zamanlı, doğal bir konuşma deneyiminin temelidir.</p>
+
+      <h2>💻 Çalışır kod: Minimal bir Voice Live oturumu</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">voice_live_agent.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import asyncio, os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.voicelive.aio import connect
+from azure.ai.voicelive.models import (
+    RequestSession, Modality, InputAudioFormat, OutputAudioFormat,
+    ServerVad, ServerEventType, AzureStandardVoice,
+)
+
+load_dotenv()
+
+async def main():
+    async with connect(
+        endpoint=os.environ["AZURE_VOICELIVE_ENDPOINT"],
+        credential=AzureKeyCredential(os.environ["AZURE_VOICELIVE_API_KEY"]),
+        model="gpt-4o-realtime-preview",
+    ) as connection:
+        # Oturumu yapılandır: hem metin hem ses modaliteleri, Türkçe nöral ses
+        voice_config = AzureStandardVoice(name="tr-TR-EmelNeural", type="azure-standard")
+        session = RequestSession(
+            modalities=[Modality.TEXT, Modality.AUDIO],
+            instructions="Sen sabırlı ve net konuşan Türkçe bir sesli asistansın.",
+            voice=voice_config,
+            input_audio_format=InputAudioFormat.PCM16,
+            output_audio_format=OutputAudioFormat.PCM16,
+            # Sunucu tabanlı ses etkinliği tespiti (VAD) — kullanıcı ne zaman
+            # konuşmaya başlıyor/bitiriyor, otomatik algılanır
+            turn_detection=ServerVad(threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500),
+        )
+        await connection.session.update(session=session)
+
+        # Gelen event'leri dinle
+        async for event in connection:
+            if event.type == ServerEventType.SESSION_UPDATED:
+                print(f"Oturum hazır: {event.session.id}")
+                # Burada mikrofon yakalamaya başlarsın (pyaudio ile)
+
+            elif event.type == ServerEventType.INPUT_AUDIO_BUFFER_SPEECH_STARTED:
+                print("Kullanıcı konuşmaya başladı — mevcut agent sesini KES")
+                # audio_player.stop()  # kesinti (interrupt) burada işlenir
+
+            elif event.type == ServerEventType.RESPONSE_AUDIO_DELTA:
+                audio_bytes = event.delta
+                # audio_player.play(audio_bytes)  # gelen ses parçasını çal
+
+            elif event.type == ServerEventType.ERROR:
+                print(f"Hata: {event.error.message}")
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install "azure-ai-voicelive[aiohttp]"</code> sonra <code>python voice_live_agent.py</code> — gerçek bir mikrofon/hoparlör entegrasyonu için <code>pyaudio</code> ile ses yakalama/çalma kısımlarını doldurman gerekir (yorum satırları bunu gösteriyor).</p>
+
+      <div class="card pitfall">
+        <div class="card-label">Bu modülün özü</div>
+        <p style="margin:0">Önceki tüm modüllerde akış "iste → cevap al"ydı (senkron, tek seferlik). Voice Live'da akış <strong>event-güdümlü ve süreklidir</strong> — bağlantı açık kalır, event'ler geldikçe (kullanıcı konuşmaya başladı, agent ses üretmeye başladı, hata oluştu...) tepki verirsin. Bu farklı programlama modelini kavramak, sınavın bu bölümü için en kritik nokta.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Voice Live API'nin desteklediği iki kimlik doğrulama yöntemi nedir?</summary>
+        <div class="a"><strong>Microsoft Entra (keyless) ve API key.</strong> OAuth 2.0 + JWT değil, Basic auth + API key kombinasyonu değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Voice Live API'de avatar streaming entegrasyonu için hangi protokol kullanılır?</summary>
+        <div class="a"><strong>WebRTC.</strong> HTTP/2 veya gRPC değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Foundry portalında Voice Live agent entegrasyonunu nasıl yapılandırıp test edersin?</summary>
+        <div class="a"><strong>Agent playground'unda "Voice mode"u etkinleştirerek.</strong> Sadece REST API/Python SDK üzerinden erişilebilir olduğu veya ayrı bir "Voice Live playground" gerektiği doğru değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Kullanıcı agent'ı konuşurken kestiğinde ses çalmayı nasıl durdurursun?</summary>
+        <div class="a"><strong><code>ServerEventType.INPUT_AUDIO_BUFFER_SPEECH_STARTED</code> event'ini yakalayıp işleyerek.</strong> Kullanıcının beklemesi gerekmez, oturumu sıfırlamak/geçmişi temizlemek de gerekmez.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What are the two authentication methods supported by the Voice Live API?</div>
+          <div class="quiz-opt">OAuth 2.0 and JWT (JSON Web Tokens)</div>
+          <div class="quiz-opt">Basic authentication and API keys</div>
+          <div class="quiz-opt correct">Microsoft Entra (keyless) and API key</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which protocol is used for avatar streaming integration in Voice Live API?</div>
+          <div class="quiz-opt">HTTP/2</div>
+          <div class="quiz-opt correct">WebRTC</div>
+          <div class="quiz-opt">gRPC</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">How do you configure and test Voice Live agent integration in the Foundry Portal?</div>
+          <div class="quiz-opt">You can't — Voice Live is only accessible through the REST API or Python SDK.</div>
+          <div class="quiz-opt">In the Azure Speech in Foundry Tools Voice Live playground</div>
+          <div class="quiz-opt correct">Enable Voice mode in the agent playground</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 4</span>
+          <div class="qtext">How can you stop audio playback when a user interrupts the voice agent?</div>
+          <div class="quiz-opt">You can't — the user must wait for the agent to finish.</div>
+          <div class="quiz-opt correct">Handle the ServerEventType.INPUT_AUDIO_BUFFER_SPEECH_STARTED event</div>
+          <div class="quiz-opt">Reset the Voice Live session and clear the conversation history</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/develop-voice-live-agent/" target="_blank">learn.microsoft.com — Develop an Azure Speech Voice Live Agent in Microsoft Foundry</a></p>
+    </section>
+
+    <!-- MODULE 7 -->
+    <section class="section" id="m7">
+      <div class="eyebrow">Modül 07 / 07</div>
+      <h1>Translate text and speech with Microsoft Foundry Tools<span class="sub">Kursun kapanışı — metin hattı ile ses hattını "çeviri" ortak paydasında birleştiriyor.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Bu son modül, Modül 1'in metin becerileriyle Modül 4'ün ses becerilerini birleştirip, ikisini de <strong>diller arası çeviriye</strong> uyguluyor: <strong>Translator</strong> servisiyle metin çevirisi/harf çevirisi (transliteration), <strong>Speech SDK</strong>'nın çeviriye özel uzantısıyla da konuşma çevirisi.</p>
+
+      <h3>Translate vs Transliterate — kritik ayrım</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">translate()</span><span class="tr">Bir dildeki metni <strong>başka bir dile</strong> çevirir (anlam değişir/korunur, kelimeler değişir) — örn. Çince "你好" → İngilizce "Hello"</span></div>
+        <div class="term"><span class="en">transliterate()</span><span class="tr">Aynı dildeki metni <strong>bir alfabeden başka bir alfabeye</strong> aktarır (anlam/kelime AYNI kalır, sadece yazı sistemi değişir) — örn. Rusça Kiril "спасибо" → Latin harfleriyle "spasibo"</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Quiz'de doğrudan sorulan iki fonksiyon çağrısı</div>
+        <p style="margin:0">Çince "你好"yu İngilizce "Hello"ya çevirmek için → <strong><code>translate</code></strong> (dil değişiyor).<br>Rusça Kiril "спасибо"yu Latin harfleriyle "spasibo" yapmak için → <strong><code>transliterate</code></strong> (dil aynı kalıyor Rusça, sadece alfabe değişiyor).</p>
+      </div>
+
+      <h2>💻 Çalışır kod: Metin çevirisi ve harf çevirisi</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">metin_cevirisi.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.translation.text import TextTranslationClient
+
+load_dotenv()
+client = TextTranslationClient(
+    credential=AzureKeyCredential(os.environ["TRANSLATOR_KEY"]),
+    region=os.environ["TRANSLATOR_REGION"],
+)
+
+# --- translate: DİL değişir ---
+sonuc = client.translate(body=["你好"], to_language=["en"])
+print("Çeviri:", sonuc[0].translations[0].text)   # -> "Hello"
+
+# --- transliterate: sadece ALFABE değişir, dil aynı kalır ---
+harf_sonucu = client.transliterate(
+    body=["спасибо"],
+    language="ru",
+    from_script="Cyrl",   # Kiril
+    to_script="Latn",     # Latin
+)
+print("Harf çevirisi:", harf_sonucu[0].text)   # -> "spasibo"</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-ai-translation-text</code> sonra <code>python metin_cevirisi.py</code></p>
+
+      <h3>Konuşma çevirisi için doğru nesne</h3>
+      <p>Hangi dile/dillere çeviri yapılacağını belirtmek için kullanılan Speech SDK nesnesi: <strong><code>SpeechTranslationConfig</code></strong> (temel <code>SpeechConfig</code> değil, sadece girdi ayarları taşıyan <code>AudioConfig</code> da değil) — bu nesne, hedef dil(ler)i <code>add_target_language()</code> ile ekleme özelliğine sahiptir.</p>
+
+      <h2>💻 Çalışır kod: Konuşma çevirisi (Speech-to-Speech Translation)</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">konusma_cevirisi.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+import azure.cognitiveservices.speech as speechsdk
+
+load_dotenv()
+
+# SpeechTranslationConfig: hangi dilden hangi dillere çevrileceğini belirtir
+translation_config = speechsdk.translation.SpeechTranslationConfig(
+    subscription=os.environ["SPEECH_KEY"],
+    region=os.environ["SPEECH_REGION"],
+)
+translation_config.speech_recognition_language = "tr-TR"   # kaynak dil
+translation_config.add_target_language("en")                # hedef dil 1
+translation_config.add_target_language("de")                # hedef dil 2 (birden fazla eklenebilir)
+
+audio_config = speechsdk.audio.AudioConfig(filename="turkce_konusma.wav")
+recognizer = speechsdk.translation.TranslationRecognizer(
+    translation_config=translation_config,
+    audio_config=audio_config,
+)
+
+result = recognizer.recognize_once()
+
+if result.reason == speechsdk.ResultReason.TranslatedSpeech:
+    print(f"Algılanan (tr): {result.text}")
+    print(f"İngilizce çeviri: {result.translations['en']}")
+    print(f"Almanca çeviri: {result.translations['de']}")
+elif result.reason == speechsdk.ResultReason.NoMatch:
+    print("Konuşma tanınamadı.")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python konusma_cevirisi.py</code> — bu, konuşmayı hem tanır hem de aynı anda birden fazla dile çevirir (Speech-to-Text Translation). İstersen çevrilen metni Modül 4'teki <code>SpeechSynthesizer</code> ile sese de dönüştürüp tam bir Speech-to-Speech Translation zinciri kurabilirsin.</p>
+
+      <div class="card tip">
+        <div class="card-label">İki çeviri modu — Azure Speech in Foundry Tools'un sunduğu</div>
+        <p style="margin:0"><strong>Speech-to-Text Translation:</strong> bir dildeki konuşmayı, başka bir dilde YAZILI metne çevirir.<br><strong>Speech-to-Speech Translation:</strong> bir dildeki konuşmayı alır, başka bir dilde SÖZLÜ çıktı üretir (yukarıdaki kod + Modül 4'ün <code>SpeechSynthesizer</code>'ının birleşimi).</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Çince "你好"yu İngilizce "Hello"ya çevirmek için hangi fonksiyonu kullanırsın?</summary>
+        <div class="a"><strong>translate.</strong> get_supported_language (dil listesi döner, çeviri yapmaz) veya transliterate (sadece alfabe değiştirir, dil değiştirmez) değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Rusça Kiril "спасибо"yu Latin harfleriyle "spasibo" yapmak için hangi fonksiyonu kullanırsın?</summary>
+        <div class="a"><strong>transliterate.</strong> translate burada yanlış olur çünkü dil (Rusça) değişmiyor, sadece yazı sistemi (Kiril → Latin) değişiyor.</div>
+      </details>
+      <details class="qa">
+        <summary>Konuşmanın hangi dil(ler)e çevrileceğini belirtmek için hangi Speech SDK nesnesini kullanırsın?</summary>
+        <div class="a"><strong>SpeechTranslationConfig.</strong> SpeechConfig (genel amaçlı, çeviriye özel değil) veya AudioConfig (sadece ses girdi/çıktısını tanımlar) değil.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What function of an Azure Translator TextTranslationClient object should you use to convert the Chinese word "你好" to the English word "Hello"?</div>
+          <div class="quiz-opt">get_supported_language</div>
+          <div class="quiz-opt correct">translate</div>
+          <div class="quiz-opt">transliterate</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">What function of an Azure Translator TextTranslationClient object should you use to convert the Russian word "спасибо" in Cyrillic characters to "spasibo" in Latin characters?</div>
+          <div class="quiz-opt">get_supported_language</div>
+          <div class="quiz-opt">translate</div>
+          <div class="quiz-opt correct">transliterate</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which Azure Speech SDK object should you use to specify the language(s) into which you want speech translated?</div>
+          <div class="quiz-opt">SpeechConfig</div>
+          <div class="quiz-opt correct">SpeechTranslationConfig</div>
+          <div class="quiz-opt">AudioConfig</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/translate-text-speech/" target="_blank">learn.microsoft.com — Translate text and speech with Microsoft Foundry Tools</a></p>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="section" id="ozet">
+      <div class="eyebrow">Kapanış</div>
+      <h1>Sınav öncesi hızlı tekrar tablosu<span class="sub">7 modülü tek sayfada, en kritik ayrımlarla özetleyen tablo.</span></h1>
+
+      <table>
+        <tr><th>Modül</th><th>Tek cümlelik özet</th><th>En kritik ayrım</th></tr>
+        <tr><td>1. Azure Language</td><td>Dil algılama, entity extraction, PII redaksiyonu</td><td>Entity = indeksleme; PII = gizleme</td></tr>
+        <tr><td>2. Language MCP + agent</td><td>Metin analizini agent aracı olarak sunma</td><td><code>agent_reference</code> + <code>Ocp-Apim-Subscription-Key</code></td></tr>
+        <tr><td>3. GPT-4o ses modelleri</td><td>Basit, hızlı TTS/STT — generative AI ekosisteminde</td><td>-transcribe (sesten metne) vs -tts (metinden sese)</td></tr>
+        <tr><td>4. Klasik Speech SDK</td><td>Tam kontrol: SSML, 400+ ses, mikrofon/dosya</td><td><code>speech_synthesis_voice_name</code> ile ses değiştirme</td></tr>
+        <tr><td>5. Speech MCP + agent</td><td>Speech yeteneklerini agent aracı olarak sunma</td><td>Storage = ses dosyaları için; ses seçimi = prompt içinde</td></tr>
+        <tr><td>6. Voice Live agent</td><td>Gerçek zamanlı, kesintiye açık sesli konuşma</td><td>Event-güdümlü model, <code>SPEECH_STARTED</code> ile kesinti</td></tr>
+        <tr><td>7. Çeviri</td><td>Metin (translate/transliterate) + konuşma çevirisi</td><td>translate = dil değişir; transliterate = sadece alfabe</td></tr>
+      </table>
+
+      <div class="card tip">
+        <div class="card-label">Şimdi ne yapalım?</div>
+        <p style="margin:0">Bana hangi modülde hâlâ kafanın karıştığını söyle — özellikle Modül 3 ile Modül 4'ün (iki farklı "ses" yaklaşımı) ne zaman hangisini seçeceğin, ya da Modül 6'daki event-güdümlü Voice Live modeli sınavda en çok karıştırılan yerler. İstersen bir script'i kendi Azure kaynağınla dene, ya da quiz sorularından birini birlikte gözden geçirelim.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function copyCode(btn){
+  var pre = btn.closest('.code-block').querySelector('pre code');
+  var text = pre ? pre.innerText : '';
+  navigator.clipboard.writeText(text).then(function(){
+    var original = btn.textContent;
+    btn.textContent = 'Kopyalandı ✓';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1600);
+  });
+}
+document.querySelectorAll('.nav-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+    item.classList.add('active');
+    document.getElementById(item.dataset.target).classList.add('active');
+    document.querySelector('.main').scrollTo(0,0);
+    window.scrollTo(0,0);
+  });
+});
+document.querySelector('.nav-item[data-target="giris"]').classList.add('active');
+</script>
+</body>
+</html>

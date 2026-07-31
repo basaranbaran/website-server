@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extract insights from visual data on Azure — Türkçe Rehber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0b1420;
+  --bg-panel: #101c2c;
+  --bg-panel-2: #142234;
+  --line: #223244;
+  --azure: #3fb6ff;
+  --azure-dim: #1c4a66;
+  --amber: #ffb454;
+  --text: #dbe6f0;
+  --text-dim: #8fa3b8;
+  --text-faint: #5c7188;
+  --ok: #6fd6a0;
+  --warn: #ff8f6b;
+  --coral: #ff7a5c;
+  --coral-dim: #4a2418;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(255,122,92,0.10), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:'Inter', sans-serif;
+  line-height:1.6;
+  min-height:100vh;
+}
+::selection{background:var(--coral-dim); color:#fff;}
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:280px; flex-shrink:0;
+  background:var(--bg-panel);
+  border-right:1px solid var(--line);
+  padding:28px 18px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.hub-link{
+  display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim);
+  text-decoration:none; padding:9px 11px; border:1px solid var(--line); border-radius:9px;
+  margin-bottom:18px; transition:.15s; font-family:'IBM Plex Mono', monospace;
+}
+.hub-link:hover{border-color:var(--coral); color:#fff;}
+.brand{
+  font-family:'Space Grotesk', sans-serif;
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--coral); margin-bottom:4px; font-weight:600;
+}
+.brand-sub{
+  font-size:12px; color:var(--text-faint); margin-bottom:26px; line-height:1.5;
+}
+.nav-group-label{
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text-faint); margin:18px 0 8px 4px; font-weight:600;
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:8px; cursor:pointer;
+  font-size:13.5px; color:var(--text-dim);
+  border:1px solid transparent;
+  transition:.15s;
+  margin-bottom:3px;
+}
+.nav-item .num{
+  font-family:'IBM Plex Mono', monospace; font-size:11px;
+  color:var(--text-faint); width:18px; flex-shrink:0;
+}
+.nav-item:hover{background:var(--bg-panel-2); color:var(--text);}
+.nav-item.active{
+  background:linear-gradient(90deg, rgba(255,122,92,0.14), rgba(255,122,92,0.03));
+  border-color:var(--coral-dim); color:#fff;
+}
+.nav-item.active .num{color:var(--coral);}
+.main{flex:1; min-width:0; padding:48px 56px 100px; max-width:930px;}
+@media (max-width:900px){
+  .shell{flex-direction:column;}
+  .sidebar{width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--line);}
+  .main{padding:28px 20px 80px;}
+}
+.section{display:none;}
+.section.active{display:block; animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--coral);
+  text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px;
+}
+h1{
+  font-family:'Space Grotesk', sans-serif; font-size:31px; font-weight:700;
+  margin:0 0 6px; color:#fff; letter-spacing:-.01em;
+}
+h1 span.sub{display:block; font-size:15px; color:var(--text-dim); font-weight:400; margin-top:8px; font-family:'Inter',sans-serif;}
+h2{
+  font-family:'Space Grotesk', sans-serif; font-size:21px; color:#fff; margin:40px 0 14px;
+  padding-top:6px; border-top:1px solid var(--line); font-weight:600;
+}
+.section > h2:first-of-type{border-top:none; margin-top:28px;}
+h3{font-size:16px; color:var(--coral); margin:22px 0 8px; font-weight:600;}
+p{color:var(--text); font-size:15px; margin:0 0 14px;}
+p, li{color:#c7d6e4;}
+ul, ol{margin:0 0 16px; padding-left:22px;}
+li{margin-bottom:6px; font-size:15px;}
+strong{color:#fff; font-weight:600;}
+code{
+  font-family:'IBM Plex Mono', monospace; background:#0d1826; color:var(--amber);
+  padding:2px 6px; border-radius:4px; font-size:13px; border:1px solid var(--line);
+}
+pre{
+  background:#0a1420; border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; font-family:'IBM Plex Mono', monospace;
+  font-size:12.8px; color:#c9e6ff; margin:0 0 18px;
+}
+pre code{background:none; border:none; padding:0; color:inherit;}
+.card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; margin:16px 0;
+}
+.card.tip{border-left:3px solid var(--coral);}
+.card.warn{border-left:3px solid var(--amber);}
+.card.pitfall{border-left:3px solid #ff6b6b;}
+.card-label{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase;
+  letter-spacing:.08em; margin-bottom:8px; font-weight:600;
+}
+.card.tip .card-label{color:var(--coral);}
+.card.warn .card-label{color:var(--amber);}
+.card.pitfall .card-label{color:#ff8080;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+.term{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+}
+.term .en{
+  font-family:'IBM Plex Mono', monospace; color:var(--coral); font-size:13px; margin-bottom:4px; display:block;
+}
+.term .tr{font-size:13.5px; color:var(--text-dim);}
+.qa{
+  border:1px solid var(--line); border-radius:10px; margin-bottom:10px; overflow:hidden;
+  background:var(--bg-panel);
+}
+.qa summary{
+  padding:13px 16px; cursor:pointer; font-size:14.5px; font-weight:500; color:#fff;
+  list-style:none; display:flex; gap:10px; align-items:flex-start;
+}
+.qa summary::-webkit-details-marker{display:none;}
+.qa summary::before{content:"›"; color:var(--coral); font-weight:700; font-size:17px; transform:rotate(0deg); transition:.2s; flex-shrink:0;}
+.qa[open] summary::before{transform:rotate(90deg);}
+.qa .a{padding:0 16px 16px 40px; color:#b7c7d8; font-size:14px;}
+.qa .a code{font-size:12.5px;}
+a{color:var(--azure);}
+.badge{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px;
+  padding:2px 8px; border-radius:20px; border:1px solid var(--coral-dim); color:var(--coral);
+  margin-left:8px; vertical-align:middle;
+}
+table{width:100%; border-collapse:collapse; margin-bottom:18px; font-size:13.5px;}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);}
+th{color:var(--text-faint); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em;}
+td{color:#c7d6e4;}
+.mini{font-size:12.5px; color:var(--text-faint);}
+.code-block{position:relative; margin:0 0 18px;}
+.code-head{
+  display:flex; align-items:center; justify-content:space-between;
+  background:#0e1a28; border:1px solid var(--line); border-bottom:none;
+  border-radius:10px 10px 0 0; padding:8px 14px;
+}
+.code-filename{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--text-dim);
+}
+.code-filename::before{content:"◆ "; color:var(--coral);}
+.copy-btn{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim);
+  background:transparent; border:1px solid var(--line); border-radius:6px;
+  padding:4px 10px; cursor:pointer; transition:.15s;
+}
+.copy-btn:hover{border-color:var(--coral); color:var(--coral);}
+.copy-btn.copied{border-color:var(--ok); color:var(--ok);}
+.code-block pre{margin:0; border-radius:0 0 10px 10px;}
+.code-block .code-head + pre{border-top:none;}
+.steps{list-style:none; margin:0 0 18px; padding:0; counter-reset:step;}
+.steps li{
+  counter-increment:step; position:relative; padding-left:38px; margin-bottom:14px;
+  font-size:14.5px; color:#c7d6e4;
+}
+.steps li::before{
+  content:counter(step); position:absolute; left:0; top:-1px;
+  width:26px; height:26px; border-radius:50%; background:var(--bg-panel-2);
+  border:1px solid var(--coral-dim); color:var(--coral);
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+}
+.env-note{
+  display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11.5px;
+  color:var(--amber); background:#241a0d; border:1px solid #4a3a1c; border-radius:5px;
+  padding:1px 7px; margin:0 2px;
+}
+.diagram{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; margin:0 0 18px; font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; color:var(--text-dim); overflow-x:auto; white-space:pre;
+}
+.quiz-block{margin:0 0 20px;}
+.quiz-q{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px;
+  padding:15px 17px; margin-bottom:12px;
+}
+.quiz-q .qnum{
+  font-family:'IBM Plex Mono', monospace; color:var(--coral); font-size:11px;
+  text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; display:block; font-weight:600;
+}
+.quiz-q .qtext{color:#fff; font-weight:500; margin-bottom:11px; font-size:14.5px; line-height:1.5;}
+.quiz-opt{
+  padding:8px 12px; border-radius:7px; margin-bottom:5px; font-size:13.5px;
+  color:var(--text-dim); border:1px solid var(--line); background:var(--bg-panel);
+}
+.quiz-opt.correct{
+  background:rgba(111,214,160,0.10); border-color:var(--ok); color:#eafff3;
+}
+.quiz-opt.correct::before{content:"✓  "; color:var(--ok); font-weight:700;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="hub-link" href="egitim-merkezi.html">← Eğitim Merkezi</a>
+    <div class="brand">AI-3018</div>
+    <div class="brand-sub">Extract insights from visual data on Azure<br>Türkçe çalışma rehberi — 8 modül</div>
+    <div class="nav-group-label">Başlangıç</div>
+    <div class="nav-item" data-target="giris"><span class="num">·</span> Bu rehber nasıl kullanılır</div>
+    <div class="nav-item" data-target="ortam"><span class="num">·</span> Ortam kurulumu</div>
+    <div class="nav-group-label">8 Modül</div>
+    <div class="nav-item" data-target="m1"><span class="num">01</span> Görsel destekli chat uygulaması</div>
+    <div class="nav-item" data-target="m2"><span class="num">02</span> AI ile görsel üretme</div>
+    <div class="nav-item" data-target="m3"><span class="num">03</span> Sora 2 ile video üretme</div>
+    <div class="nav-item" data-target="m4"><span class="num">04</span> Content Understanding ile görsel analizi</div>
+    <div class="nav-item" data-target="m5"><span class="num">05</span> Çok-modlu (multimodal) analiz çözümü</div>
+    <div class="nav-item" data-target="m6"><span class="num">06</span> Content Understanding istemci uygulaması</div>
+    <div class="nav-item" data-target="m7"><span class="num">07</span> Document Intelligence ile veri çıkarma</div>
+    <div class="nav-item" data-target="m8"><span class="num">08</span> Azure AI Search ile bilgi madenciliği</div>
+    <div class="nav-group-label">Kapanış</div>
+    <div class="nav-item" data-target="ozet"><span class="num">·</span> Sınav özet tablosu</div>
+  </nav>
+
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="section active" id="giris">
+      <div class="eyebrow">Giriş</div>
+      <h1>Extract insights from visual data on Azure<span class="sub">Görsel anlama, görsel/video üretme ve Content Understanding / Document Intelligence / AI Search ile bilgi çıkarma — 8 modülün tamamı, sıfırdan, Türkçe.</span></h1>
+
+      <p>Bu, sertifika yolundaki dördüncü kurs. Önceki üç kurs metin ve konuşmaya odaklanmıştı; bu kurs <strong>görsel veriye</strong> (resim, video, belge) odaklanıyor: modele resim gösterip yorum aldırmaktan, sıfırdan resim/video üretmeye, kurumsal belgelerden yapılandırılmış veri çekmeye kadar geniş bir yelpaze. 8 modülün ekran görüntülerini OCR ile okudum, resmi Microsoft Learn sayfalarını ve kursun gerçek GitHub alıştırma depolarındaki (mslearn-ai-vision, mslearn-ai-information-extraction, mslearn-ai-document-intelligence) kodları doğrudan inceleyip doğruladım.</p>
+
+      <div class="card tip">
+        <div class="card-label">Nasıl çalışalım</div>
+        <p style="margin:0">Soldaki menüden modül modül ilerle. Her modülde <strong>"💻 Çalışır kod"</strong> (kursun resmi alıştırma kodlarından alınmış), <strong>"Sık karıştırılan noktalar"</strong> ve en altta <strong>"📋 Modülün orijinal quiz soruları"</strong> var. Takıldığın yerde modül adını söyle, konuşarak netleştiririz.</p>
+      </div>
+
+      <h2>Önce büyük resim: 8 modül nasıl bir akış izliyor?</h2>
+      <p>Kurs üç ana bloktan oluşuyor:</p>
+      <div class="diagram">ÜRETKEN AI + GÖRSEL (1-3)          İÇERİK ANLAMA (4-6)              BELGE + ARAMA (7-8)
+──────────────────────           ──────────────────                ────────────────
+Modül 1: Modele resim göster       Modül 4: Tek resmi analiz et       Modül 7: Belgeden veri çıkar
+  (vision chat)                      (Content Understanding)            (Document Intelligence)
+Modül 2: Resim ÜRET                Modül 5: Çok-modlu analiz           Modül 8: Çıkarılan veriyi
+  (gpt-image / FLUX)                  (belge+resim+ses+video)             ARANABİLİR yap
+Modül 3: Video ÜRET                Modül 6: Kod ile analiz et            (Azure AI Search)
+  (Sora 2)                            (SDK/REST client app)</div>
+
+      <ol>
+        <li><strong>Modül 1</strong> — Multimodal bir modele (metin+resim) prompt gönderip görsel yorumlatma.</li>
+        <li><strong>Modül 2</strong> — gpt-image ve FLUX modelleriyle metinden görsel üretme.</li>
+        <li><strong>Modül 3</strong> — Sora 2 ile metinden/resimden video üretme.</li>
+        <li><strong>Modül 4</strong> — Content Understanding Studio ile tek bir resmi şemaya göre analiz etme.</li>
+        <li><strong>Modül 5</strong> — Content Understanding'in belge/resim/ses/video kapsamını bütün olarak görme.</li>
+        <li><strong>Modül 6</strong> — Content Understanding'i kod ile (SDK/REST) bir uygulamaya entegre etme.</li>
+        <li><strong>Modül 7</strong> — Document Intelligence ile fatura/makbuz/form gibi belgelerden alan çıkarma.</li>
+        <li><strong>Modül 8</strong> — Azure AI Search ile çıkarılan/zenginleştirilen veriyi aranabilir hale getirme.</li>
+      </ol>
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/paths/insight-visual-data/" target="_blank">learn.microsoft.com — Extract insights from visual data on Azure</a></p>
+    </section>
+
+    <!-- ORTAM KURULUMU -->
+    <section class="section" id="ortam">
+      <div class="eyebrow">Ortam Kurulumu</div>
+      <h1>Bilgisayarında çalışır hale getirme<span class="sub">Bu kursta 4 farklı Azure yeteneği kullanacaksın: vision modelleri, Content Understanding, Document Intelligence, AI Search.</span></h1>
+
+      <ol class="steps">
+        <li><strong>Bir Foundry projesi oluştur</strong> — çoğu modülde aynı proje kullanılabilir (portaldan <a href="https://ai.azure.com" target="_blank">ai.azure.com</a>, "New Foundry" açık olsun).
+          <div class="code-block">
+            <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+            <pre><code>az login
+az group create --name rg-gorsel-egitim --location eastus
+
+az cognitiveservices account create \
+  --name egitim-gorsel-foundry \
+  --resource-group rg-gorsel-egitim \
+  --kind AIServices \
+  --sku S0 \
+  --location eastus \
+  --custom-domain egitim-gorsel-foundry</code></pre>
+          </div>
+        </li>
+        <li><strong>Modelleri deploy et</strong> — Foundry portalında model kataloğundan: <code>gpt-4.1</code> veya <code>gpt-5.2</code> (vision, Modül 1), <code>gpt-image-1</code>/<code>gpt-image-2</code> (Modül 2), <code>Sora-2</code> (Modül 3, kısıtlı erişim gerektirebilir).</li>
+        <li><strong>Content Understanding için ayrıca bir Storage hesabı</strong> gerekir (Modül 4-6) ve <a href="https://contentunderstanding.ai.azure.com/home" target="_blank">Content Understanding Studio</a>'da Foundry kaynağını bağlaman gerekir.</li>
+        <li><strong>Python paketlerini kur.</strong></li>
+      </ol>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# Modül 1-3: vision chat, görsel/video üretme
+pip install openai azure-identity python-dotenv
+
+# Modül 4-6: Content Understanding
+pip install azure-ai-contentunderstanding azure-core
+
+# Modül 7: Document Intelligence
+pip install azure-ai-documentintelligence
+
+# Modül 8: Azure AI Search (indexer, skillset, knowledge store)
+pip install azure-search-documents</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">.env</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code># Modül 1-3: Azure OpenAI uyumlu endpoint (Responses / Images / Videos API)
+AZURE_OPENAI_ENDPOINT=https://egitim-gorsel-foundry.openai.azure.com/openai/v1/
+MODEL_DEPLOYMENT=gpt-4.1
+IMAGE_MODEL_DEPLOYMENT=gpt-image-1
+VIDEO_MODEL_DEPLOYMENT=Sora-2
+
+# Modül 4-6: Content Understanding (Foundry resource endpoint - proje değil!)
+CONTENT_UNDERSTANDING_ENDPOINT=https://egitim-gorsel-foundry.services.ai.azure.com
+CONTENT_UNDERSTANDING_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ANALYZER_NAME=egitim-analyzer
+
+# Modül 7: Document Intelligence
+DOCUMENTINTELLIGENCE_ENDPOINT=https://egitim-gorsel-foundry.cognitiveservices.azure.com/
+DOCUMENTINTELLIGENCE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Modül 8: Azure AI Search
+SEARCH_ENDPOINT=https://egitim-arama.search.windows.net
+SEARCH_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">Bu kursta kimlik doğrulama sık sık değişiyor</div>
+        <p style="margin:0">Modül 1-3'te (Responses/Images/Videos API) <strong>keyless (Entra ID token provider)</strong> yöntemi kullanılıyor — kursun resmi alıştırmaları bunu tercih ediyor. Modül 4/6'da Content Understanding hem Entra ID hem <code>AzureKeyCredential</code> (endpoint+key) destekliyor — örneklerde ikisini de göreceksin. Hangi modülde hangisi olduğuna dikkat et.</p>
+      </div>
+
+      <h3>Hızlı doğrulama testi</h3>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">test_baglanti.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
+load_dotenv()
+token_provider = get_bearer_token_provider(
+    DefaultAzureCredential(), "https://ai.azure.com/.default"
+)
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=token_provider(),
+)
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT"],
+    input="Tek kelimeyle cevap ver: bağlantı çalışıyor mu?"
+)
+print(response.output_text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python test_baglanti.py</code></p>
+    </section>
+
+    <!-- MODULE 1 -->
+    <section class="section" id="m1">
+      <div class="eyebrow">Modül 01 / 08</div>
+      <h1>Develop a vision-enabled generative AI application<span class="sub">Multimodal bir modele hem metin hem resim gönderip yorum aldırma.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>İlk kursta öğrendiğin chat uygulamalarına bir boyut daha eklenir: <strong>görsel girdi.</strong> Bazı modeller ("multimodal" modeller) sadece metni değil, resimleri de "okuyabilir" — bir fotoğrafa bakıp "bu meyve nedir, hangi tariflerde kullanılır" gibi sorulara cevap verebilirler.</p>
+
+      <h3>Foundry'de hangi modeller görsel girdiyi destekler?</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Phi-4-multimodal-instruct</span><span class="tr">Microsoft — metin + resim girdisi</span></div>
+        <div class="term"><span class="en">GPT-4.1 / GPT-4.1-mini</span><span class="tr">OpenAI — metin + resim girdisi, geniş görsel anlama</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0">Görsel girdiyi <strong>sadece OpenAI GPT modelleri değil</strong>, "multimodal" olarak etiketlenmiş herhangi bir model destekleyebilir (ör. Microsoft'un Phi-4-multimodal'ı). "Hangi model türü görsel girdiye cevap verebilir?" sorusunun doğru cevabı <strong>multimodal modeller</strong>dir — belirli bir sağlayıcı değil.</p>
+      </div>
+
+      <h3>Multi-part prompt yapısı</h3>
+      <p>Görsel içeren bir prompt, üç parçadan oluşur:</p>
+      <div class="diagram">1) System / Developer Message
+   Modelin rolünü ve davranışını tanımlar
+2) Text Instruction
+   "Bu görselde ne var?" gibi metin
+3) Image Data
+   URL referansı VEYA base64-encoded</div>
+      <p>Görseli iki şekilde gönderebilirsin: <strong>bir URL olarak</strong> (görsel herkese açık bir adreste barınıyorsa) veya <strong>base64 kodlanmış ikili veri olarak</strong> (yerel bir dosyayı gönderiyorsan).</p>
+
+      <h2>💻 Çalışır kod: Vision chat uygulaması</h2>
+      <p>Aşağıdaki kod, kursun resmi alıştırmasındaki <code>image-chat-app.py</code> dosyasının temelini oluşturur. Önce URL tabanlı bir görselle:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">image_chat_url.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
+load_dotenv()
+
+# Keyless (Entra ID) kimlik doğrulama — kursun resmi alıştırmasının tercih ettiği yöntem
+credential = DefaultAzureCredential()
+token_provider = get_bearer_token_provider(credential, "https://ai.azure.com/.default")
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=token_provider(),
+)
+
+system_message = "Sen bir manav dükkanında müşterilere yardımcı olan, meyve/sebze konusunda uzman bir asistansın."
+prompt = "Bu meyveyle hangi tatlıları yapabilirim?"
+image_url = "https://microsoftlearning.github.io/mslearn-ai-vision/Labfiles/gen-ai-vision/orange.jpeg"
+
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT"],
+    input=[
+        {"role": "developer", "content": system_message},
+        {"role": "user", "content": [
+            {"type": "input_text", "text": prompt},
+            {"type": "input_image", "image_url": image_url}
+        ]}
+    ]
+)
+print(response.output_text)</code></pre>
+      </div>
+
+      <p>Yerel bir dosyayı base64 ile göndermek istersen (URL yerine):</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">image_chat_base64.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import base64
+from pathlib import Path
+
+# Get a response to image input
+image_path = Path("mystery-fruit.jpeg")
+image_format = "jpeg"
+with open(image_path, "rb") as image_file:
+    image_data = base64.b64encode(image_file.read()).decode("utf-8")
+
+data_url = f"data:image/{image_format};base64,{image_data}"
+
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT"],
+    input=[
+        {"role": "developer", "content": system_message},
+        {"role": "user", "content": [
+            {"type": "input_text", "text": "Bu meyve nedir? Hangi tariflerde kullanabilirim?"},
+            {"type": "input_image", "image_url": data_url}
+        ]}
+    ]
+)
+print(response.output_text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python image_chat_url.py</code>. Kaynak kod: <a href="https://github.com/MicrosoftLearning/mslearn-ai-vision" target="_blank">github.com/MicrosoftLearning/mslearn-ai-vision</a></p>
+
+      <div class="card tip">
+        <div class="card-label">Bu basit uygulamanın bir sınırı</div>
+        <p style="margin:0">Bu örnekte konuşma geçmişi tutulmuyor — her prompt, öncekinden habersiz yeni bir istek olarak işleniyor. Çok adımlı bir görsel sohbet istiyorsan, birinci kursun Modül 3'ündeki <code>previous_response_id</code> mantığını buraya da uygulayabilirsin.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Görsel girdiye cevap üretmek için hangi model türünü kullanmalısın?</summary>
+        <div class="a"><strong>Multimodal modeller.</strong> Sadece OpenAI GPT modelleri değil — Phi-4-multimodal-instruct gibi Microsoft modelleri de görsel girdiyi destekler. Embedding modelleri görsel/metin üretmez, sadece vektör temsili çıkarır.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir modele resmi analiz etmesini isteyen bir prompt'u nasıl gönderirsin?</summary>
+        <div class="a">Hem metin hem görsel içerik barındıran <strong>tek, çok-parçalı (multi-part) bir kullanıcı mesajı</strong> göndererek. İki ayrı prompt (biri resim, biri metin) göndermek ya da resmi system message'a koymak doğru yaklaşım değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir mesaja görsel nasıl dahil edilir?</summary>
+        <div class="a"><strong>Ya bir URL olarak, ya da base64 kodlanmış ikili veri olarak.</strong> Sadece biri değil, ikisi de desteklenir — hangisini kullanacağın görselin nerede barındığına bağlıdır.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which kind of model can you use to respond to visual input?</div>
+          <div class="quiz-opt">Only OpenAI GPT models</div>
+          <div class="quiz-opt">Embedding models</div>
+          <div class="quiz-opt correct">Multimodal models</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">How can you submit a prompt that asks a model to analyze an image?</div>
+          <div class="quiz-opt">Submit one prompt with an image-based message followed by another prompt with a text-based message</div>
+          <div class="quiz-opt correct">Submit a prompt that contains a multi-part user message, containing both text content and image content.</div>
+          <div class="quiz-opt">Submit the image as the system message and the instruction or question as the user message.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">How can you include an image in a message?</div>
+          <div class="quiz-opt correct">As a URL or as binary data</div>
+          <div class="quiz-opt">Only as a URL</div>
+          <div class="quiz-opt">Only as binary data</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/develop-generative-ai-vision-apps/" target="_blank">learn.microsoft.com — Develop a vision-enabled generative AI application</a></p>
+    </section>
+
+    <!-- MODULE 2 -->
+    <section class="section" id="m2">
+      <div class="eyebrow">Modül 02 / 08</div>
+      <h1>Generate images with AI<span class="sub">gpt-image ve FLUX modelleriyle sıfırdan, metinden görsel üretme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 1'de modele resim <em>gösterip</em> yorum aldırdın. Bu modülde bunun tam tersini yapıyorsun: modele metinle bir tarif verip <strong>yeni, daha önce hiç var olmamış bir görsel ürettiriyorsun.</strong></p>
+
+      <h3>Bu bir arama motoru değil</h3>
+      <p>gpt-image-1 gibi modeller, hazır bir stok fotoğraf kütüphanesinden arama yapmaz — <strong>piksel piksel, eğitim sırasında öğrendiği örüntülerden yeni bir görsel inşa eder.</strong> Aynı prompt'u tekrar gönderdiğinde bile her seferinde benzersiz, farklı bir görsel üretir.</p>
+
+      <h3>Foundry'deki modeller</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">gpt-image-1 / gpt-image-2</span><span class="tr">Zengin detay, güçlü prompt takibi, görsel içine metin (yazı) render edebilme</span></div>
+        <div class="term"><span class="en">FLUX serisi</span><span class="tr">Hızlı üretim, yüksek görsel kalite, birden fazla model varyantı ve stil esnekliği</span></div>
+      </div>
+
+      <h3>Model kataloğunda nasıl bulursun?</h3>
+      <p>Foundry model kataloğunda görsel üretim modeli ararken <strong>inference task</strong> (çıkarım görevi) filtresini <strong>"Text to image"</strong> olarak ayarlarsın — "Image to text" (bu görsel anlama, Modül 1) veya "Embeddings" değil. Bu modelleri OpenAI'ın <strong>Image API</strong>'siyle kullanırsın.</p>
+
+      <h2>💻 Çalışır kod: Görsel üretme uygulaması</h2>
+      <p>Kursun resmi alıştırmasındaki <code>image-client.py</code> temel alınarak:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">image_client.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os, json, base64
+from dotenv import load_dotenv
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
+load_dotenv()
+
+# Keyless kimlik doğrulama
+token_provider = get_bearer_token_provider(
+    DefaultAzureCredential(
+        exclude_environment_credential=True,
+        exclude_managed_identity_credential=True,
+    ),
+    "https://cognitiveservices.azure.com/.default",
+)
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=token_provider(),
+)
+
+prompt = "Spagetti yiyen sevimli bir robot, stüdyo aydınlatmasıyla"
+
+# gpt-image modeli görsel çıktıyı base64 olarak döner (URL olarak değil!)
+img = client.images.generate(
+    model=os.environ["IMAGE_MODEL_DEPLOYMENT"],
+    prompt=prompt,
+    n=1,
+)
+
+json_response = json.loads(img.model_dump_json())
+image_data = json_response["data"][0].get("b64_json")
+image_bytes = base64.b64decode(image_data)
+
+os.makedirs("images", exist_ok=True)
+with open("images/image_1.png", "wb") as f:
+    f.write(image_bytes)
+
+print("Görsel kaydedildi: images/image_1.png")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python image_client.py</code>. Kaynak kod: <a href="https://github.com/MicrosoftLearning/mslearn-ai-vision" target="_blank">github.com/MicrosoftLearning/mslearn-ai-vision</a></p>
+
+      <div class="card pitfall">
+        <div class="card-label">En sık yapılan hata</div>
+        <p style="margin:0"><strong>gpt-image modelleri her zaman base64-kodlanmış görsel verisi döner, URL değil</strong> (eski DALL-E modellerinin aksine). Kodun bir URL bekleyip <code>response.data[0].url</code> okumaya çalışırsan hata alırsın — <code>b64_json</code> alanını kullanman ve kendin decode edip dosyaya yazman gerekir.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Foundry'de görsel üreten bir model ararken hangi çıkarım görevine göre filtrelemelisin?</summary>
+        <div class="a"><strong>Text to image.</strong> "Image to text" görseli anlamlandırma (Modül 1) içindir; "Embeddings" ise vektör temsili üretir, görsel üretmez.</div>
+      </details>
+      <details class="qa">
+        <summary>Görsel üretim modelleriyle hangi OpenAI API'sini kullanabilirsin?</summary>
+        <div class="a"><strong>Image API.</strong> Video ve Graphics gibi seçenekler bu bağlamda mevcut/geçerli API'ler değildir.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">You want to find a model in Microsoft Foundry to generate images. Which inference task should you filter by?</div>
+          <div class="quiz-opt correct">Text to image</div>
+          <div class="quiz-opt">Image to text</div>
+          <div class="quiz-opt">Embeddings</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which OpenAI API can you use with image-generation models?</div>
+          <div class="quiz-opt">Video</div>
+          <div class="quiz-opt correct">Image</div>
+          <div class="quiz-opt">Graphics</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/generate-images-azure-openai/" target="_blank">learn.microsoft.com — Generate images with AI</a></p>
+    </section>
+
+    <!-- MODULE 3 -->
+    <section class="section" id="m3">
+      <div class="eyebrow">Modül 03 / 08</div>
+      <h1>Generate videos with Microsoft Foundry<span class="sub">Sora 2 ile metinden, resimden video üretme ve mevcut videoları remixleme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Görsel üretiminden bir adım öteye: <strong>Sora 2</strong> ile hareketli, gerçekçi video sahneleri üretiyorsun. Süreç asenkron çalışır — bir video işi (job) oluşturursun, durumunu kontrol edersin (poll), ve tamamlandığında indirirsin.</p>
+
+      <h3>Sora 2'nin 3 yeteneği</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Text to Video</span><span class="tr">Sadece metin açıklamasından gerçekçi video sahneleri üretme</span></div>
+        <div class="term"><span class="en">Image to Video</span><span class="tr">Durağan bir resmi hareketli, dinamik bir sahneye dönüştürme</span></div>
+        <div class="term"><span class="en">Video Remix</span><span class="tr">Var olan bir videoyu farklı renk paleti/görsel stille yeniden düzenleme</span></div>
+      </div>
+
+      <h3>Ana akış: gönder → sorgula → indir</h3>
+      <div class="diagram">1) Submit Job          2) Poll for Status              3) Download
+   videos.create()  →     "processing" mi          →     content = videos
+   model, prompt,          "completed" mi                  .download_content()
+   resolution,              "failed" mi
+   duration                 (~20 saniyede bir kontrol et)</div>
+
+      <h3>Anahtar özellikler</h3>
+      <table>
+        <tr><th>Özellik</th><th>Değer</th></tr>
+        <tr><td>Çözünürlükler</td><td>480p – 1080p</td></tr>
+        <tr><td>Süre</td><td>5 – 20 saniye arası klipler</td></tr>
+        <tr><td>En-boy oranı</td><td>16:9, 9:16, 1:1</td></tr>
+        <tr><td>Format</td><td>MP4 çıktı</td></tr>
+      </table>
+
+      <div class="card warn">
+        <div class="card-label">Referans görsel kullanırken dikkat</div>
+        <p style="margin:0">Sora 2'ye bir referans görsel verdiğinde, <strong>görselin çözünürlüğü hedef video boyutuyla eşleşmelidir</strong> — rastgele boyutta bir görsel kullanamazsın.</p>
+      </div>
+
+      <h2>💻 Çalışır kod: Video üretme, sorgulama, indirme, remix</h2>
+      <p>Kursun resmi alıştırmasındaki <code>video-app.py</code> temel alınarak, uçtan uca tam akış:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">video_app.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import time
+from dotenv import load_dotenv
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+import os
+
+load_dotenv()
+token_provider = get_bearer_token_provider(
+    DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+)
+client = OpenAI(base_url=os.environ["AZURE_OPENAI_ENDPOINT"], api_key=token_provider())
+model_deployment = os.environ["VIDEO_MODEL_DEPLOYMENT"]
+
+def poll_video_status(video_id):
+    video = client.videos.retrieve(video_id)
+    while video.status not in ["completed", "failed", "cancelled"]:
+        print(f"Durum: {video.status}. 20 saniye bekleniyor...")
+        time.sleep(20)
+        video = client.videos.retrieve(video_id)
+    print("Video tamamlandı!" if video.status == "completed" else f"Video durumu: {video.status}")
+    return video
+
+def download_video(video_id, output_filename):
+    print(f"{video_id} indiriliyor...")
+    content = client.videos.download_content(video_id, variant="video")
+    content.write_to_file(output_filename)
+    print(f"Kaydedildi: {output_filename}")
+
+def generate_video_from_image(image_path, prompt, size, seconds):
+    video = client.videos.create(
+        model=model_deployment,
+        prompt=prompt,
+        size=size,
+        seconds=seconds,
+        input_reference=open(image_path, "rb"),
+    )
+    return video
+
+def remix_video(video_id, prompt):
+    video = client.videos.remix(video_id=video_id, prompt=prompt)
+    print(f"Remix başladı. Yeni video ID: {video.id}")
+    return poll_video_status(video.id)
+
+# --- 1) Metinden video üret ---
+video = client.videos.create(
+    model=model_deployment,
+    prompt="Gün doğumunda sisli, huzurlu bir dağ gölü",
+    size="1280x720",
+    seconds="4",
+)
+video = poll_video_status(video.id)
+if video.status == "completed":
+    download_video(video.id, "original_video.mp4")
+
+# --- 2) Resimden video üret ---
+image_video = generate_video_from_image(
+    image_path="reference.png",
+    prompt="Sahne yumuşak bir hareket ve ortam ışığıyla canlanıyor",
+    size="1280x720",
+    seconds="4",
+)
+if image_video.status == "completed":
+    download_video(image_video.id, "image_based_video.mp4")
+
+# --- 3) Videoyu remixle ---
+remixed = remix_video(video.id, "Sıcak, davetkar bir enstrümantal müzik ekle")
+if remixed.status == "completed":
+    download_video(remixed.id, "remixed_video.mp4")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python video_app.py</code> — video üretimi 1-5 dakika sürebilir. Kaynak kod: <a href="https://github.com/MicrosoftLearning/mslearn-ai-vision" target="_blank">github.com/MicrosoftLearning/mslearn-ai-vision</a></p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Sora 2 hangi video sürelerini destekler?</summary>
+        <div class="a">5 ile 20 saniye arası klipler (kurs materyalinde belirtilen aralıklarla — ör. 4, 8, 12 saniye gibi belirli artışlar). 1-60 saniye arası herhangi bir süre desteklenmez, sabit bir aralık vardır.</div>
+      </details>
+      <details class="qa">
+        <summary>Sora 2 ile referans görsel kullanırken ne gereklidir?</summary>
+        <div class="a"><strong>Görsel çözünürlüğü hedef video boyutuyla eşleşmelidir.</strong> Dosya boyutu sınırı ya da insan yüzü zorunluluğu gibi kısıtlar bu sorunun cevabı değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Sora 2'de remix özelliği ne için kullanılır?</summary>
+        <div class="a"><strong>Var olan bir videoda, sıfırdan yeniden üretmeden hedefli değişiklikler yapmak için.</strong> Birden fazla videoyu birleştirmek veya arka plan müziği eklemek değil (though remix prompt'ları bunu isteyebilir, temel mekanizma budur).</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What video durations does Sora 2 support?</div>
+          <div class="quiz-opt">1 to 20 seconds in 1-second increments</div>
+          <div class="quiz-opt correct">4, 8, or 12 seconds</div>
+          <div class="quiz-opt">Any duration up to 60 seconds</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">What is required when using a reference image with Sora 2?</div>
+          <div class="quiz-opt">The image must be smaller than 1 MB</div>
+          <div class="quiz-opt correct">The image resolution must match the target video size</div>
+          <div class="quiz-opt">The image must contain at least one human face</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">What is the remix feature used for in Sora 2?</div>
+          <div class="quiz-opt">Combining multiple videos into one</div>
+          <div class="quiz-opt correct">Making targeted adjustments to an existing video without regenerating from scratch</div>
+          <div class="quiz-opt">Adding background music to generated videos</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/generate-video-with-foundry/" target="_blank">learn.microsoft.com — Generate videos with Microsoft Foundry</a></p>
+    </section>
+
+    <!-- MODULE 4 -->
+    <section class="section" id="m4">
+      <div class="eyebrow">Modül 04 / 08</div>
+      <h1>Analyze images with Content Understanding<span class="sub">Bir resmi, kendi tanımladığın şemaya göre yapılandırılmış veriye dönüştürme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p><strong>Azure Content Understanding</strong>, generative AI kullanarak görselleri (ve genel olarak her tür içeriği) analiz edip, <strong>senin tanımladığın bir şemaya göre yapılandırılmış veri</strong> döndüren bir Foundry Tools yeteneğidir. Bu modül, işin sadece "resim" tarafına odaklanıyor.</p>
+
+      <h3>3 temel yetenek</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Extract Values</span><span class="tr">İçerikten belirli alanları doğrudan çıkarma</span></div>
+        <div class="term"><span class="en">Classify Content</span><span class="tr">İçeriği kendi tanımladığın türlere göre sınıflandırma</span></div>
+        <div class="term"><span class="en">Generate Descriptions</span><span class="tr">Görsel içerik için yapılandırılmış metin açıklamaları üretme</span></div>
+      </div>
+      <div class="diagram">Define Schema  →  AI Analyzes  →  Structured Output</div>
+
+      <h3>Prebuilt vs Custom Analyzer</h3>
+      <table>
+        <tr><th>Tip</th><th>Ne zaman kullanılır</th></tr>
+        <tr><td><strong>Prebuilt (hazır)</strong></td><td>Yaygın senaryolar: fatura işleme, makbuz çıkarma, çağrı merkezi analitiği</td></tr>
+        <tr><td><strong>Custom (özel)</strong></td><td>Kendi işine özgü ihtiyaçlar için kendi şemanı, kendi kurallarınla tanımlarsın</td></tr>
+      </table>
+
+      <h3>Grounding (temellendirme) nedir?</h3>
+      <p><strong>Grounding'in amacı, çıkarılan her değerin içerikte tam olarak nereden geldiğini belirlemektir</strong> — yani model "bu bilgiyi resmin şu bölgesinden aldım" diyebilir. Bu, Azure storage'a bağlanmakla veya zararlı içerik filtrelemekle ilgili değildir; <strong>izlenebilirlik ve doğrulanabilirlik</strong> sağlamaktır.</p>
+
+      <h3>Confidence score (güven skoru) nasıl okunur?</h3>
+      <p>0 ile 1 arasında bir değer alır. <strong>0.95 gibi yüksek bir skor, o değerin otomatik işlemede güvenle kullanılabileceği anlamına gelir</strong> — düşük skorlar (ör. 0.4) manuel gözden geçirme gerektirebilir. Yüksek skor "extraction başarısız oldu" ya da "bu alan sınıflandırıldı, çıkarılmadı" anlamına gelmez.</p>
+
+      <h2>Portal odaklı bir modül: Content Understanding Studio</h2>
+      <p>Bu modülde kod yazmadan önce <strong><a href="https://contentunderstanding.ai.azure.com/home" target="_blank">Content Understanding Studio</a></strong> üzerinde bir analyzer oluşturursun:</p>
+      <ol class="steps">
+        <li>Foundry kaynağını Content Understanding Studio'ya bağla (Settings → Add resource).</li>
+        <li>Yeni bir proje oluştur: <em>"Extract content and field with custom schema"</em> tipini seç.</li>
+        <li>Bir örnek resim yükle, şablon olarak <strong>Image Analysis</strong> seç.</li>
+        <li>Schema'ya alan ekle: ör. <code>Description</code> (String, Generate), <code>Tags</code> (List of Strings, Generate).</li>
+        <li><strong>Run analysis</strong> ile test et, sonuçlardan memnun kalınca <strong>Build analyzer</strong> ile yayınla — bir isim ver, bu ismi kodda kullanacaksın.</li>
+      </ol>
+
+      <h2>💻 Çalışır kod: Analyzer'ı kod ile çağırma</h2>
+      <p>Kursun resmi alıştırmasındaki <code>analyze-image.py</code> temel alınarak:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">analyze_image.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import sys
+from azure.ai.contentunderstanding import ContentUnderstandingClient
+from azure.ai.contentunderstanding.models import AnalysisInput, AnalysisResult
+from azure.core.exceptions import AzureError
+from azure.identity import DefaultAzureCredential
+
+endpoint = "https://egitim-gorsel-foundry.services.ai.azure.com"  # Foundry KAYNAK endpoint'i, proje değil!
+analyzer_id = "egitim-analyzer"  # Studio'da Build analyzer ile verdiğin isim
+
+# Content Understanding istemcisini kur (Entra ID ile)
+credential = DefaultAzureCredential()
+client = ContentUnderstandingClient(
+    endpoint=endpoint,
+    credential=credential,
+    api_version="2025-05-01-preview",
+)
+
+with open("lion.jpg", "rb") as f:
+    file_bytes = f.read()
+
+try:
+    poller = client.begin_analyze(
+        analyzer_id=analyzer_id,
+        inputs=[AnalysisInput(data=file_bytes)],
+    )
+    result: AnalysisResult = poller.result()
+except AzureError as err:
+    print(f"[Azure Hatası]: {err.message}")
+    sys.exit(1)
+
+for field in result.contents[0].fields:
+    if field == "Description":
+        print(f"{field}:\n{result.contents[0].fields[field].value_string}\n")
+    elif field == "Tags":
+        print(f"{field}:")
+        for tag in result.contents[0].fields[field].value_array:
+            print("  -", tag.value_string)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-ai-contentunderstanding</code>, <code>az login</code>, sonra <code>python analyze_image.py</code>. Kaynak kod: <a href="https://github.com/MicrosoftLearning/mslearn-ai-vision" target="_blank">github.com/MicrosoftLearning/mslearn-ai-vision</a></p>
+
+      <div class="card pitfall">
+        <div class="card-label">En sık karışan endpoint hatası</div>
+        <p style="margin:0">Content Understanding, <strong>Foundry KAYNAK endpoint'ini</strong> ister (<code>https://{kaynak-adi}.services.ai.azure.com</code>) — ne proje endpoint'i, ne de Azure OpenAI endpoint'i. Bu üçünü karıştırmak bu modülde en sık yaşanan bağlantı hatasıdır.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Content Understanding'de "grounding"in amacı nedir?</summary>
+        <div class="a">Her çıkarılan değerin içerikte <strong>tam olarak nereden geldiğini belirlemektir.</strong> Azure storage'a bağlanmak ya da zararlı içeriği filtrelemek değil.</div>
+      </details>
+      <details class="qa">
+        <summary>0.95 gibi bir güven skoru (confidence score) ne anlama gelir?</summary>
+        <div class="a"><strong>Değerin otomatik işlemede güvenle kullanılabileceği</strong> anlamına gelir. Extraction'ın başarısız olduğu veya alanın sınıflandırıldığı (extract edilmediği) anlamına gelmez.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir makbuzdan satıcı adı ve toplam tutarı çıkarmak için hangi prebuilt analyzer'ı kullanırsın?</summary>
+        <div class="a"><strong>prebuilt-receipt.</strong> prebuilt-image genel görsel analizi içindir, prebuilt-invoice ise faturalar (satıcı adı dışında farklı alan yapısı) içindir.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What is the purpose of grounding in Content Understanding?</div>
+          <div class="quiz-opt">To connect Content Understanding to Azure storage</div>
+          <div class="quiz-opt correct">To identify the specific regions in content where each value was extracted</div>
+          <div class="quiz-opt">To filter out harmful content from images</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">What does a confidence score of 0.95 indicate for an extracted field?</div>
+          <div class="quiz-opt">The extraction failed and needs manual review</div>
+          <div class="quiz-opt correct">The value can be trusted for automated processing</div>
+          <div class="quiz-opt">The field was classified rather than extracted</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which prebuilt analyzer would you use to extract vendor names and item totals from a purchase receipt?</div>
+          <div class="quiz-opt">prebuilt-image</div>
+          <div class="quiz-opt">prebuilt-invoice</div>
+          <div class="quiz-opt correct">prebuilt-receipt</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/analyze-images-with-content-understanding/" target="_blank">learn.microsoft.com — Analyze images with Content Understanding</a></p>
+    </section>
+
+    <!-- MODULE 5 -->
+    <section class="section" id="m5">
+      <div class="eyebrow">Modül 05 / 08</div>
+      <h1>Create a multimodal analysis solution with Azure Content Understanding<span class="sub">Modül 4'te sadece resme baktın — şimdi Content Understanding'in TÜM kapsamını gör: belge, resim, ses, video.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Bu modül, Modül 4'ün kapsamını genişletir. Content Understanding sadece resimlerle sınırlı değildir — <strong>4 farklı içerik türünü</strong> aynı "analyzer + schema → yapılandırılmış veri" mantığıyla işleyebilir.</p>
+
+      <h3>4 içerik türü, 4 farklı kullanım senaryosu</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Document Analysis</span><span class="tr">Fatura/form gibi belgelerden alan değerlerini çıkarma (ör. vendor_name, total_amount)</span></div>
+        <div class="term"><span class="en">Image Analysis</span><span class="tr">Kusur tespiti (üretim), nesne tanıma, grafik/diyagram analizi</span></div>
+        <div class="term"><span class="en">Audio Analysis</span><span class="tr">Görüşme özetleme, duygu durumu ölçme, sesli mesajlardan veri çıkarma</span></div>
+        <div class="term"><span class="en">Video Analysis</span><span class="tr">En zengin içerik türü — hem görsel hem zamansal veriyi birleştirir (sunum özetleme, aktivite tespiti)</span></div>
+      </div>
+
+      <h3>Bir "Analyzer" tam olarak nedir?</h3>
+      <p>Bir Content Understanding analyzer, <strong>bir şema (schema) etrafında kuruludur</strong> — çıkarmak istediğin belirli alanların tanımıdır. Bir kere kurulduktan sonra, yeni içerik her işlendiğinde bu şemayı uygular ve <strong>tutarlı, yapılandırılmış sonuçlar</strong> döndürür.</p>
+      <div class="diagram">Content  →  Analyzer + Schema  →  Structured Data</div>
+
+      <h3>Content Understanding Studio ile no-code proje kurma</h3>
+      <p>Bu modülde asıl mesele kod değil — <strong>doğru grafiksel aracı seçmek.</strong> Bir Azure Content Understanding projesi oluşturmak için <strong>Content Understanding Studio</strong>'yu kullanırsın (Microsoft Visual Studio veya Azure Machine Learning studio değil).</p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Azure Content Understanding hangi tür AI çözümleri oluşturmana yardımcı olacak şekilde tasarlanmıştır?</summary>
+        <div class="a"><strong>Belgeler, resimler, videolar ve ses dosyalarından bilgi çıkaran analizörler.</strong> Çok dilli çeviri yapan chatbot'lar veya açıklamalardan görsel üreten araçlar değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir Azure Content Understanding projesi oluşturmak için hangi grafiksel aracı kullanmalısın?</summary>
+        <div class="a"><strong>Content Understanding Studio.</strong> Microsoft Visual Studio veya Azure Machine Learning studio değil.</div>
+      </details>
+      <details class="qa">
+        <summary>İçerikten çıkarmak istediğin bilgi için ne tanımlamalısın?</summary>
+        <div class="a"><strong>Bir şema (schema).</strong> Bir index veya bir cluster değil — schema, hangi alanların hangi tipte çıkarılacağını tanımlayan yapıdır.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What kinds of AI solution is Azure Content Understanding designed to help you build?</div>
+          <div class="quiz-opt">Chatbots that automatically translate between multiple spoken and written languages.</div>
+          <div class="quiz-opt correct">Analyzers that extract information from documents, images, videos, and audio files.</div>
+          <div class="quiz-opt">Image generators that create visualizations based on descriptions.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which graphical tool should you use to create an Azure Content Understanding project?</div>
+          <div class="quiz-opt">Microsoft Visual Studio.</div>
+          <div class="quiz-opt">Azure Machine Learning studio.</div>
+          <div class="quiz-opt correct">Content Understanding Studio.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">What should you define for the information you want to extract from content?</div>
+          <div class="quiz-opt correct">A schema.</div>
+          <div class="quiz-opt">An index.</div>
+          <div class="quiz-opt">A cluster.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/analyze-content-ai/" target="_blank">learn.microsoft.com — Create a multimodal analysis solution with Azure Content Understanding</a></p>
+    </section>
+
+    <!-- MODULE 6 -->
+    <section class="section" id="m6">
+      <div class="eyebrow">Modül 06 / 08</div>
+      <h1>Create an Azure Content Understanding client application<span class="sub">Artık portaldan çıkıp, analyzer oluşturmayı ve çağırmayı tamamen kodla yapıyoruz.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 4-5'te portalda (Content Understanding Studio) analyzer kurmayı öğrendin. Bu modülde <strong>aynı işlemi tamamen kod ile</strong> yapıyorsun — hem analyzer oluşturma hem de onu çağırma.</p>
+
+      <h3>Uygulamanı bağlamak için ihtiyacın olan 2 bilgi</h3>
+      <div class="diagram">Your App  --endpoint + key-->  Content Understanding API
+             https://your-resource.azure.com
+             (Azure portalında bulunur)</div>
+
+      <h3>İki entegrasyon yaklaşımı</h3>
+      <table>
+        <tr><th>Yaklaşım</th><th>Nasıl çalışır</th></tr>
+        <tr><td><strong>Python SDK</strong></td><td>Tek metod çağrısı: <code>begin_analyze(...)</code> + <code>.result()</code> — SDK, polling döngüsünü senin için otomatik yönetir</td></tr>
+        <tr><td><strong>REST API</strong></td><td>Kendi polling döngünü elle yazarsın: içeriği gönder → operation ID al → sonuç URL'sini "Succeeded" olana kadar tekrar tekrar sorgula → JSON'dan alanları çıkar</td></tr>
+      </table>
+      <div class="card tip">
+        <div class="card-label">Zihinde nasıl otursun</div>
+        <p style="margin:0">Bu, birinci kursun Modül 2'sindeki "manuel evaluation vs otomatik evaluation" ayrımına benzer bir mantık: <strong>SDK yaklaşımı</strong> = otomatik vites (LROPoller polling'i kendi yönetir), <strong>REST yaklaşımı</strong> = manuel vites (sen ne zaman vites değiştireceğine karar verirsin).</p>
+      </div>
+
+      <h2>💻 Çalışır kod: Analyzer oluşturma (SDK ile)</h2>
+      <p>Kursun resmi alıştırmasındaki <code>create-analyzer.py</code> temel alınarak — bir iş kartı (business card) analyzer'ı oluşturuyoruz:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">create_analyzer.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import json, os
+from dotenv import load_dotenv
+from azure.ai.contentunderstanding import ContentUnderstandingClient
+from azure.core.credentials import AzureKeyCredential
+
+load_dotenv()
+endpoint = os.environ["CONTENT_UNDERSTANDING_ENDPOINT"]
+key = os.environ["CONTENT_UNDERSTANDING_KEY"]
+analyzer_id = os.environ["ANALYZER_NAME"]
+
+# biz-card.json: iş kartından Company, Name, Title, Email, Phone çıkaran şema
+with open("biz-card.json", "r") as f:
+    schema = f.read()
+
+print(f"{analyzer_id} oluşturuluyor...")
+
+# Content Understanding istemcisi — burada key tabanlı kimlik doğrulama
+client = ContentUnderstandingClient(
+    endpoint=endpoint,
+    credential=AzureKeyCredential(key),
+)
+
+analyzer_definition = json.loads(schema)
+
+# begin_create_analyzer: uzun süren (long-running) bir işlem başlatır
+poller = client.begin_create_analyzer(
+    analyzer_id=analyzer_id,
+    resource=analyzer_definition,
+    allow_replace=True,
+)
+
+# .result() polling'i otomatik yapar, tamamlanana kadar bekler
+result = poller.result()
+print(f"Analyzer '{analyzer_id}' başarıyla oluşturuldu.")</code></pre>
+      </div>
+
+      <h2>💻 Çalışır kod: Analyzer'ı çağırıp içerik analiz etme</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">analyze_content.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import json, os
+from dotenv import load_dotenv
+from azure.ai.contentunderstanding import ContentUnderstandingClient
+from azure.core.credentials import AzureKeyCredential
+
+load_dotenv()
+client = ContentUnderstandingClient(
+    endpoint=os.environ["CONTENT_UNDERSTANDING_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["CONTENT_UNDERSTANDING_KEY"]),
+)
+analyzer_id = os.environ["ANALYZER_NAME"]
+
+image_file = "biz-card-1.png"
+with open(image_file, "rb") as f:
+    image_data = f.read()
+
+print("İstek gönderiliyor...")
+# begin_analyze_binary: ikili veriyi (binary) doğrudan analyzer'a gönderir
+poller = client.begin_analyze_binary(
+    analyzer_id=analyzer_id,
+    binary_input=image_data,
+)
+result = poller.result()
+print("Analiz tamamlandı:\n")
+
+# JSON sonucu dosyaya kaydet
+with open("results.json", "w") as f:
+    json.dump(dict(result), f, indent=4, default=str)
+
+# Çıkarılan alanları yazdır
+for content in result.contents:
+    if hasattr(content, "fields") and content.fields:
+        for field_name, field_data in content.fields.items():
+            value = field_data.value if hasattr(field_data, "value") else None
+            print(f"{field_name}: {value}")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-ai-contentunderstanding</code> sonra <code>python create_analyzer.py</code>, ardından <code>python analyze_content.py</code>. Kaynak kod: <a href="https://github.com/MicrosoftLearning/mslearn-ai-information-extraction" target="_blank">github.com/MicrosoftLearning/mslearn-ai-information-extraction</a></p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Azure Content Understanding API'sini kullanmak için hangi yapılandırma değerlerine ihtiyacın var?</summary>
+        <div class="a"><strong>Foundry kaynağının endpoint'i ve key'i.</strong> Kaynak grubu adı ya da abonelik/tenant ID değil.</div>
+      </details>
+      <details class="qa">
+        <summary>İçerikten alan çıkarmak için analyze metodunu çağırırken ne belirtmelisin?</summary>
+        <div class="a"><strong>Analyzer'ın adı (analyzer_id).</strong> Foundry kaynağının adı ya da analyzer oluşturulurken dönen Operation-Location değeri değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Çıkarılan alanlar nasıl döner?</summary>
+        <div class="a"><strong>Tip-özel (type-specific) değerler olarak</strong> — ör. <code>value_string</code>, <code>value_array</code>. String listesi ya da tek bir blob olarak değil.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What configuration values are needed to use the Azure Content Understanding API?</div>
+          <div class="quiz-opt">The name of the resource group where the Azure service is deployed.</div>
+          <div class="quiz-opt">The Azure subscription ID and tenant ID.</div>
+          <div class="quiz-opt correct">The endpoint and key for the Foundry resource.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">What must be specified when calling the analyze method to extract fields from content?</div>
+          <div class="quiz-opt">The name of the Foundry resource</div>
+          <div class="quiz-opt correct">The name of the analyzer.</div>
+          <div class="quiz-opt">The Operation-Location returned when the analyzer was created.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">How are the extracted fields returned?</div>
+          <div class="quiz-opt correct">As type-specific values.</div>
+          <div class="quiz-opt">As a list of strings.</div>
+          <div class="quiz-opt">As a single blob.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/analyze-content-ai-api/" target="_blank">learn.microsoft.com — Create an Azure Content Understanding client application</a></p>
+    </section>
+
+    <!-- MODULE 7 -->
+    <section class="section" id="m7">
+      <div class="eyebrow">Modül 07 / 08</div>
+      <h1>Extract data with Azure Document Intelligence<span class="sub">Fatura, makbuz, kimlik gibi belgelerden OCR + derin öğrenme ile yapılandırılmış veri çıkarma.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Content Understanding'in (Modül 4-6) daha genel/multimodal yaklaşımından farklı olarak, <strong>Document Intelligence</strong> özellikle <strong>belgeler</strong> için optimize edilmiş, daha eski ve olgun bir Azure servisidir. OCR ve derin öğrenmeyi birleştirerek metni, tabloları, anahtar-değer çiftlerini ve <strong>sayfadaki uzamsal ilişkileri</strong> (spatial relationships) korur.</p>
+
+      <div class="diagram">Input Document        Azure Document          Structured JSON
+(PDF, JPEG, PNG,   →    Intelligence       →    Text, tables, pairs,
+ BMP, veya TIFF)                                bounding boxes</div>
+
+      <h3>3 model kategorisi</h3>
+      <table>
+        <tr><th>Kategori</th><th>Ne için</th></tr>
+        <tr><td><strong>Document Analysis Models</strong></td><td>Herhangi bir belgeden genel metin/yapı çıkarma (Read, Layout)</td></tr>
+        <tr><td><strong>Prebuilt Models</strong></td><td>Fatura, makbuz, vergi formu, kimlik kartı gibi standart belgeler — eğitim gerekmez, hazır sonuç</td></tr>
+        <tr><td><strong>Custom Models</strong></td><td>Kendi işine özgü, benzersiz form/belge yapıların için kendi etiketlediğin verilerle eğitilir</td></tr>
+      </table>
+
+      <h3>2 temel model: Read ve Layout</h3>
+      <div class="grid2">
+        <div class="term"><span class="en">Read Model</span><span class="tr">Metin çıkarımı, basılı & el yazısı ayrımı, dil algılama</span></div>
+        <div class="term"><span class="en">Layout Model</span><span class="tr">Read'deki her şey + tablo çıkarma, seçim işaretleri (checkbox), birleşik hücreli karmaşık tablolar, belge yapı analizi</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0">Farklı formatlardaki bir belge grubundan <strong>metin ve tablo yapısını çıkarmak</strong> istiyorsun ama belirli etiketli alanlara ihtiyacın yok — bu senaryoda <strong>Layout model</strong> doğru seçimdir (Read değil, çünkü Layout tabloları da kapsar; invoice model değil, çünkü belirli alan etiketleri gerektirmiyorsun).</p>
+      </div>
+
+      <h3>Prebuilt vs Custom — ne zaman hangisi?</h3>
+      <table>
+        <tr><th></th><th>Prebuilt</th><th>Custom</th></tr>
+        <tr><td>Kapsam</td><td>Fatura, makbuz, kimlik, ipotek belgeleri gibi standart tipler</td><td>Sektöre özgü formlar, benzersiz düzenler/alanlar</td></tr>
+        <tr><td>Eğitim verisi</td><td>Gerekmez</td><td>Etiketlenmiş eğitim verisi gerektirir</td></tr>
+        <tr><td>Doğruluk</td><td>Genel amaçlı, iyi</td><td>Niş belgeler için daha yüksek doğruluk</td></tr>
+      </table>
+
+      <h3>Custom model eğitim akışı</h3>
+      <div class="diagram">1) Label Samples          2) Store in Blob         3) Generate SAS       4) Build Model
+   En az 5-6 form,           Etiketli dosyaları       Storage container      Build model API'sini
+   her biri için                Azure Blob                için bir SAS         çağır, ya da
+   ocr.json + labels.json      Storage'a yükle           URL oluştur          Document Intelligence
+   + fields.json                                                              Studio'yu kullan</div>
+
+      <h3>Composed model / classifier — birden fazla belge tipini yönetme</h3>
+      <p>Bir şirket hem fatura hem makbuz işliyor ve <strong>her belgeyi doğru çıkarım modeline otomatik yönlendiren tek bir endpoint</strong> istiyor: doğru çözüm, <strong>composed model veya custom classifier'ı çıkarım modelleriyle eşleştirmektir</strong> — sadece bir custom neural model veya sadece prebuilt read model yeterli değildir (bunlar sınıflandırma/yönlendirme yapmaz).</p>
+
+      <h2>💻 Çalışır kod: Prebuilt model ile belge analizi</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">document_analysis.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.documentintelligence import DocumentIntelligenceClient
+
+load_dotenv()
+client = DocumentIntelligenceClient(
+    endpoint=os.environ["DOCUMENTINTELLIGENCE_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["DOCUMENTINTELLIGENCE_KEY"]),
+)
+
+with open("sample-invoice.pdf", "rb") as f:
+    poller = client.begin_analyze_document(
+        model_id="prebuilt-invoice",   # ya da "prebuilt-layout", "prebuilt-read"
+        body=f,
+    )
+
+result = poller.result()
+
+for document in result.documents:
+    vendor = document.fields.get("VendorName")
+    if vendor:
+        print(f"Satıcı: {vendor.value_string} (güven: {vendor.confidence:.2f})")
+
+    total = document.fields.get("InvoiceTotal")
+    if total:
+        print(f"Toplam: {total.value_currency.amount} {total.value_currency.currency_code} "
+              f"(güven: {total.confidence:.2f})")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-ai-documentintelligence</code> sonra <code>python document_analysis.py</code></p>
+
+      <h2>💻 Çalışır kod: Custom model eğitim işi başlatma</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">build_custom_model.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.documentintelligence import DocumentIntelligenceAdministrationClient
+from azure.ai.documentintelligence.models import BuildDocumentModelRequest, AzureBlobContentSource
+
+load_dotenv()
+admin_client = DocumentIntelligenceAdministrationClient(
+    endpoint=os.environ["DOCUMENTINTELLIGENCE_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["DOCUMENTINTELLIGENCE_KEY"]),
+)
+
+# Blob container'ında en az 5-6 form + her biri için ocr.json/labels.json
+# olması gerekir; fields.json da container kökünde bulunmalı.
+poller = admin_client.begin_build_document_model(
+    BuildDocumentModelRequest(
+        model_id="ozel-siparis-formu-v1",
+        build_mode="template",
+        azure_blob_source=AzureBlobContentSource(
+            container_url="https://STORAGE.blob.core.windows.net/forms?SAS-TOKEN",
+        ),
+    )
+)
+model = poller.result()
+print(f"Model oluşturuldu: {model.model_id}, doğruluk: {model.doc_types}")</code></pre>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Formatları farklı olan belgelerden metin ve tablo yapısı çıkarman gerekiyor, belirli etiketli alanlara ihtiyacın yok — hangi modeli kullanırsın?</summary>
+        <div class="a"><strong>Layout model.</strong> Read model tabloları kapsamaz; invoice model belirli önceden tanımlı alanlar için tasarlanmıştır, genel/değişken belgeler için değil.</div>
+      </details>
+      <details class="qa">
+        <summary>REST API ile custom model eğitirken hangi eğitim materyalleri gereklidir?</summary>
+        <div class="a">Blob container'da örnek form belgeleriyle birlikte <strong><code>ocr.json</code>, <code>labels.json</code> ve <code>fields.json</code> dosyaları.</strong> Sadece örnek formlar yeterli değildir; 100 etiketli form + eğitilmiş bir sınıflandırıcı da bu senaryonun asgari gereksinimi değildir.</div>
+      </details>
+      <details class="qa">
+        <summary>Bir şirket hem fatura hem makbuz işliyor ve her belgeyi doğru modele yönlendiren tek bir endpoint istiyor — ne kullanmalı?</summary>
+        <div class="a"><strong>Bir composed model veya çıkarım modelleriyle eşleştirilmiş bir custom classifier.</strong> Tek başına custom neural model veya prebuilt read model, otomatik yönlendirme/sınıflandırma yapmaz.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">You need to extract text and table structure from a set of documents that have varying formats. You don't need to identify specific labeled fields. Which Document Intelligence model should you use?</div>
+          <div class="quiz-opt">The read model.</div>
+          <div class="quiz-opt correct">The layout model</div>
+          <div class="quiz-opt">The invoice model</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">You're building a custom model in Azure Document Intelligence. What training artifacts are required when training with the REST API?</div>
+          <div class="quiz-opt">Only the sample form documents in a blob container.</div>
+          <div class="quiz-opt correct">Sample forms along with ocr.json, labels.json, and fields.json files in a blob container.</div>
+          <div class="quiz-opt">A minimum of 100 labeled forms and a trained classifier</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">A company processes both invoices and receipts. They want a single endpoint that routes each document to the correct extraction model. What should they use?</div>
+          <div class="quiz-opt">A custom neural model.</div>
+          <div class="quiz-opt">A prebuilt read model.</div>
+          <div class="quiz-opt correct">A composed model or a custom classifier paired with extraction models.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/extract-data-with-document-intelligence/" target="_blank">learn.microsoft.com — Extract data with Azure Document Intelligence</a></p>
+    </section>
+
+    <!-- MODULE 8 -->
+    <section class="section" id="m8">
+      <div class="eyebrow">Modül 08 / 08</div>
+      <h1>Create a knowledge mining solution with Azure AI Search<span class="sub">Kursun kapanışı — önceki modüllerde çıkardığın tüm veriyi ARANABİLİR hale getirme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modül 1-7'de görsellerden, belgelerden, videolardan bilgi çıkarmayı öğrendin. Bu son modül şunu soruyor: <strong>bu çıkarılan bilgiyi nasıl arattırırım?</strong> Cevap: <strong>Azure AI Search</strong> — bulut tabanlı, akıllı bilgi erişimi ve bilgi madenciliği (knowledge mining) servisi.</p>
+
+      <div class="diagram">Extract              Enrich                Explore
+──────               ──────                ───────
+Farklı veri          Verine AI destekli    Hassas ve hızlı
+kaynaklarından        içgörüler ekle         şekilde ara, keşfet
+içerik çek</div>
+
+      <h3>Indexer nedir?</h3>
+      <p>Herhangi bir şeyi aratabilmen için önce <strong>indekslemen</strong> gerekir. Azure AI Search'te bu iş <strong>indexer</strong>'a aittir:</p>
+      <div class="diagram">Connects to        Extracts &amp;         Builds a
+data sources   →   enriches content →  searchable index</div>
+
+      <h3>Skillset — AI ile zenginleştirme</h3>
+      <p>Bir indexer, ham veriyi çekmenin ötesine geçip <strong>AI skills</strong> ile veriyi zenginleştirebilir (OCR, entity recognition, key phrase extraction, çeviri, duygu analizi). Bu yerleşik AI becerilerini destekleyen servis: <strong>Foundry Tools</strong> (Azure Cosmos DB veya sadece Azure Functions değil — bunlar AI skill sağlayıcısı değildir).</p>
+
+      <h3>Field Mapping (alan eşleme)</h3>
+      <p>Pipeline'ın sonunda, indexer zenginleştirilmiş alanları arama indeksine eşler:</p>
+      <ul>
+        <li><strong>Otomatik eşleme</strong> — kaynak alan adı, indeks alan adıyla aynıysa (ör. <code>title</code> → <code>title</code>) otomatik eşleşir.</li>
+        <li><strong>Özel eşleme</strong> — bir alanı yeniden adlandırmak veya değerini dönüştürmek istediğinde kendin tanımlarsın (ör. <code>img_text</code> → <code>imageText</code>).</li>
+      </ul>
+
+      <h3>Knowledge Store nedir?</h3>
+      <p>Bir <strong>knowledge store</strong>, indeksleme pipeline'ından gelen zenginleştirilmiş veriyi, <strong>arama indeksinin ötesinde ek formatlarda</strong> saklar (Azure Storage'da). Skillset içinde <strong>projections</strong> (izdüşümler) olarak tanımlanır ve indexer her çalıştığında yazılır.</p>
+      <table>
+        <tr><th>Projection tipi</th><th>Sonuç</th></tr>
+        <tr><td><strong>File</strong></td><td>Görsel/dosya tabanlı çıktı (ör. kırpılmış görsel)</td></tr>
+        <tr><td><strong>Object</strong></td><td>JSON belge koleksiyonu (ör. Cosmos DB'ye benzer)</td></tr>
+        <tr><td><strong>Table</strong></td><td><strong>İlişkisel (relational) veri şeması</strong> — Azure Table Storage'a satır/sütun olarak yazılır</td></tr>
+      </table>
+
+      <h2>💻 Çalışır kod: Data source → skillset → indexer → knowledge store</h2>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">bilgi_madenciligi.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
+from azure.search.documents.indexes.models import (
+    SearchIndex, SimpleField, SearchableField, SearchFieldDataType,
+    SearchIndexerDataSourceConnection, SearchIndexerSkillset,
+    EntityRecognitionSkill, InputFieldMappingEntry, OutputFieldMappingEntry,
+    SearchIndexer, FieldMapping,
+    SearchIndexerKnowledgeStore, SearchIndexerKnowledgeStoreTableProjectionSelector,
+    SearchIndexerKnowledgeStoreProjection,
+)
+
+load_dotenv()
+endpoint = os.environ["SEARCH_ENDPOINT"]
+credential = AzureKeyCredential(os.environ["SEARCH_API_KEY"])
+
+index_client = SearchIndexClient(endpoint, credential)
+indexer_client = SearchIndexerClient(endpoint, credential)
+
+# 1) Arama indeksini oluştur
+index = SearchIndex(
+    name="belge-index",
+    fields=[
+        SimpleField(name="metadata_storage_path", type=SearchFieldDataType.String, key=True),
+        SearchableField(name="content", type=SearchFieldDataType.String),
+        SearchableField(name="organizations", type=SearchFieldDataType.Collection(SearchFieldDataType.String)),
+    ],
+)
+index_client.create_or_update_index(index)
+
+# 2) Veri kaynağını tanımla (Extract)
+data_source = SearchIndexerDataSourceConnection(
+    name="belge-kaynagi",
+    type="azureblob",
+    connection_string=os.environ["STORAGE_CONNECTION_STRING"],
+    container={"name": "belgeler"},
+)
+indexer_client.create_or_update_data_source_connection(data_source)
+
+# 3) Skillset ile AI zenginleştirmesi ekle (Enrich) — Foundry Tools destekli built-in skill
+skillset = SearchIndexerSkillset(
+    name="zenginlestirme-skillset",
+    skills=[
+        EntityRecognitionSkill(
+            inputs=[InputFieldMappingEntry(name="text", source="/document/content")],
+            outputs=[OutputFieldMappingEntry(name="organizations", target_name="organizations")],
+        )
+    ],
+    # Knowledge store: zenginleştirilmiş veriyi indeksin ötesinde de sakla
+    knowledge_store=SearchIndexerKnowledgeStore(
+        storage_connection_string=os.environ["STORAGE_CONNECTION_STRING"],
+        projections=[
+            SearchIndexerKnowledgeStoreProjection(
+                tables=[
+                    SearchIndexerKnowledgeStoreTableProjectionSelector(
+                        table_name="Organizasyonlar",
+                        generated_key_name="orgId",
+                        source="/document/organizations/*",
+                    )
+                ]
+            )
+        ],
+    ),
+)
+indexer_client.create_or_update_skillset(skillset)
+
+# 4) Indexer'ı oluştur ve çalıştır (Explore için hazır hale getirir)
+indexer = SearchIndexer(
+    name="belge-indexer",
+    data_source_name="belge-kaynagi",
+    target_index_name="belge-index",
+    skillset_name="zenginlestirme-skillset",
+    field_mappings=[
+        FieldMapping(source_field_name="metadata_storage_path", target_field_name="metadata_storage_path"),
+    ],
+)
+indexer_client.create_or_update_indexer(indexer)
+print("Indexer oluşturuldu ve çalışmaya başladı.")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>pip install azure-search-documents</code> sonra <code>python bilgi_madenciligi.py</code></p>
+
+      <div class="card tip">
+        <div class="card-label">Bu kodu Modül 1-7 ile birleştirirsen</div>
+        <p style="margin:0">Gerçek bir "bilgi madenciliği" çözümünde, Content Understanding (Modül 4-6) veya Document Intelligence (Modül 7) ile çıkardığın yapılandırılmış veriyi <strong>skillset'e özel bir "skill" olarak</strong> ekleyebilir, sonucu bu indexer pipeline'ına dahil edebilirsin — bu kurs, aslında sana bu 8 parçayı birbirine bağlayabileceğin bir araç kutusu veriyor.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Bir Azure AI Search çözümünde, bir indeksi doldurmak için veriyi çıkarıp zenginleştirmek üzere hangi bileşen zamanlanır (scheduled)?</summary>
+        <div class="a"><strong>Indexer.</strong> Projection (izdüşüm) knowledge store'un bir parçasıdır, veri çekmez; query ise arama yapmak içindir, indeksleme değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Azure AI Search'te yerleşik AI skill'lerini hangi servis destekler?</summary>
+        <div class="a"><strong>Foundry Tools.</strong> Azure Functions (kendi custom skill'lerini barındırmak için kullanılabilir ama yerleşik skill sağlayıcısı değildir) veya Azure Cosmos DB değil.</div>
+      </details>
+      <details class="qa">
+        <summary>Hangi projection tipi, çıkarılan alanlar için ilişkisel (relational) bir veri şeması oluşturur?</summary>
+        <div class="a"><strong>Table.</strong> File görsel/dosya çıktısı, Object ise JSON belge koleksiyonu üretir — ikisi de satır/sütun ilişkisel yapı değildir.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which component of an Azure AI Search solution is scheduled to extract and enrich data to populate an index?</div>
+          <div class="quiz-opt correct">Indexer</div>
+          <div class="quiz-opt">Projection</div>
+          <div class="quiz-opt">Query</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which service supports built-in AI skills in Azure AI Search?</div>
+          <div class="quiz-opt">Azure Functions</div>
+          <div class="quiz-opt correct">Foundry Tools</div>
+          <div class="quiz-opt">Azure Cosmos DB</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which kind of projection results in a relational data schema for extracted fields?</div>
+          <div class="quiz-opt">File</div>
+          <div class="quiz-opt">Object</div>
+          <div class="quiz-opt correct">Table</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/ai-knowldge-mining/" target="_blank">learn.microsoft.com — Create a knowledge mining solution with Azure AI Search</a></p>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="section" id="ozet">
+      <div class="eyebrow">Kapanış</div>
+      <h1>Sınav öncesi hızlı tekrar tablosu<span class="sub">8 modülü tek sayfada, en kritik ayrımlarla özetleyen tablo.</span></h1>
+
+      <table>
+        <tr><th>Modül</th><th>Tek cümlelik özet</th><th>En kritik ayrım</th></tr>
+        <tr><td>1. Vision chat</td><td>Multimodal modele multi-part prompt (metin+görsel) gönderme</td><td>URL vs base64 görsel gönderimi</td></tr>
+        <tr><td>2. Görsel üretme</td><td>gpt-image / FLUX ile metinden görsel</td><td>Çıktı her zaman base64 (b64_json), URL değil</td></tr>
+        <tr><td>3. Video üretme</td><td>Sora 2: gönder → sorgula → indir → remix</td><td>Asenkron iş akışı, referans görsel boyut eşleşmesi</td></tr>
+        <tr><td>4. Content Understanding (resim)</td><td>Schema tanımla → AI analiz eder → yapılandırılmış çıktı</td><td>Grounding = izlenebilirlik, confidence = güvenilirlik</td></tr>
+        <tr><td>5. Multimodal analiz (genel)</td><td>Belge+resim+ses+video, hepsi aynı analyzer mantığıyla</td><td>Content Understanding Studio = doğru araç</td></tr>
+        <tr><td>6. CU istemci uygulaması</td><td>SDK (otomatik polling) vs REST (manuel polling)</td><td>endpoint+key, analyzer adıyla çağrı</td></tr>
+        <tr><td>7. Document Intelligence</td><td>Read/Layout/Prebuilt/Custom modeller</td><td>Layout = tablo+yapı; Custom = ocr/labels/fields.json</td></tr>
+        <tr><td>8. AI Search bilgi madenciliği</td><td>Extract → Enrich → Explore; indexer/skillset/knowledge store</td><td>Table projection = ilişkisel şema</td></tr>
+      </table>
+
+      <div class="card tip">
+        <div class="card-label">Şimdi ne yapalım?</div>
+        <p style="margin:0">Bana hangi modülde hâlâ kafanın karıştığını söyle — özellikle Modül 4/5/6'nın (Content Understanding'in üç farklı açısı: tek resim → tüm modaliteler → kod ile entegrasyon) birbirinden nasıl ayrıldığı, ya da Modül 7'deki custom model eğitim akışı sınavda en çok karıştırılan yerler. İstersen bir kod örneğini kendi Azure kaynağınla dene, ya da quiz sorularından birini birlikte gözden geçirelim.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function copyCode(btn){
+  var pre = btn.closest('.code-block').querySelector('pre code');
+  var text = pre ? pre.innerText : '';
+  navigator.clipboard.writeText(text).then(function(){
+    var original = btn.textContent;
+    btn.textContent = 'Kopyalandı ✓';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1600);
+  });
+}
+document.querySelectorAll('.nav-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+    item.classList.add('active');
+    document.getElementById(item.dataset.target).classList.add('active');
+    document.querySelector('.main').scrollTo(0,0);
+    window.scrollTo(0,0);
+  });
+});
+document.querySelector('.nav-item[data-target="giris"]').classList.add('active');
+</script>
+</body>
+</html>

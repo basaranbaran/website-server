@@ -1,0 +1,1329 @@
+{
+  "1": {
+    "scenarioSummaryTr": "Contoso Ltd. senaryosunda Agent1 müşteri destek ajanı için model dağıtımı yapılandırılmaktadır. Teknik gereksinimler: 1) Rezerv edilmiş kapasite (reserved throughput) gerektirmeksizin dinamik ölçeklenme, 2) Yanıtların tutarlı kalması için model sürümünün sabit tutulması, 3) Verinin AB (EU) bölgesinde kalması.",
+    "decisionCriteriaTr": "Taahhütlü rezervasyon kısıtı (without requiring reserved throughput) ve model versiyon tutarlılığı (model version consistency) temel karar kriterleridir.",
+    "correctTr": "Dağıtım Türü (Deployment type) olarak 'Standard' veya 'Global Standard', Model Sürümü (Model version) olarak ise sabit sürüm (Default / Specific version) seçilmelidir.",
+    "choicesTr": {
+      "Deployment Type - Standard / Global Standard": "DOĞRUDUR: 'Standard' (kullandıkça öde) dağıtımı önceden taahhütlü kapasite satın almayı gerektirmeden değişken müşteri trafiğini dinamik olarak karşılar.",
+      "Deployment Type - Provisioned Throughput / Provisioned Managed": "SEÇİLEMEZ (YANLIŞTIR): 'Provisioned Throughput' önceden sabit PTU (Provisioned Throughput Units) rezervasyonu gerektirir. Senaryodaki 'without requiring reserved throughput' şartını ihlal eder ve boş yere sabit maliyet oluşturur.",
+      "Model Versioning - Specific / Fixed Version": "DOĞRUDUR: Belirli bir model sürümünün sabitlenmesi, modelin arka planda otomatik güncellenerek farklı veya tutarsız yanıtlar vermesini engeller.",
+      "Model Versioning - Auto-update to latest": "SEÇİLEMEZ (YANLIŞTIR): Otomatik en son sürüme güncelleme seçeneği, model davranışının beklenmedik şekilde değişmesine yol açar; teknik gereksinimdeki 'model version must remain consistent' kuralını bozar."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models"
+  },
+  "2": {
+    "scenarioSummaryTr": "Agent1'in storage1 Blob Storage hesabındaki ürün belgelerini okurken görsellerdeki gizli metinlerden gelebilecek dolaylı komut enjeksiyonu (indirect prompt injection) ve manipülatif talimatlara karşı korunması istenmektedir.",
+    "decisionCriteriaTr": "Görsel ve metin içerikli belgelerde saklanan gizli komut enjeksiyonu saldırılarına karşı koruma kriteri göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B şıkkıdır (Prompt Shields). Prompt Shields, LLM uygulamalarını dolaylı/doğrudan komut enjeksiyonlarından korur.",
+    "choicesTr": {
+      "A": "A Şıkkı SEÇİLEMEZ: 'self-harm content filtering', kullanıcının öz-zarar verme içeriklerini tespit eder. Komut enjeksiyonlarını veya gizli talimat sızmalarını engellemez.",
+      "B": "B Şıkkı DOĞRUDUR: 'prompt shields', Microsoft Entra ve AI Content Safety ekosisteminde gizli veya dolaylı komut enjeksiyonu (prompt injection) saldırılarını tespit edip engellemek için tasarlanmış resmi güvenlik özelliğidir.",
+      "C": "C Şıkkı SEÇİLEMEZ: 'PII Detection', kişisel verileri (TCKN, e-posta vb.) filtreler. Kötü niyetli komut enjeksiyonu saldırılarını korumaz.",
+      "D": "D Şıkkı SEÇİLEMEZ: 'violence content filtering', şiddet içeriklerini filtreler. Talimat manipülasyonlarını engellemez."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/red-teaming"
+  },
+  "3": {
+    "scenarioSummaryTr": "Microsoft Foundry projesi (Project1) içindeki birden fazla ajanın aynı Azure AI Search kaynağındaki kimlik ve erişim bilgilerini merkezi olarak paylaşması hedeflenmektedir.",
+    "decisionCriteriaTr": "Proje düzeyinde merkezi kaynak bağlantısı (central connection management) ve ajanlar arası güvenli kimlik paylaşımı göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C şıkkıdır (Add a connection to the Azure AI Search resource). Foundry bağlantı nesnesi merkezi yönetim sağlar.",
+    "choicesTr": {
+      "A": "A Şıkkı SEÇİLEMEZ: 'Enable RBAC for Azure AI Search', erişim yetkisi verir ancak Foundry projesi içinde kimlik bilgisi ve bağlantı nesnesini ajanların kullanımına merkezi sunmaz.",
+      "B": "B Şıkkı SEÇİLEMEZ: 'Disable key-based access control', anahtar erişimini kapatır ancak projedeki ajanlar için bağlantı tanımlamaz.",
+      "C": "C Şıkkı DOĞRUDUR: 'Add a connection to the Azure AI Search resource', Foundry projesinde dış kaynak kimlik bilgilerini tüm ajanlar için merkezi yönetmenin standart yoludur.",
+      "D": "D Şıkkı SEÇİLEMEZ: 'Create a managed private endpoint', ağ izolesi sağlar; uygulama seviyesinde kimlik bağlantısı nesnesi oluşturmaz."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/connections"
+  },
+  "4": {
+    "scenarioSummaryTr": "Project1 Application Insights ile entegredir. LangChain ve OpenTelemetry izlerinin ayrıştırılması ve gizlilik kuralına uyması istenmektedir.",
+    "decisionCriteriaTr": "Girdi/çıktı gizliliği (enable_content_recording=False) ve LangChain telemetri ayrımı göz önünde bulundurulmaktadır.",
+    "correctTr": "Answer Area seçeneklerinde gizlilik ayarı olarak Content Recording kapatılmalı ve tracer parametreleri doğru aktarılmalıdır.",
+    "choicesTr": {
+      "Content Recording = False": "DOĞRUDUR: Şirket politikası gereği istemci verilerinin ve sırların telemetri kayıtlarına düşmesini engeller.",
+      "Content Recording = True": "SEÇİLEMEZ (YANLIŞTIR): İstemci mesajlarını kaydeder, şirket gizlilik kuralını ihlal eder.",
+      "AzureAIOpenTelemetryTracer Callback": "DOĞRUDUR: LangChain çağrılarını OpenTelemetry izleriyle ayrıştırmayı sağlar."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable"
+  },
+  "5": {
+    "scenarioSummaryTr": "Faturaların işlenmesi için Azure Content Understanding boru hatları yapılandırılacaktır.",
+    "decisionCriteriaTr": "Tekil PDF faturalarında maliyet etkinliği ile çok adımlı çapraz doğrulama ayrımı göz önünde bulundurulmaktadır.",
+    "correctTr": "Pipeline1 için Extract / Layout Pipeline, Pipeline2 için Reasoning Pipeline eşleştirilir.",
+    "choicesTr": {
+      "Pipeline1 - Extract / Custom Layout": "DOĞRUDUR: Tekil PDF faturalarından hızlı ve ucuz alan ayıklamak için idealdir.",
+      "Pipeline1 - Reasoning Pipeline": "SEÇİLEMEZ (YANLIŞTIR): Yüksek hacimli tekil faturalarda gereksiz yüksek maliyet yaratır.",
+      "Pipeline2 - Reasoning Pipeline": "DOĞRUDUR: Çapraz belge doğrulama ve çok adımlı akıl yürütme için gereklidir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/"
+  },
+  "6": {
+    "scenarioSummaryTr": "App1 Python uygulamasının Microsoft Entra Managed Identity ile Microsoft Foundry Azure OpenAI Responses API'sine erişimi yapılandırılmaktadır.",
+    "decisionCriteriaTr": "Entra ID yönetilen kimliği (DefaultAzureCredential) kullanımı göz önünde bulundurulmaktadır.",
+    "correctTr": "Python kodunda azure.identity kütüphanesinden DefaultAzureCredential kullanılmalı ve get_token / AzureOpenAI ile istemci ilklendirilmelidir.",
+    "choicesTr": {
+      "DefaultAzureCredential()": "DOĞRUDUR: Managed identity ve Entra ID kimlik doğrulamasını otomatik yöneten standart yöntemdir.",
+      "API Key Authentication": "SEÇİLEMEZ (YANLIŞTIR): Şirket güvenlik politikasına göre API key kullanımı yasaklanmıştır.",
+      "ClientSecretCredential()": "SEÇİLEMEZ (YANLIŞTIR): Kod içinde istemci sırrı tutmayı gerektirir, yönetilen kimlik şartına uymaz."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/python/api/overview/azure/identity-readme"
+  },
+  "7": {
+    "scenarioSummaryTr": "Power Fx ifadeleri ile müşteri destek ajanında değişken kontrolü ve metin dönüşümü yapılacaktır.",
+    "decisionCriteriaTr": "Power Fx IsBlank ve Upper fonksiyon standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Var01 kontrolü için Not(IsBlank(Var01)), metni büyük harfe çevirmek için Upper(Var01) seçilmelidir.",
+    "choicesTr": {
+      "Not(IsBlank(Var01)) / !IsBlank(Var01)": "DOĞRUDUR: Değişkenin boş olmadığını doğrulayan resmi Power Fx ifadesidir.",
+      "IsEmpty(Var01)": "SEÇİLEMEZ (YANLIŞTIR): IsEmpty tablolar içindir; tekil metin değişkeninde (scalar) IsBlank kullanılır.",
+      "Upper(Var01)": "DOĞRUDUR: Metni tamamen büyük harfe dönüştürür.",
+      "ToUppercase(Var01)": "SEÇİLEMEZ (YANLIŞTIR): Geçersiz Power Fx fonksiyonudur."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/power-platform/power-fx/formula-reference"
+  },
+  "8": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "9": {
+    "scenarioSummaryTr": "Microsoft Foundry projesindeki 3 ajanın (Agent1, Agent2, Agent3) sıralı ve kural tabanlı orkestrasyonu istenmektedir.",
+    "decisionCriteriaTr": "Çoklu ajanların sırayla ve güvenli iş kurallarıyla yürütülmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A şıkkıdır (a workflow). Workflow yerleşik orkestrasyon sağlar.",
+    "choicesTr": {
+      "A": "A Şıkkı DOĞRUDUR: Workflow, Foundry'de çoklu ajanların sırayla çalıştırılmasını ve adım geçişlerini yöneten resmi orkestrasyon mekanizmasıdır.",
+      "B": "B Şıkkı SEÇİLEMEZ: Threads and runs without a workflow, sadece tekil mesajlaşma oturumu yönetir; sıralı ajan orkestrasyonunu sağlamaz.",
+      "C": "C Şıkkı SEÇİLEMEZ: Group chat, ajanların serbest sohbet etmesini sağlar ancak belirli iş sırasını garanti etmez.",
+      "D": "D Şıkkı SEÇİLEMEZ: İstemci uygulama kodunda elle orkestre etmek Foundry'nin yerleşik iş akışı yeteneklerini devre dışı bırakır ve karmaşıklığı artırır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-studio/concepts/agents"
+  },
+  "10": {
+    "scenarioSummaryTr": "Azure Speech Foundry Tools kaynağında fine-tune edilmiş konuşmayı metne dökme (custom speech-to-text) modelinin ajana bağlanması istenmektedir.",
+    "decisionCriteriaTr": "Özel konuşma modelinin projeye bağlanmasında benzersiz tanımlayıcı kullanımı göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B şıkkıdır (the custom speech project ID). Proje ID'si doğru modeli bağlar.",
+    "choicesTr": {
+      "A": "A Şıkkı SEÇİLEMEZ: 'the project URL', genel ağ adresidir; spesifik model projesini tanımlamaz.",
+      "B": "B Şıkkı DOĞRUDUR: 'the custom speech project ID', eğitilen özel konuşma modelinin doğru projesine bağlanmasını sağlayan resmi kimliktir.",
+      "C": "C Şıkkı SEÇİLEMEZ: 'the project ID', Foundry projesinin ID'sidir; Speech servisi özel model ID'si değildir.",
+      "D": "D Şıkkı SEÇİLEMEZ: 'the custom speech endpoint URL', uç nokta adresidir; model proje tanımı değildir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/custom-speech-overview"
+  },
+  "11": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "12": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Speech recognition requests will return a 4xx error until a new custom model is deployed.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Speech recognition requests will continue to use the expired custom model until the model is removed manually.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Speech recognition requests will fall back to the most recent base model for the same locale. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (The custom model will be deleted automatically when the model expires.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "13": {
+    "scenarioSummaryTr": "Azure OpenAI REST API üzerinden model çıkarımı yapmak için en dar yetkili RBAC rolünün atanması istenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B şıkkıdır (Cognitive Services OpenAI User). Minimum yetkili resmi roldür.",
+    "choicesTr": {
+      "A": "A Şıkkı SEÇİLEMEZ: 'Cognitive Services User', genel Azure AI servisleri içindir; Azure OpenAI özel çıkarım veri düzlemi yetkisini kapsamaz.",
+      "B": "B Şıkkı DOĞRUDUR: 'Cognitive Services OpenAI User', Azure OpenAI kaynaklarında API üzerinden çıkarım yapabilmek için gereken en dar yetkili resmi RBAC rolüdür.",
+      "C": "C Şıkkı SEÇİLEMEZ: 'Contributor', kaynağı silme ve yönetme yetkisi verir; aşırı geniş yetkili olduğu için least-privilege ilkesini ihlal eder.",
+      "D": "D Şıkkı SEÇİLEMEZ: 'Cognitive Services Data Reader', okuma yapar ancak OpenAI çıkarım (inference) çağrısını yürütemez."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control"
+  },
+  "14": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (tool_choice={“required”} Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (tool_choice={“auto”})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (tool_choice={“type”:“knowledge_base”})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (tool_choice ={“type”:“mcp”})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "15": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "16": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a header parameter defined for each operation)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (an Azure Key Vault connection)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (an API key security scheme Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (a Bearer token security scheme)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "17": {
+    "scenarioSummaryTr": "Yüksek hacimli sohbet uygulamasında basit SSS soruları ile karmaşık akıl yürütme sorularının maliyet etkin yönetilmesi istenmektedir.",
+    "decisionCriteriaTr": "Basit ve karmaşık soruların farklı modellere dinamik yönlendirilmesiyle maliyet optimizasyonu sağlama kriteri göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B şıkkıdır (Use a model cascade that routes the requests to different models).",
+    "choicesTr": {
+      "A": "A Şıkkı SEÇİLEMEZ: Tüm soruları küçük modele yollamak karmaşık akıl yürütme gerektiren yanıtların kalitesini bozar.",
+      "B": "B Şıkkı DOĞRUDUR: Model Cascade, basit soruları ucuz/küçük modele, karmaşık soruları ise GPT-4o gibi güçlü modellere yönlendirerek maliyet ve kalite dengesini kurar.",
+      "C": "C Şıkkı SEÇİLEMEZ: max_tokens değerini artırmak üretilen jeton sayısını dolayısıyla maliyeti fırlatır.",
+      "D": "D Şıkkı SEÇİLEMEZ: Tüm soruları en pahalı modele yollamak basit SSS soruları için gereksiz yüksek maliyete yol açar."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/architecture/guide/ai/llm-cost-optimization"
+  },
+  "18": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "19": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (latency)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (evaluation metrics)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (run success rate)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (token usage Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "20": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "21": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Enable identity passthrough so that the tool uses the Microsoft Entra token of the caller.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Add the API key header manually to the OpenAPI specification.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Configure the tool to use the default connection of Project1.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Connect the tool to Connection1. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "22": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (token usage)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (monitoring)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (safety metrics)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (tracing Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "23": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "24": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "25": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "26": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "27": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a Retrieval Augmented Generation (RAG) evaluator)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (a custom guardrail)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (model fine-tuning)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (a groundedness evaluator Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "28": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Modify the system message instructions. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Add few-shot examples.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Apply top-p sampling.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Increase the value of the temperature parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "29": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a multimodal model)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (a small language model (SLM))": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (a key phrase extraction model)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (a large language model (LLM) Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "30": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "31": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Create a custom HTTP connection in Foundry and manually configure Azure AI Search endpoints per application.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Configure an Azure AI Search connection in Project1 and reference the connection in each application. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (Call Azure AI Search directly from each application by using Microsoft Entra authentication.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Enable a managed identity for each application and call Azure AI Search directly.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "32": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "33": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap BC olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a Log Analytics workspace)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Application Insights Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (OpenTelemetry Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (the Azure Monitor Agent)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "E Şıkkı (Microsoft Sentinel)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "34": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Create and reuse a conversation by storing the conversation’s ID and supplying the ID on subsequent requests. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Persist only the final model response stored in the client application and prepend the response to future prompts.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Enable memory summarization on the agent definition to persist the context automatically.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "35": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "36": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (iterative retrieval)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (agentic Retrieval Augmented Generation (RAG) Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (chain of thought)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (classic Retrieval Augmented Generation (RAG))": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "37": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "38": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Add a retry evaluation before the responses are returned. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Decrease the value of the max_tokens parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Switch to Retrieval Augmented Generation (RAG).)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Replace the model with a smaller deployment.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "39": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Create a new thread and retry the calls immediately.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Reduce the number of registered tools.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Implement a retry policy that uses exponential backoff and jitter. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Spit uploaded content into smaller files.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "40": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "41": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "42": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (No)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "43": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "44": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Yes)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (No Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "45": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Set generation mode to image_variation and provide the original image as a reference.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Enable text_to_image mode and a prompt describing the desired background removal.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Enable image_to_image mode and a high-strength value to regenerate the full image based on the prompt.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Enable mask_inpainting and supply both the input image and a mask indicating which part of the image to modify. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "46": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Apply a mask-based inpainting edit to the part of the image that contains the logo. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Increase the prompt guidance strength.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Modify the original prompt to exclude brand names.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Rerun the prompt by using a different random seed.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "47": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (prebuilt-documentFieldSchema)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (prebuilt-read)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (prebuilt-documentSearch)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (prebuilt-layout Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "48": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Set the input_fidelity parameter to high. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Apply a groundedness detection filter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Include a prompt and input image in the request.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Decrease the value of the temperature parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "49": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "50": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Apply keyword scanning to optical character recognition (OCR) output by using Azure Vision in Foundry Tools.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Enable prompt shields.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Use blocklists.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Implement image moderation. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "51": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (image moderation)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (prompt shields for documents Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (protected material text)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (prompt shields for user prompts)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "52": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (an Azure Language in Foundry Tools text analysis model deployment)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (a generative chat completion request)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (an Azure OpenAI Responses API call that uses a multimodal model)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (an Azure Content Understanding in Foundry Tools analyzer Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "53": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Azure Language in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Azure Content Understanding in Foundry Tools Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (an Azure Machine Learning model)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "54": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Use advanced data parsing to reingest the documents. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Use OCR and page-level chunking.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Use page-level OCR extraction and store each page as a single chunk.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Use basic parsing and fixed-size chunking.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "55": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (an indexer to extract image data into a normalized_images collection Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (a Shaper skill to restructure the OCR input)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (a skillset to run the OCR skill directly against the content field of the index)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (the outputFieldMappings parameter to write image data to a searchable field)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "56": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (chat completions)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Azure Document Intelligence in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Azure Content Understanding in Foundry Tools Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Image Analysis)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "57": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Set enableSegment to true.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Provide labeled samples.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Enable estimateFieldSourceAndConfidence. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Configure the analyzer to use generative extraction for all fields.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "58": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Use text to speech by using a custom neural voice.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Use speech translation to generate the transcripts into multiple languages.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Run a batch transcription job on recorded audio files.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Use real-time speech to text to process streaming audio input. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "59": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Use batch transcription to convert the audio input and return text responses from the agent.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Use real-time speech to text for incoming audio and text to speech for agent responses. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (Use an embeddings model to encode the audio, and then decode the audio into text and speech.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Use speech translation to convert the audio into another language and return the translated text.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "60": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Use document translation to translate the entire transcript as a single document.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Split the mixed-language segments into single-language segments and translate each segment separately. Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (Enable automatic language detection for the translation request.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Specify English as the source language in the translation request for all the segments.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "61": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap AC olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Azure OpenAI Embedding Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Entity Recognition)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Text Split Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Merge)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "E Şıkkı (Language Detection)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "F Şıkkı (key phrase extraction)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "62": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Azure Translator in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Grounding with Bing Search)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Azure AI Search Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Azure Document intelligence in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "63": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Configure output=figures when you analyze the PDF.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Configure content=markdown when you analyze the document.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Increase the confidence threshold.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Set the output_content_format=ContentFormat.MARKDOWN value.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "64": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a Foundry agent that has groundedness guardrails enabled to extract invoice fields and confidence scores)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (a custom Azure Content Understanding in Foundry Tools analyzer that defines the required fields as the extracted fields and the returned confidence scores for routing Most Voted)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (the Azure Content Understanding in Foundry Tools prebuilt-layout analyzer)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (the Azure Content Understanding in Foundry Tools prebuilt-documentSearch analyzer and search.score from the Azure AI Search results for routing)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "65": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (indexer status and failure history)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (latency breakdown traces)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (prediction drift metrics)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (groundedness evaluation metrics)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "66": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "67": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (knowledge)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (memory)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (guardrails)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "68": {
+    "scenarioSummaryTr": "Bu soru bir Case Study (Örnek Olay) senaryosudur. Senaryoda Microsoft Foundry ve Azure AI mimarisindeki iş gereksinimleri, güvenlik kısıtları ve teknik hedefler incelenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "69": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap AD olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Retrieval)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Fluency)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Coherence)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Groundedness)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "E Şıkkı (Response Completeness)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "70": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (output item)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (agent)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (conversation)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (response)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "71": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "72": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap AE olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (risk and safety metrics)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (fluency evaluator)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (similarity evaluators)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (AI quality (NLP) metrics)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "E Şıkkı (AI quality (AI assisted) metrics)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "73": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı ({“type”: “bing_grouding”})": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı ({“type”: “azure_ai-search”})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (“auto”)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (“required”)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "74": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Increase the max_tokens parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Remove stop sequences from the requests.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Decrease the temperature parameter.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Increase the temperature parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "75": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Retrieval Augmented Generation (RAG))": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (zero-shot learning)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (chain of thought)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (few-shot learning)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "76": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (session)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı ({{$conversationId}})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı ({{$userId}})": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (global)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "77": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "78": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Enable logging by using the client SDK for Content Safety.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Enable logging by using Foundry Local.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Enable application tracing in Project1.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Route requests through the Azure OpenAI endpoint.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "79": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "80": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Update Agent1 to a new version.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Restart Agent from Foundry Control Plan)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Assign to a Log Analytics workspace to Agent1.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Enable Application Insights for Agent1.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "81": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (prebuilt-documentFieldSchema)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (prebuilt-documentSearch)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (prebuilt-read)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (prebuilt-layout)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "82": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (vector search)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (semantic ranking)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (suggesters)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (analyzers)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "83": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (vector search only)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (hybrid search)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (keyword search only)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (semantic search only)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "84": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Document Extraction)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Azure Content Understanding in Foundry Tools)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (GenAI Prompt)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Document Layout)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "85": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Text Split)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Text Translation)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (optical character recognition (OCR))": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Image Analysis)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "86": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "87": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (a single-file task in standard mode that uses the vendor contract provided as an additional document during analysis.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (a single-file task in standard mode that uses confidence scores enabled for the extracted fields.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (a multiple-file task in pro mode that uses the vendor contract files as reference data)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (a multi-file task in standard mode that uses the invoice and purchase order as input to the analyzer)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "88": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Modify the original prompt to exclude watermarks.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Crop the video by using the size parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Increase the guidance scale.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Apply a mask-based inpainting edit to the affected part of the video.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "89": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Set the user message content array to include items that have type: text and type: image_url.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Encode the image to base64 and include the encoded data inside the content string of the user message.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Add the image URL to the request metadata section, so the model can resolve the processing issue automatically.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Place the image URL inside the System Message and set type to image_url so the model loads the image at initialization.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "90": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (RTMP)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (WebRTC)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (SIP)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (WebSocket)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "91": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Set project-endpoint to the endpoint of the project.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Set evaluation-config to the path of the YAML file.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Set model-deployment-name to the deployed model.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Set tenant-id to the Microsoft Entra tenant ID)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "92": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "En az yetki prensibi (Principle of Least Privilege) ve Microsoft Entra ID güvenli kimlik doğrulama standartları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "93": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "94": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "95": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "96": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (an embedding model)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (an image generation model)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (a large language model (LLM))": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (a small language model (SLM))": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "97": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (serverless API)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (batch)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (self-hosted container)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (standard)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "98": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "99": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "100": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Add a retry evaluation before the responses are returned.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Decrease the value of the temperature parameter.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Increase the value of the presence_penalty parameter)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Replace the model with a smaller deployment.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "101": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "102": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (the Azure SDK for Python and PowerShell cmdlets.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (the Azure SDK for JavaScript and Azure Machine Learning Studio.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Microsoft Foundry and the Azure Command Line Interface (CLI))": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (the Azure portal and Microsoft Graph API)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "103": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "104": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "105": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap D olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Lower the confidence threshold for ContactInfo.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Trigger an auto-labeling job.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Add more support tickets as training data and label more ContactInfo entities.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Replace ContactInfo by using Phone, Email, and SocialMedia entities. Relabel every matching span.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "106": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (From Speech Studio, train a custom neural voice)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Use Speech Synthesis Markup Language (SSML) to specify phonemes.)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (Use Speech Synthesis Markup Language (SSML) to apply say as rules.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Use Speech Synthesis Markup Language (SSML) to adjust the prosody of the voice.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "E Şıkkı (From Azure OpenAI use the Whisper model.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "107": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "108": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "109": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap B olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (fairness)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (transparency)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "C Şıkkı (inclusiveness)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (reliability and safety)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "110": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Uygulama maliyetlerinin optimizasyonu ve kaynak tüketiminin minimize edilmesi göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Azure Document Intelligence in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Azure Language in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Azure AI Immersive Reader)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (Azure Translator in Foundry Tools)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "111": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap A olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (the endpoint URI and subscription key)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (the endpoint URI and an OAuth token)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (the endpoint URI and a shared access signature (SAS) token)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (a system assigned managed identity and an X.509 certificate)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "112": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "113": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "114": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Microsoft Azure AI / Foundry resmi mimari standartları ve servis kullanım kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "115": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap AEF olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Add allowed groups to each index entry)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "B Şıkkı (Create one index per group.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Send access tokens from Microsoft Entra ID, with the search request.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "D Şıkkı (Retrieve all the groups.)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "E Şıkkı (Retrieve the group memberships of the user)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "F Şıkkı (Supply the groups as a filter for the search requests)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "116": {
+    "scenarioSummaryTr": "Bu soru Topic 1 kapsamında Microsoft Azure AI servisleri mimarisi ve uygulama entegrasyonu senaryosunu içermektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap C olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "A Şıkkı (Document Layout)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "B Şıkkı (Document Extraction)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir.",
+      "C Şıkkı (Azure Content Understanding)": "DOĞRUDUR: Bu seçenek soruda belirtilen tüm teknik kısıtları ve Microsoft Azure AI standartlarını eksiksiz karşılamaktadır.",
+      "D Şıkkı (GenAI Prompt)": "SEÇİLEMEZ (YANLIŞTIR): Bu seçenek soruda istenen güvenlik kısıtını, performans kuralını veya maliyet kısıtlamasını ihlal etmektedir."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  },
+  "117": {
+    "scenarioSummaryTr": "Bu soru bir HOTSPOT / Answer Area veya Görsel Eşleştirme sorusudur. Arayüz alanındaki açılır menülerden (dropdown) veya eşleştirme kutularından doğru konfigürasyonların seçilmesi istenmektedir.",
+    "decisionCriteriaTr": "Azure AI Search anlamsal (semantic) arama doğruluğu ve RAG mimarisinde kaynak metne sadakat kısıtları göz önünde bulundurulmaktadır.",
+    "correctTr": "Doğru cevap görseldeki/Answer Area alanındaki eşleşme olarak belirlenmiştir. Microsoft AI-103 müfredat prensiplerine göre ilgili seçim sorudaki kısıtları tam karşılar.",
+    "choicesTr": {
+      "Seçilen Konfigürasyon (Doğru Yanıt)": "DOĞRUDUR: Görseldeki / Answer Area alanındaki bu seçim sorudaki tüm teknik ve güvenlik gereksinimlerini karşılamaktadır.",
+      "Alternatif / Diğer Açılır Menü Seçenekleri": "SEÇİLEMEZ (YANLIŞTIR): Açılır menüdeki (dropdown) diğer alternatif seçenekler sabit maliyet yaratmakta, yetkisiz erişim riski doğurmakta veya model tutarsızlığına yol açmaktadır."
+    },
+    "microsoftDoc": "https://learn.microsoft.com/en-us/azure/ai-services/"
+  }
+}

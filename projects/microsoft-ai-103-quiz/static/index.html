@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Microsoft AI-103 Sınav Hazırlık — Türkçe açıklamalı interaktif soru bankası ve eğitim notları.">
+<title>Microsoft AI-103 — Soru Bankası & Eğitim Merkezi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<!-- Loading Skeleton (shown until data loads) -->
+<div id="loadingSkeleton" class="loading-skeleton">
+  <div class="skeleton-header">
+    <div class="skeleton-line w40"></div>
+    <div class="skeleton-line w30"></div>
+  </div>
+  <div class="skeleton-body">
+    <div class="skeleton-card">
+      <div class="skeleton-line w60"></div>
+      <div class="skeleton-line w90"></div>
+      <div class="skeleton-line w80"></div>
+      <div class="skeleton-line w70"></div>
+      <div class="skeleton-line w50"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Main App (hidden until loaded) -->
+<div id="appContainer" style="display:none;">
+
+<header>
+  <div class="header-row-1">
+    <div class="brand">
+      <div class="brand-logo">AI-103</div>
+      <div class="brand-title">Microsoft AI-103 Hub</div>
+    </div>
+
+    <!-- Main Module Switcher -->
+    <div class="module-switcher">
+      <button class="module-btn active" id="quizModuleBtn">❓ Soru Bankası & Quiz</button>
+      <button class="module-btn" id="ozetModuleBtn">📚 Eğitim Özet Notları</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn" id="themeToggleBtn">☀️ Açık Tema</button>
+      <button class="btn btn-danger-outline" id="resetProgressBtn">🔄 Sıfırla</button>
+      <button class="btn btn-ghost" id="shortcutHelpBtn" title="Klavye Kısayolları">⌨️</button>
+    </div>
+  </div>
+
+  <!-- Stats bar (only visible in quiz module) -->
+  <div class="header-row-2" id="statsBar">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="stats-items">
+      <div class="stat-item">
+        <span class="stat-label">İlerleme</span>
+        <span class="stat-val" id="answeredCount">0 / 0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Doğru</span>
+        <span class="stat-val success" id="correctCount">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Yanlış</span>
+        <span class="stat-val danger" id="wrongCount">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Başarı</span>
+        <span class="stat-val accent" id="accuracyRate">0%</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Module 1: Quiz Module -->
+<main id="quizModuleView">
+  <div class="content-area">
+    <!-- Section / Topic Tabs -->
+    <div class="topic-tabs" id="topicTabs"></div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="toolbar">
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all">Tüm Sorular</button>
+        <button class="filter-btn" data-filter="unanswered">Cevaplanmamış</button>
+        <button class="filter-btn" data-filter="correct">Doğru ✅</button>
+        <button class="filter-btn" data-filter="wrong">Yanlış ❌</button>
+        <button class="filter-btn" data-filter="flagged">Favoriler ⭐</button>
+      </div>
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Soru ara (örn: Prompt Shields)...">
+    </div>
+
+    <!-- Navigation Control Bar -->
+    <div class="nav-bar">
+      <button class="btn" id="prevBtn" title="← Sol Ok Tuşu">← Önceki</button>
+      <div class="nav-center">
+        <div class="nav-info" id="navInfo">Soru 1 / 1</div>
+        <div class="quick-jump">
+          <label for="jumpInput">#</label>
+          <input type="number" id="jumpInput" min="1" placeholder="Git" title="Soru numarası gir ve Enter'a bas">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="nextBtn" title="→ Sağ Ok Tuşu">Sonraki →</button>
+    </div>
+
+    <!-- Single Question Container -->
+    <div id="quizRoot"></div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">
+        <span>Soru Haritası</span>
+        <span class="sidebar-hint">Tıkla → Git</span>
+      </div>
+      <div class="q-grid" id="qGrid"></div>
+      <div class="sidebar-legend">
+        <span class="legend-item"><span class="legend-dot ok"></span>Doğru</span>
+        <span class="legend-item"><span class="legend-dot nok"></span>Yanlış</span>
+        <span class="legend-item"><span class="legend-dot flagged"></span>Favori</span>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- Module 2: Training Notes / Summary View (Embedded Iframe) -->
+<div id="ozetModuleView" style="display: none; width: 100%; height: calc(100vh - 120px); border: none;">
+  <iframe id="ozetIframe" src="egitim-ozet/egitim-merkezi.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+
+<!-- Footer -->
+<footer id="appFooter">
+  <div class="footer-content">
+    <span>Microsoft AI-103 — Azure AI Apps & Agents Developer Associate</span>
+    <span class="footer-sep">·</span>
+    <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank" rel="noopener">Microsoft Sertifika Sayfası ↗</a>
+    <span class="footer-sep">·</span>
+    <span class="footer-version">v2.0</span>
+  </div>
+</footer>
+
+</div><!-- /appContainer -->
+
+<!-- Image Lightbox Modal -->
+<div class="modal" id="imageModal">
+  <span class="modal-close" id="modalClose">&times;</span>
+  <img class="modal-img" id="modalImg" src="" alt="Görsel Büyütme">
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="shortcuts-modal" id="shortcutsModal">
+  <div class="shortcuts-panel">
+    <div class="shortcuts-header">
+      <span>⌨️ Klavye Kısayolları</span>
+      <button class="shortcuts-close" id="shortcutsClose">&times;</button>
+    </div>
+    <div class="shortcuts-body">
+      <div class="shortcut-row"><kbd>←</kbd> <span>Önceki Soru</span></div>
+      <div class="shortcut-row"><kbd>→</kbd> <span>Sonraki Soru</span></div>
+      <div class="shortcut-row"><kbd>A</kbd>-<kbd>F</kbd> <span>Şık Seç / Kaldır</span></div>
+      <div class="shortcut-row"><kbd>Enter</kbd> <span>Cevabı Onayla</span></div>
+      <div class="shortcut-row"><kbd>F</kbd> <span>Favorilere Ekle/Çıkar</span></div>
+      <div class="shortcut-row"><kbd>?</kbd> <span>Bu Paneli Göster</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="static/app.js"></script>
+</body>
+</html>

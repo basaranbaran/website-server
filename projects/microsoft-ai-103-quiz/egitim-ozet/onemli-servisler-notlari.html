@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Önemli Servisler & Notlar — 4 Eğitimin Özeti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1420; --bg-panel:#101c2c; --bg-panel-2:#142234; --line:#223244;
+  --text:#dbe6f0; --text-dim:#8fa3b8; --text-faint:#5c7188; --ok:#6fd6a0; --warn:#ff8f6b; --amber:#ffcc66; --amber-dim:#4a3a12;
+  --c1:#3fb6ff; --c2:#b39dff; --c3:#2dd4bf; --c4:#ff7a5c;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: radial-gradient(1200px 600px at 85% -10%, rgba(255,204,102,0.09), transparent 60%), var(--bg);
+  color:var(--text); font-family:'Inter', sans-serif; line-height:1.6; min-height:100vh;
+}
+::selection{background:var(--amber-dim); color:#fff;}
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:280px; flex-shrink:0; background:var(--bg-panel); border-right:1px solid var(--line);
+  padding:28px 18px; position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.hub-link{
+  display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim);
+  text-decoration:none; padding:9px 11px; border:1px solid var(--line); border-radius:9px;
+  margin-bottom:18px; transition:.15s; font-family:'IBM Plex Mono', monospace;
+}
+.hub-link:hover{border-color:var(--amber); color:#fff;}
+.brand{font-family:'Space Grotesk', sans-serif; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-bottom:4px; font-weight:600;}
+.brand-sub{font-size:12px; color:var(--text-faint); margin-bottom:26px; line-height:1.5;}
+.nav-group-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin:18px 0 8px 4px; font-weight:600;}
+.nav-item{display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:13.5px; color:var(--text-dim); border:1px solid transparent; transition:.15s; margin-bottom:3px;}
+.nav-item .num{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-faint); width:18px; flex-shrink:0;}
+.nav-item:hover{background:var(--bg-panel-2); color:var(--text);}
+.nav-item.active{background:linear-gradient(90deg, rgba(255,204,102,0.14), rgba(255,204,102,0.03)); border-color:var(--amber-dim); color:#fff;}
+.nav-item.active .num{color:var(--amber);}
+.main{flex:1; min-width:0; padding:48px 56px 100px; max-width:960px;}
+@media (max-width:900px){.shell{flex-direction:column;} .sidebar{width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--line);} .main{padding:28px 20px 80px;}}
+.section{display:none;}
+.section.active{display:block; animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.eyebrow{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--amber); text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px;}
+h1{font-family:'Space Grotesk', sans-serif; font-size:30px; font-weight:700; margin:0 0 6px; color:#fff; letter-spacing:-.01em;}
+h1 span.sub{display:block; font-size:15px; color:var(--text-dim); font-weight:400; margin-top:8px; font-family:'Inter',sans-serif;}
+h2{font-family:'Space Grotesk', sans-serif; font-size:20px; color:#fff; margin:38px 0 14px; padding-top:6px; border-top:1px solid var(--line); font-weight:600;}
+.section > h2:first-of-type{border-top:none; margin-top:26px;}
+h3{font-size:15.5px; color:var(--amber); margin:22px 0 8px; font-weight:600;}
+p{color:var(--text); font-size:14.5px; margin:0 0 14px;}
+p, li{color:#c7d6e4;}
+ul{margin:0 0 16px; padding-left:22px;}
+li{margin-bottom:6px; font-size:14.5px;}
+strong{color:#fff; font-weight:600;}
+code{font-family:'IBM Plex Mono', monospace; background:#0d1826; color:#ffcc66; padding:2px 6px; border-radius:4px; font-size:12.5px; border:1px solid var(--line);}
+a{color:var(--c1);}
+table{width:100%; border-collapse:collapse; margin-bottom:18px; font-size:13px;}
+th,td{text-align:left; padding:8px 11px; border-bottom:1px solid var(--line); vertical-align:top;}
+th{color:var(--text-faint); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em;}
+td{color:#c7d6e4;}
+.mini{font-size:12px; color:var(--text-faint);}
+
+.svc{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin:0 0 14px;}
+.svc-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+.svc-name{font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:600; color:#fff;}
+.svc-tags{display:flex; gap:6px; flex-wrap:wrap;}
+.svc-tag{font-family:'IBM Plex Mono',monospace; font-size:10.5px; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--text-faint);}
+.svc-tag.c1{border-color:#1c4a66; color:var(--c1);}
+.svc-tag.c2{border-color:#3a2f66; color:var(--c2);}
+.svc-tag.c3{border-color:#124a44; color:var(--c3);}
+.svc-tag.c4{border-color:#4a2418; color:var(--c4);}
+.svc-row{display:grid; grid-template-columns:120px 1fr; gap:10px; margin-bottom:7px; font-size:13.5px;}
+.svc-row .k{color:var(--text-faint); font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding-top:1px;}
+.svc-row .v{color:#c7d6e4;}
+.svc-row .v code{font-size:12px;}
+
+.card{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:16px 19px; margin:14px 0;}
+.card.tip{border-left:3px solid var(--amber);}
+.card.warn{border-left:3px solid var(--warn);}
+.card.pitfall{border-left:3px solid #ff6b6b;}
+.card-label{font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; font-weight:600;}
+.card.tip .card-label{color:var(--amber);}
+.card.warn .card-label{color:var(--warn);}
+.card.pitfall .card-label{color:#ff8080;}
+
+.diagram{background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:0 0 18px; font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-dim); overflow-x:auto; white-space:pre;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="hub-link" href="egitim-merkezi.html">← Eğitim Merkezi</a>
+    <div class="brand">Referans · Sayfa 5</div>
+    <div class="brand-sub">Önemli Servisler &amp; Notlar<br>4 eğitimin tamamından derlenmiş</div>
+    <div class="nav-group-label">Genel</div>
+    <div class="nav-item" data-target="giris"><span class="num">·</span> Bu sayfa hakkında</div>
+    <div class="nav-item" data-target="genel"><span class="num">·</span> Genel kavramlar (hepsinde geçer)</div>
+    <div class="nav-item" data-target="auth"><span class="num">·</span> Kimlik doğrulama rehberi</div>
+    <div class="nav-group-label">Eğitime göre servisler</div>
+    <div class="nav-item" data-target="e1"><span class="num">01</span> Generative AI apps</div>
+    <div class="nav-item" data-target="e2"><span class="num">02</span> AI agents</div>
+    <div class="nav-item" data-target="e3"><span class="num">03</span> Natural language</div>
+    <div class="nav-item" data-target="e4"><span class="num">04</span> Visual data</div>
+    <div class="nav-group-label">Kapanış</div>
+    <div class="nav-item" data-target="baglanti"><span class="num">·</span> Servisler arası bağlantılar</div>
+    <div class="nav-item" data-target="ozet"><span class="num">·</span> SDK / paket özet tablosu</div>
+  </nav>
+
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="section active" id="giris">
+      <div class="eyebrow">Giriş</div>
+      <h1>Önemli Servisler &amp; Notlar<span class="sub">4 eğitimde geçen tüm Azure servislerinin tek sayfada özeti — ne işe yarar, hangi SDK, nasıl kimlik doğrulanır, en sık hata ne.</span></h1>
+
+      <p>Bu sayfayı, 4 eğitimi hazırlarken kullandığım resmi Microsoft Learn sayfalarını ve kursların kendi GitHub alıştırma depolarını tekrar tarayıp, <strong>hangi servisin hangi eğitimde, ne amaçla, hangi SDK paketiyle geçtiğini</strong> tek yerde toplamak için hazırladım. Amaç, senin kendi ders notlarının yanına koyabileceğin, hızlı başvurulabilir bir "harita" oluşturmak.</p>
+
+      <div class="card warn">
+        <div class="card-label">Bir not</div>
+        <p style="margin:0">Mesajında kendi notlarından bahsettin ama bu sohbette bana ayrıca bir not dosyası ya da metni gelmedi — o yüzden bu sayfayı, 4 eğitimi hazırlarken derlediğim bilgilerin <strong>tamamını yeniden gözden geçirip güncel kaynaklarla doğrulayarak</strong> sıfırdan oluşturdum. Kendi notlarını da bana yapıştırırsan veya yüklersen, madde madde karşılaştırıp neyin doğru neyin güncel olmadığını birlikte kontrol edebiliriz.</p>
+      </div>
+
+      <h2>Bu sayfa nasıl organize edildi?</h2>
+      <ol>
+        <li><strong>Genel kavramlar</strong> — 4 eğitimin de üzerine kurulduğu şemsiye terimler: Microsoft Foundry, Foundry Tools, Foundry Models, deployment/endpoint türleri.</li>
+        <li><strong>Kimlik doğrulama rehberi</strong> — hangi serviste API key, hangisinde Entra ID kullanılıyor, en çok karışan nokta bu.</li>
+        <li><strong>Eğitime göre servisler</strong> — her eğitimde geçen servisleri, o eğitimdeki sırasıyla listeler.</li>
+        <li><strong>Servisler arası bağlantılar</strong> — aynı servisin birden fazla eğitimde farklı yönlerden nasıl göründüğü (ör. Azure AI Search hem Eğitim 2'de hem Eğitim 4'te geçiyor).</li>
+        <li><strong>SDK özet tablosu</strong> — tüm <code>pip install</code> komutlarının tek listesi.</li>
+      </ol>
+    </section>
+
+    <!-- GENEL KAVRAMLAR -->
+    <section class="section" id="genel">
+      <div class="eyebrow">Genel Kavramlar</div>
+      <h1>Hepsinin üzerine kurulduğu şemsiye terimler<span class="sub">4 eğitimde de defalarca karşına çıkan, ama bir kere net anlaşılınca her şeyi kolaylaştıran temel kavramlar.</span></h1>
+
+      <div class="svc">
+        <div class="svc-head">
+          <span class="svc-name">Microsoft Foundry</span>
+          <div class="svc-tags"><span class="svc-tag c1">Eğitim 1</span><span class="svc-tag c2">Eğitim 2</span><span class="svc-tag c3">Eğitim 3</span><span class="svc-tag c4">Eğitim 4</span></div>
+        </div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Model seçme, deploy etme, agent kurma, test/izleme — hepsini tek portaldan yapabildiğin birleşik AI geliştirme platformu.</span></div>
+        <div class="svc-row"><span class="k">ESKİ ADI</span><span class="v">Azure AI Foundry (Ocak 2026'da "Microsoft Foundry" olarak yeniden adlandırıldı) — ondan önce Azure AI Studio.</span></div>
+        <div class="svc-row"><span class="k">PORTAL</span><span class="v"><a href="https://ai.azure.com" target="_blank">ai.azure.com</a></span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head">
+          <span class="svc-name">Foundry Tools</span>
+          <div class="svc-tags"><span class="svc-tag c1">Eğitim 1</span><span class="svc-tag c3">Eğitim 3</span><span class="svc-tag c4">Eğitim 4</span></div>
+        </div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Foundry'nin içinde çağırdığın, önceden eğitilmiş, hazır AI servisleri — Language, Speech, Vision, Content Understanding, Document Intelligence, Translator hepsi bu şemsiyenin altında.</span></div>
+        <div class="svc-row"><span class="k">ESKİ ADI</span><span class="v">Azure AI Services → (ondan önce) Azure Cognitive Services. Aynı hizmetler, üçüncü isim değişikliği.</span></div>
+        <div class="svc-row"><span class="k">SIK KARIŞAN</span><span class="v">Foundry Tools bir <em>platform değil</em>, platformun içindeki <em>hazır servisler katmanıdır</em>. Foundry = ev, Foundry Tools = evin içindeki hazır mobilyalar.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head">
+          <span class="svc-name">Foundry Models</span>
+          <div class="svc-tags"><span class="svc-tag c1">Eğitim 1</span></div>
+        </div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Model kataloğu — Azure OpenAI, Meta Llama, Mistral, DeepSeek, Phi gibi onlarca modele <strong>tek endpoint ve tek kimlik bilgisiyle</strong> erişmeni sağlar.</span></div>
+        <div class="svc-row"><span class="k">İLİŞKİLİ</span><span class="v">Azure OpenAI, "Models Sold Directly by Azure" ailesinin bir parçası olarak Foundry Models içinde yer alır.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head">
+          <span class="svc-name">Foundry Agent Service</span>
+          <div class="svc-tags"><span class="svc-tag c2">Eğitim 2</span></div>
+        </div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Tool calling, konuşma durumu (state) ve altyapıyı otomatik yöneten, agent kurmak için özelleşmiş servis.</span></div>
+        <div class="svc-row"><span class="k">DİKKAT</span><span class="v">Eski <strong>Assistants API</strong>'nin yerini alıyor — Assistants API'nin kesin emeklilik tarihi <strong>26 Ağustos 2026</strong>. Hâlâ Assistants API kullanan kod varsa Foundry Agent Service'e geçiş planlanmalı.</span></div>
+      </div>
+
+      <h3>Endpoint karmaşası — bu kursların en sık yapılan hatası</h3>
+      <p>4 eğitim boyunca <strong>üç farklı endpoint türü</strong> gördün, ve bunları karıştırmak en yaygın bağlantı hatasıdır:</p>
+      <div class="diagram">1) Proje endpoint'i (Foundry proje)
+   https://{kaynak}.services.ai.azure.com/api/projects/{proje}
+   → AIProjectClient, agent oluşturma (Eğitim 1-2) için
+
+2) Azure OpenAI uyumlu endpoint
+   https://{kaynak}.openai.azure.com/openai/v1/
+   → Responses/ChatCompletions/Images/Videos API (Eğitim 1, 3, 4) için
+
+3) Foundry KAYNAK endpoint'i (proje değil!)
+   https://{kaynak}.services.ai.azure.com
+   → Content Understanding, Document Intelligence, Speech, Language gibi
+     Foundry Tools servisleri (Eğitim 3-4) için</div>
+      <div class="card pitfall">
+        <div class="card-label">Kural of thumb</div>
+        <p style="margin:0">"Agent oluşturuyorsam" → proje endpoint'i. "Bir OpenAI-uyumlu API çağırıyorsam" (chat, görsel, video) → <code>/openai/v1/</code> ile biten Azure OpenAI endpoint'i. "Bir Foundry Tools servisi çağırıyorsam" (Content Understanding, Speech, Language, Document Intelligence) → sondaki yol olmadan, sade kaynak endpoint'i.</p>
+      </div>
+
+      <h3>Deployment tipleri (Eğitim 1'den, ama her yerde geçerli)</h3>
+      <table>
+        <tr><th>Tip</th><th>Ne zaman</th></tr>
+        <tr><td>Global Standard</td><td>Genel kullanım, en yüksek kota — çoğu senaryo için varsayılan seçim</td></tr>
+        <tr><td>Data Zone Batch</td><td>Toplu (batch) işler, veri bölgesi kısıtlaması olan senaryolar</td></tr>
+        <tr><td>Developer</td><td>Geliştirme/test, düşük hacimli deneme</td></tr>
+        <tr><td>Provisioned Throughput (PTU)</td><td>Sabit, öngörülebilir kapasite — kurumsal/production yükleri</td></tr>
+      </table>
+
+      <h3>Responsible AI / Content Safety (Eğitim 1'de detaylı, ama her modülde arka planda var)</h3>
+      <p>4 katmanlı savunma modeli (defense in depth): <strong>Model</strong> (doğru modeli seç) → <strong>Safety System</strong> (Azure AI Content Safety filtreleri) → <strong>Metaprompt &amp; grounding</strong> (system message + RAG) → <strong>User experience</strong> (arayüz uyarıları). Görsel/video üretim modelleri (Eğitim 4) ve konuşma modelleri (Eğitim 3) için de aynı mantık geçerli — ör. Sora 2'nin gerçek insan yüzü/telifli karakter kısıtlamaları bu katmanın bir parçası.</p>
+    </section>
+
+    <!-- KİMLİK DOĞRULAMA -->
+    <section class="section" id="auth">
+      <div class="eyebrow">Kimlik Doğrulama Rehberi</div>
+      <h1>Hangi serviste hangi yöntem?<span class="sub">4 eğitim boyunca en çok "neden bağlanamıyorum" hatası bu yüzden yaşanıyor — bir tabloda topladım.</span></h1>
+
+      <table>
+        <tr><th>Servis</th><th>Yöntem</th><th>Kod deseni</th></tr>
+        <tr><td>Foundry proje / agent oluşturma</td><td>Entra ID (zorunlu)</td><td><code>DefaultAzureCredential()</code></td></tr>
+        <tr><td>Azure OpenAI uyumlu API (chat/image/video)</td><td>Entra ID (kurs örnekleri) veya API key</td><td><code>get_bearer_token_provider(...)</code> veya <code>api_key=...</code></td></tr>
+        <tr><td>Azure Language / Translator</td><td>API key (basit) veya Entra ID</td><td><code>AzureKeyCredential(key)</code></td></tr>
+        <tr><td>Azure Speech SDK (klasik)</td><td>Key + Region ikisi birden</td><td><code>SpeechConfig(subscription=key, region=region)</code></td></tr>
+        <tr><td>Voice Live API</td><td>Entra ID (keyless) VEYA API key</td><td>İkisi de resmi olarak destekleniyor</td></tr>
+        <tr><td>Content Understanding</td><td>Entra ID VEYA API key (ikisi de var)</td><td><code>DefaultAzureCredential()</code> ya da <code>AzureKeyCredential(key)</code></td></tr>
+        <tr><td>Document Intelligence</td><td>API key (yaygın) veya Entra ID</td><td><code>AzureKeyCredential(key)</code></td></tr>
+        <tr><td>Azure AI Search</td><td>API key (admin key) veya Entra ID</td><td><code>AzureKeyCredential(key)</code></td></tr>
+        <tr><td>MCP server bağlantısı (Language/Speech)</td><td>Anahtar tabanlı, özel header</td><td><code>Ocp-Apim-Subscription-Key</code> header'ı</td></tr>
+      </table>
+
+      <div class="card tip">
+        <div class="card-label">Genel eğilim</div>
+        <p style="margin:0">Microsoft'un resmi kurs alıştırmaları giderek <strong>Entra ID (keyless)</strong> yöntemine kayıyor — <code>az login</code> yapıp <code>DefaultAzureCredential()</code> kullanmak, API key'i koda/​.env'e gömmekten daha güvenli kabul ediliyor. Ama Speech SDK gibi daha "klasik" servisler hâlâ key+region ikilisini yaygın şekilde kullanıyor. Production'a geçerken, mümkün olduğunca Entra ID'ye yönelmek önerilir.</p>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">Sık yapılan hata</div>
+        <p style="margin:0"><code>DefaultAzureCredential()</code> kullanan bir script'i çalıştırmadan önce terminalde <code>az login</code> yapmayı unutmak — en sık karşılaşılan "401 Unauthorized" hatasının sebebi budur. İkinci en sık hata: yanlış endpoint türünü kullanmak (yukarıdaki "Endpoint karmaşası" bölümüne bak).</p>
+      </div>
+    </section>
+
+    <!-- EGITIM 1 -->
+    <section class="section" id="e1">
+      <div class="eyebrow">Eğitim 01 · Servisler</div>
+      <h1>Develop generative AI apps in Azure<span class="sub">Bu eğitimde geçen tüm servisler, sırasıyla.</span></h1>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Model catalog (Foundry içinde)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">1-2</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Yüzlerce dil modelini (GPT ailesi, Llama, Mistral, Phi, DeepSeek) filtreleyip karşılaştırmanı, deploy etmeni sağlar.</span></div>
+        <div class="svc-row"><span class="k">DEĞERLENDİRME METRİKLERİ</span><span class="v">Groundedness, Relevance, Coherence, Fluency, Similarity</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Responses API / ChatCompletions API</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">3</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>openai</code> (Azure OpenAI uyumlu)</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Responses API = yeni, tool-dostu, state yönetimli. ChatCompletions API = klasik, mesaj listesi elle yönetilir.</span></div>
+        <div class="svc-row"><span class="k">FOUNDRY SDK</span><span class="v"><code>azure-ai-projects</code> — <code>AIProjectClient</code> ile projeye bağlanma</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Generative AI Tools</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">4</span></div>
+        <div class="svc-row"><span class="k">ARAÇLAR</span><span class="v"><code>code_interpreter</code> (sandbox'ta Python), <code>web_search</code> (güncel bilgi), <code>file_search</code> (kendi belgelerin), <code>function</code> (kendi fonksiyonların)</span></div>
+        <div class="svc-row"><span class="k">KRİTİK KURAL</span><span class="v">Function calling'de fonksiyonu SEN çalıştırırsın, model değil — model sadece "hangi fonksiyon, hangi parametre" bilgisini üretir.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">RAG / Fine-tuning / Prompt Engineering</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">5</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Prompt engineering = model ağırlıklarına dokunmadan talimatı iyileştir. RAG = modele güncel/özel bilgi besle. Fine-tuning = modelin davranış/formatını kalıcı değiştir.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure AI Content Safety (Guardrails)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">6</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-contentsafety</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Girdi/çıktıyı kategori bazlı (Hate/Sexual/Violence/Self-harm) tarayıp şiddet eşiğine göre engelleme.</span></div>
+      </div>
+
+      <p class="mini">Tüm detaylar için: <a href="develop-generative-ai-apps-azure-tr.html">Eğitim 1 sayfasına git →</a></p>
+    </section>
+
+    <!-- EGITIM 2 -->
+    <section class="section" id="e2">
+      <div class="eyebrow">Eğitim 02 · Servisler</div>
+      <h1>Develop AI agents on Azure<span class="sub">Bu eğitimde geçen tüm servisler, sırasıyla.</span></h1>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Microsoft Foundry Agent Service</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">1</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-projects</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Tool calling + state management + altyapıyı otomatik yönetir; agent'lar Foundry portalında kalıcı olarak saklanır.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Custom Tools (Function / OpenAPI / Azure Functions)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">2</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Function tool = yerel Python fonksiyonu; OpenAPI tool = dış REST servisi; Azure Functions tool = sunucusuz, kurumsal entegrasyon.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">MCP (Model Context Protocol)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">3 (ayrıca Eğitim 3'te Modül 2 ve 5'te tekrar geçiyor)</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>agent-framework</code>, <code>mcp[cli]</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Server araçları barındırır &amp; keşfedilebilir kılar, client <code>session.list_tools()</code> ile keşfeder. Açık, framework-bağımsız bir standart.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Foundry IQ</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">4</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">RAG'ı kurumsal/paylaşımlı ölçeğe taşıyan "knowledge base" katmanı; SharePoint, Blob, OneLake, Web, AI Search'ten veri kaynağı bağlar.</span></div>
+        <div class="svc-row"><span class="k">İLİŞKİLİ</span><span class="v">Microsoft, Foundry IQ'yu resmi olarak <strong>"Azure AI Search'ün evrimi"</strong> olarak tanımlıyor — Eğitim 4'teki Azure AI Search'ün kurumsal/agent-odaklı üst katmanı gibi düşünülebilir.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Microsoft 365 entegrasyonu (Teams, Work IQ, Agents Toolkit)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">5</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Foundry agent'ını Teams'e yayınlama (otomatik Azure Bot Service oluşturur), Work IQ ile M365 verisine bağlanma, özel senaryolar için Agents Toolkit.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Foundry Workflows (portal, low-code)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">6</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Agent node, For-Each node, If/Else gibi görsel node'larla, kod yazmadan agent orkestrasyonu. Power Fx ile mantık/ifade yazma.</span></div>
+        <div class="svc-row"><span class="k">DİKKAT</span><span class="v">Modül 8'deki kod-tabanlı workflow'lardan (Agent Framework) FARKLIDIR — biri portal, biri kod.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Microsoft Agent Framework</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">7-8</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>agent-framework</code>, <code>agent-framework-azure-ai</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">AzureAIAgentClient → ChatAgent → AgentThread ile kod-tabanlı agent geliştirme; 5 orkestrasyon deseni (Concurrent/Sequential/Group Chat/Handoff/Magentic).</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">A2A (Agent2Agent) protokolü</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">9</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>a2a-sdk</code>, <code>uvicorn</code>, <code>starlette</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Farklı framework'lerle yazılmış agent'ların birbirini keşfedip (Agent Card) konuşabilmesi (Agent Executor + Request Handler).</span></div>
+      </div>
+
+      <p class="mini">Tüm detaylar için: <a href="develop-ai-agents-azure-tr.html">Eğitim 2 sayfasına git →</a></p>
+    </section>
+
+    <!-- EGITIM 3 -->
+    <section class="section" id="e3">
+      <div class="eyebrow">Eğitim 03 · Servisler</div>
+      <h1>Develop natural language solutions in Azure<span class="sub">Bu eğitimde geçen tüm servisler, sırasıyla.</span></h1>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Language</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">1</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-textanalytics</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Dil algılama (<code>detect_language</code>), varlık çıkarma (<code>recognize_entities</code>), PII tespiti/redaksiyon (<code>recognize_pii_entities</code>).</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Language MCP server</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">2</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Language yeteneklerini bir Foundry agent'ına MCP araçları olarak sunar. Anahtar tabanlı (<code>Ocp-Apim-Subscription-Key</code>) kimlik doğrulama.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">GPT-4o ses modelleri</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">3</span></div>
+        <div class="svc-row"><span class="k">MODELLER</span><span class="v"><code>gpt-4o-mini-transcribe</code> (STT), <code>gpt-4o-mini-tts</code> (TTS)</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">OpenAI ekosisteminde basit, hızlı ses işleme — <code>audio.transcriptions.create</code> / <code>audio.speech.with_streaming_response.create</code>.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Speech SDK (klasik)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">4</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-cognitiveservices-speech</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v"><code>SpeechRecognizer</code>/<code>SpeechSynthesizer</code>, SSML ile ince ayar, 400+ nöral ses desteği. Key + region ikisi birden gerekir.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Speech MCP server</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">5</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Speech yeteneklerini agent aracı olarak sunar. Ek olarak bir <strong>Azure Storage hesabı</strong> gerektirir (giriş/çıkış ses dosyaları için).</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Voice Live API</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">6</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-voicelive</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Gerçek zamanlı, kesintiye açık, event-güdümlü sesli konuşma (WebSocket). Avatar streaming için WebRTC kullanır.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure AI Translator</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">7</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-translation-text</code> (metin), Speech SDK'nın <code>SpeechTranslationConfig</code>'i (konuşma)</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v"><code>translate</code> = dil değişir; <code>transliterate</code> = sadece alfabe değişir (dil aynı kalır).</span></div>
+      </div>
+
+      <p class="mini">Tüm detaylar için: <a href="develop-natural-language-solutions-azure-tr.html">Eğitim 3 sayfasına git →</a></p>
+    </section>
+
+    <!-- EGITIM 4 -->
+    <section class="section" id="e4">
+      <div class="eyebrow">Eğitim 04 · Servisler</div>
+      <h1>Extract insights from visual data on Azure<span class="sub">Bu eğitimde geçen tüm servisler, sırasıyla.</span></h1>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Multimodal vision modelleri</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">1</span></div>
+        <div class="svc-row"><span class="k">MODELLER</span><span class="v">Phi-4-multimodal-instruct (Microsoft), GPT-4.1 / GPT-4.1-mini (OpenAI)</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Metin + resim girdisiyle çalışan modeller; Responses API'de <code>input_text</code>/<code>input_image</code> content tipleriyle çağrılır.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Görsel üretim modelleri</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">2</span></div>
+        <div class="svc-row"><span class="k">MODELLER</span><span class="v">gpt-image-1 / gpt-image-2, FLUX serisi (Black Forest Labs)</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v"><code>client.images.generate()</code> — çıktı her zaman base64 (<code>b64_json</code>), URL değil.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Sora 2 (video üretimi)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">3</span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Text-to-video, image-to-video, remix. <code>videos.create()</code> → poll → <code>download_content()</code>. 480p-1080p, 5-20 sn klipler.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Content Understanding</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">4-6</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-contentunderstanding</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Şema-tabanlı, belge/resim/ses/video analiz eden generative AI servisi. <code>begin_analyze</code>/<code>begin_analyze_binary</code> + <code>.result()</code>.</span></div>
+        <div class="svc-row"><span class="k">PORTAL</span><span class="v"><a href="https://contentunderstanding.ai.azure.com/home" target="_blank">Content Understanding Studio</a></span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure Document Intelligence</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">7</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-ai-documentintelligence</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Read/Layout temel modelleri + Prebuilt (invoice/receipt/ID) + Custom (etiketli veriyle eğitilen) modeller. OCR + derin öğrenme, uzamsal yapıyı korur.</span></div>
+      </div>
+
+      <div class="svc">
+        <div class="svc-head"><span class="svc-name">Azure AI Search (bilgi madenciliği)</span></div>
+        <div class="svc-row"><span class="k">MODÜL</span><span class="v">8</span></div>
+        <div class="svc-row"><span class="k">SDK PAKETİ</span><span class="v"><code>azure-search-documents</code></span></div>
+        <div class="svc-row"><span class="k">NE İŞE YARAR</span><span class="v">Indexer (veri çekme+zenginleştirme+indeksleme) + Skillset (AI enrichment, Foundry Tools destekli) + Knowledge Store (File/Object/Table projections).</span></div>
+      </div>
+
+      <p class="mini">Tüm detaylar için: <a href="extract-insights-visual-data-azure-tr.html">Eğitim 4 sayfasına git →</a></p>
+    </section>
+
+    <!-- BAĞLANTILAR -->
+    <section class="section" id="baglanti">
+      <div class="eyebrow">Servisler Arası Bağlantılar</div>
+      <h1>Aynı servis, farklı eğitimde farklı yüz<span class="sub">4 eğitim ayrı ayrı işlenmiş olsa da, bazı servisler birden fazla eğitimde tekrar tekrar karşına çıkıyor — bu tekrarları fark etmek büyük resmi netleştirir.</span></h1>
+
+      <div class="card tip">
+        <div class="card-label">Azure AI Search ↔ Foundry IQ</div>
+        <p style="margin:0">Eğitim 4, Modül 8'de Azure AI Search'ü ham haliyle (indexer/skillset/knowledge store) görüyorsun. Eğitim 2, Modül 4'teki <strong>Foundry IQ</strong>, Microsoft'un kendi ifadesiyle <strong>"Azure AI Search'ün evrimi"</strong> — yani aynı motorun, agent'lara özel, kurumsal/paylaşımlı bilgi tabanı hâline getirilmiş üst katmanı. Birini anlarsan diğeri çok daha kolay oturur.</p>
+      </div>
+
+      <div class="card tip">
+        <div class="card-label">MCP (Model Context Protocol)</div>
+        <p style="margin:0">Eğitim 2, Modül 3'te genel MCP mimarisini (server barındırır, client <code>list_tools()</code> ile keşfeder) öğrendin. Eğitim 3, Modül 2 ve 5'te bunun <strong>Language</strong> ve <strong>Speech</strong>'e özel uygulamalarını gördün. Mantık her seferinde aynı: server araç sunar, agent hangi aracı çağıracağına prompt'a göre kendi karar verir.</p>
+      </div>
+
+      <div class="card tip">
+        <div class="card-label">Content Understanding ↔ Document Intelligence</div>
+        <p style="margin:0">İkisi de "belgeden/içerikten yapılandırılmış veri çıkar" problemini çözüyor ama farklı nesillerden: <strong>Document Intelligence</strong> (Eğitim 4, Modül 7) daha eski, belge-odaklı, OCR+deep learning tabanlı. <strong>Content Understanding</strong> (Eğitim 4, Modül 4-6) daha yeni, generative AI tabanlı ve belge dışında resim/ses/video'yu da kapsıyor. Yeni projelerde Content Understanding'in kapsamı daha geniş, ama Document Intelligence hâlâ belge-özel senaryolarda (özellikle custom model eğitimi) tercih ediliyor.</p>
+      </div>
+
+      <div class="card tip">
+        <div class="card-label">Responses API her yerde</div>
+        <p style="margin:0">Eğitim 1'de öğrendiğin Responses API deseni (<code>client.responses.create()</code>, <code>input_text</code>/<code>input_image</code> content tipleri, <code>previous_response_id</code> ile state) Eğitim 4'ün Modül 1'inde (vision chat) neredeyse birebir aynı şekilde tekrar karşına çıkıyor — sadece içeriğe görsel eklendi.</p>
+      </div>
+
+      <div class="card tip">
+        <div class="card-label">Foundry Agent Service ↔ Agent Framework</div>
+        <p style="margin:0">Eğitim 2'nin ilk 6 modülü <code>azure-ai-projects</code> ile <strong>portalda kalıcı</strong> agent'lar kurmayı öğretiyor; Modül 7-8 ise <code>agent-framework</code> ile <strong>uygulama içi (in-process), kodla yönetilen</strong> agent'lara geçiyor. İkisi rakip değil — aynı Foundry projesine farklı iki kapıdan giriyorsun.</p>
+      </div>
+    </section>
+
+    <!-- SDK ÖZET -->
+    <section class="section" id="ozet">
+      <div class="eyebrow">Kapanış</div>
+      <h1>SDK / paket özet tablosu<span class="sub">4 eğitimin tüm <code>pip install</code> komutları tek listede.</span></h1>
+
+      <table>
+        <tr><th>Paket</th><th>Ne için</th><th>Eğitim</th></tr>
+        <tr><td><code>azure-ai-projects</code></td><td>Foundry proje/agent bağlantısı</td><td>1, 2</td></tr>
+        <tr><td><code>azure-identity</code></td><td>Entra ID kimlik doğrulama (DefaultAzureCredential vb.)</td><td>1, 2, 3, 4</td></tr>
+        <tr><td><code>openai</code></td><td>Responses/ChatCompletions/Images/Videos/Audio API</td><td>1, 3, 4</td></tr>
+        <tr><td><code>azure-ai-contentsafety</code></td><td>İçerik güvenliği filtreleri</td><td>1</td></tr>
+        <tr><td><code>agent-framework</code> / <code>agent-framework-azure-ai</code></td><td>Kod-tabanlı agent geliştirme, orkestrasyon</td><td>2</td></tr>
+        <tr><td><code>mcp[cli]</code></td><td>MCP client (yerel/stdio sunucular)</td><td>2</td></tr>
+        <tr><td><code>a2a-sdk</code>, <code>uvicorn</code>, <code>starlette</code></td><td>A2A protokolü server/client</td><td>2</td></tr>
+        <tr><td><code>azure-ai-textanalytics</code></td><td>Metin analizi (dil/entity/PII)</td><td>3</td></tr>
+        <tr><td><code>azure-cognitiveservices-speech</code></td><td>Klasik Speech SDK (STT/TTS/SSML/çeviri)</td><td>3</td></tr>
+        <tr><td><code>azure-ai-voicelive</code></td><td>Gerçek zamanlı sesli agent (Voice Live)</td><td>3</td></tr>
+        <tr><td><code>azure-ai-translation-text</code></td><td>Metin çevirisi/harf çevirisi</td><td>3</td></tr>
+        <tr><td><code>azure-ai-contentunderstanding</code></td><td>Content Understanding analyzer/analiz</td><td>4</td></tr>
+        <tr><td><code>azure-ai-documentintelligence</code></td><td>Belge analizi (prebuilt/custom model)</td><td>4</td></tr>
+        <tr><td><code>azure-search-documents</code></td><td>Azure AI Search (indexer/skillset/knowledge store)</td><td>4</td></tr>
+        <tr><td><code>python-dotenv</code></td><td>.env dosyasından ortam değişkeni okuma</td><td>1, 2, 3, 4</td></tr>
+      </table>
+
+      <div class="card tip">
+        <div class="card-label">Şimdi ne yapalım?</div>
+        <p style="margin:0">Kendi ders notların varsa buraya yapıştır veya yükle, birlikte karşılaştırıp neyin doğru neyin eski/yanlış olduğunu netleştirelim. İstersen bu tablolardan birini genişletelim, ya da bir servisin detayına inip birlikte örnek kod deneyelim.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+document.querySelectorAll('.nav-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+    item.classList.add('active');
+    document.getElementById(item.dataset.target).classList.add('active');
+    document.querySelector('.main').scrollTo(0,0);
+    window.scrollTo(0,0);
+  });
+});
+document.querySelector('.nav-item[data-target="giris"]').classList.add('active');
+</script>
+</body>
+</html>

@@ -567,8 +567,8 @@ def service_status_check(service_name):
     """PM2 servis durumunu kontrol et (AJAX için)"""
     if not PM2_AVAILABLE:
         return jsonify({'status': 'error', 'message': 'PM2 mevcut değil'}), 503
-    
-    if service_name not in ['gastropod', 'gastromatch']:
+
+    if service_name not in ['gastropod', 'gastromatch', 'microsoft-ai-103-quiz']:
         return jsonify({'status': 'error', 'message': 'Geçersiz servis'}), 400
     
     status = PM2Manager.get_process_status(service_name)
@@ -591,6 +591,48 @@ def service_status_check(service_name):
             'status': 'starting',
             'message': 'Başlatılıyor...'
         })
+
+
+# ============================================================
+# Route: Microsoft AI-103 Quiz
+# ============================================================
+@app.route('/microsoft-ai-103-quiz')
+def ai103_quiz_info():
+    """Microsoft AI-103 Quiz proje tanıtım sayfası"""
+    return render_template('ai103_quiz.html')
+
+
+@app.route('/microsoft-ai-103-quiz-app')
+def ai103_quiz_app():
+    """Microsoft AI-103 Quiz uygulaması - On-demand başlatma"""
+    if not PM2_AVAILABLE:
+        return render_template('service_error.html',
+                             service_name='Microsoft AI-103 Quiz',
+                             error='PM2 yöneticisi mevcut değil'), 503
+
+    result = PM2Manager.start_service('microsoft-ai-103-quiz')
+
+    if not result.get('success'):
+        return render_template('service_error.html',
+                             service_name='Microsoft AI-103 Quiz',
+                             error=result.get('message')), 503
+
+    PM2Manager.update_last_access('microsoft-ai-103-quiz')
+
+    if result.get('already_running'):
+        return render_template('service_loading.html',
+                             service_name='Microsoft AI-103 Quiz',
+                             icon='🎓',
+                             redirect_url='/microsoft-ai-103-quiz-app',
+                             startup_time=2,
+                             check_endpoint='/api/service-status/microsoft-ai-103-quiz')
+
+    return render_template('service_loading.html',
+                         service_name='Microsoft AI-103 Quiz',
+                         icon='🎓',
+                         redirect_url='/microsoft-ai-103-quiz-app',
+                         startup_time=result.get('startup_time', 3),
+                         check_endpoint='/api/service-status/microsoft-ai-103-quiz')
 
 
 # ============================================================

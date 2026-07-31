@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Develop Generative AI Apps in Azure — Türkçe Rehber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0b1420;
+  --bg-panel: #101c2c;
+  --bg-panel-2: #142234;
+  --line: #223244;
+  --azure: #3fb6ff;
+  --azure-dim: #1c4a66;
+  --amber: #ffb454;
+  --text: #dbe6f0;
+  --text-dim: #8fa3b8;
+  --text-faint: #5c7188;
+  --ok: #6fd6a0;
+  --warn: #ff8f6b;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(63,182,255,0.10), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:'Inter', sans-serif;
+  line-height:1.6;
+  min-height:100vh;
+}
+::selection{background:var(--azure-dim); color:#fff;}
+
+/* layout */
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:270px; flex-shrink:0;
+  background:var(--bg-panel);
+  border-right:1px solid var(--line);
+  padding:28px 18px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.hub-link{
+  display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim);
+  text-decoration:none; padding:9px 11px; border:1px solid var(--line); border-radius:9px;
+  margin-bottom:18px; transition:.15s; font-family:'IBM Plex Mono', monospace;
+}
+.hub-link:hover{border-color:var(--azure); color:#fff;}
+.brand{
+  font-family:'Space Grotesk', sans-serif;
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--azure); margin-bottom:4px; font-weight:600;
+}
+.brand-sub{
+  font-size:12px; color:var(--text-faint); margin-bottom:26px; line-height:1.5;
+}
+.nav-group-label{
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text-faint); margin:18px 0 8px 4px; font-weight:600;
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:8px; cursor:pointer;
+  font-size:13.5px; color:var(--text-dim);
+  border:1px solid transparent;
+  transition:.15s;
+  margin-bottom:3px;
+}
+.nav-item .num{
+  font-family:'IBM Plex Mono', monospace; font-size:11px;
+  color:var(--text-faint); width:18px; flex-shrink:0;
+}
+.nav-item:hover{background:var(--bg-panel-2); color:var(--text);}
+.nav-item.active{
+  background:linear-gradient(90deg, rgba(63,182,255,0.14), rgba(63,182,255,0.03));
+  border-color:var(--azure-dim); color:#fff;
+}
+.nav-item.active .num{color:var(--azure);}
+
+.main{flex:1; min-width:0; padding:48px 56px 100px; max-width:920px;}
+@media (max-width:900px){
+  .shell{flex-direction:column;}
+  .sidebar{width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--line);}
+  .main{padding:28px 20px 80px;}
+}
+
+.section{display:none;}
+.section.active{display:block; animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--azure);
+  text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px;
+}
+h1{
+  font-family:'Space Grotesk', sans-serif; font-size:32px; font-weight:700;
+  margin:0 0 6px; color:#fff; letter-spacing:-.01em;
+}
+h1 span.sub{display:block; font-size:15px; color:var(--text-dim); font-weight:400; margin-top:8px; font-family:'Inter',sans-serif;}
+h2{
+  font-family:'Space Grotesk', sans-serif; font-size:21px; color:#fff; margin:40px 0 14px;
+  padding-top:6px; border-top:1px solid var(--line); font-weight:600;
+}
+.section > h2:first-of-type{border-top:none; margin-top:28px;}
+h3{font-size:16px; color:var(--azure); margin:22px 0 8px; font-weight:600;}
+p{color:var(--text); font-size:15px; margin:0 0 14px;}
+p, li{color:#c7d6e4;}
+ul, ol{margin:0 0 16px; padding-left:22px;}
+li{margin-bottom:6px; font-size:15px;}
+strong{color:#fff; font-weight:600;}
+code{
+  font-family:'IBM Plex Mono', monospace; background:#0d1826; color:var(--amber);
+  padding:2px 6px; border-radius:4px; font-size:13px; border:1px solid var(--line);
+}
+pre{
+  background:#0a1420; border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; font-family:'IBM Plex Mono', monospace;
+  font-size:13px; color:#c9e6ff; margin:0 0 18px;
+}
+pre code{background:none; border:none; padding:0; color:inherit;}
+
+.card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; margin:16px 0;
+}
+.card.tip{border-left:3px solid var(--azure);}
+.card.warn{border-left:3px solid var(--warn);}
+.card.pitfall{border-left:3px solid #ff6b6b;}
+.card-label{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase;
+  letter-spacing:.08em; margin-bottom:8px; font-weight:600;
+}
+.card.tip .card-label{color:var(--azure);}
+.card.warn .card-label{color:var(--amber);}
+.card.pitfall .card-label{color:#ff8080;}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+.term{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+}
+.term .en{
+  font-family:'IBM Plex Mono', monospace; color:var(--azure); font-size:13px; margin-bottom:4px; display:block;
+}
+.term .tr{font-size:13.5px; color:var(--text-dim);}
+
+.qa{
+  border:1px solid var(--line); border-radius:10px; margin-bottom:10px; overflow:hidden;
+  background:var(--bg-panel);
+}
+.qa summary{
+  padding:13px 16px; cursor:pointer; font-size:14.5px; font-weight:500; color:#fff;
+  list-style:none; display:flex; gap:10px; align-items:flex-start;
+}
+.qa summary::-webkit-details-marker{display:none;}
+.qa summary::before{content:"›"; color:var(--azure); font-weight:700; font-size:17px; transform:rotate(0deg); transition:.2s; flex-shrink:0;}
+.qa[open] summary::before{transform:rotate(90deg);}
+.qa .a{padding:0 16px 16px 40px; color:#b7c7d8; font-size:14px;}
+.qa .a code{font-size:12.5px;}
+
+.progress-note{
+  font-size:12.5px; color:var(--text-faint); margin-top:60px; padding-top:20px;
+  border-top:1px solid var(--line);
+}
+a{color:var(--azure);}
+.badge{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px;
+  padding:2px 8px; border-radius:20px; border:1px solid var(--azure-dim); color:var(--azure);
+  margin-left:8px; vertical-align:middle;
+}
+table{width:100%; border-collapse:collapse; margin-bottom:18px; font-size:13.5px;}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);}
+th{color:var(--text-faint); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em;}
+td{color:#c7d6e4;}
+.mini{font-size:12.5px; color:var(--text-faint);}
+
+/* code blocks with file label + copy button */
+.code-block{position:relative; margin:0 0 18px;}
+.code-head{
+  display:flex; align-items:center; justify-content:space-between;
+  background:#0e1a28; border:1px solid var(--line); border-bottom:none;
+  border-radius:10px 10px 0 0; padding:8px 14px;
+}
+.code-filename{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--text-dim);
+}
+.code-filename::before{content:"◆ "; color:var(--azure);}
+.copy-btn{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim);
+  background:transparent; border:1px solid var(--line); border-radius:6px;
+  padding:4px 10px; cursor:pointer; transition:.15s;
+}
+.copy-btn:hover{border-color:var(--azure); color:var(--azure);}
+.copy-btn.copied{border-color:var(--ok); color:var(--ok);}
+.code-block pre{margin:0; border-radius:0 0 10px 10px;}
+.code-block .code-head + pre{border-top:none;}
+
+/* step list for "nasıl çalıştırılır" */
+.steps{
+  list-style:none; margin:0 0 18px; padding:0; counter-reset:step;
+}
+.steps li{
+  counter-increment:step; position:relative; padding-left:38px; margin-bottom:14px;
+  font-size:14.5px; color:#c7d6e4;
+}
+.steps li::before{
+  content:counter(step); position:absolute; left:0; top:-1px;
+  width:26px; height:26px; border-radius:50%; background:var(--bg-panel-2);
+  border:1px solid var(--azure-dim); color:var(--azure);
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+}
+.env-note{
+  display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11.5px;
+  color:var(--amber); background:#241a0d; border:1px solid #4a3a1c; border-radius:5px;
+  padding:1px 7px; margin:0 2px;
+}
+.quiz-block{margin:0 0 20px;}
+.quiz-q{
+  background:var(--bg-panel-2); border:1px solid var(--line); border-radius:10px;
+  padding:15px 17px; margin-bottom:12px;
+}
+.quiz-q .qnum{
+  font-family:'IBM Plex Mono', monospace; color:var(--azure); font-size:11px;
+  text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; display:block; font-weight:600;
+}
+.quiz-q .qtext{color:#fff; font-weight:500; margin-bottom:11px; font-size:14.5px; line-height:1.5;}
+.quiz-opt{
+  padding:8px 12px; border-radius:7px; margin-bottom:5px; font-size:13.5px;
+  color:var(--text-dim); border:1px solid var(--line); background:var(--bg-panel);
+}
+.quiz-opt.correct{
+  background:rgba(111,214,160,0.10); border-color:var(--ok); color:#eafff3;
+}
+.quiz-opt.correct::before{content:"✓  "; color:var(--ok); font-weight:700;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="hub-link" href="egitim-merkezi.html">← Eğitim Merkezi</a>
+    <div class="brand">AI-3016</div>
+    <div class="brand-sub">Develop generative AI apps in Azure<br>Türkçe çalışma rehberi</div>
+    <div class="nav-group-label">Başlangıç</div>
+    <div class="nav-item" data-target="giris"><span class="num">·</span> Bu rehber nasıl kullanılır</div>
+    <div class="nav-item" data-target="ortam"><span class="num">·</span> Ortam kurulumu (venv, SDK, .env)</div>
+    <div class="nav-group-label">6 Modül</div>
+    <div class="nav-item" data-target="m1"><span class="num">01</span> Planlama & Foundry temelleri</div>
+    <div class="nav-item" data-target="m2"><span class="num">02</span> Model seçimi, deploy, değerlendirme</div>
+    <div class="nav-item" data-target="m3"><span class="num">03</span> Chat uygulaması geliştirme</div>
+    <div class="nav-item" data-target="m4"><span class="num">04</span> Tool kullanan AI uygulamaları</div>
+    <div class="nav-item" data-target="m5"><span class="num">05</span> Performans optimizasyonu (RAG/Fine-tune)</div>
+    <div class="nav-item" data-target="m6"><span class="num">06</span> Sorumlu AI (Responsible AI)</div>
+    <div class="nav-group-label">Kapanış</div>
+    <div class="nav-item" data-target="ozet"><span class="num">·</span> Sınav özet tablosu</div>
+  </nav>
+
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="section active" id="giris">
+      <div class="eyebrow">Giriş</div>
+      <h1>Develop generative AI apps in Azure<span class="sub">Microsoft Foundry ile üretken yapay zekâ uygulaması geliştirme — 6 modülün tamamı, sıfırdan, Türkçe.</span></h1>
+
+      <p>Bu sertifika yolunda ilk aldığın kurs bu. Microsoft Learn üzerindeki 6 modülü, sen zip olarak attığın ekran görüntülerini ve resmi modül sayfalarını inceleyerek buraya çıkardım. Amaç: İngilizce modülleri izlerken kaçırdığın kavramları burada Türkçe, basit örneklerle netleştirmek.</p>
+
+      <div class="card tip">
+        <div class="card-label">Nasıl çalışalım</div>
+        <p style="margin:0">Soldaki menüden modül modül ilerle. Her modülün içinde artık <strong>"💻 Çalışır kod"</strong> bölümleri var — kopyala, kendi Azure kaynağınla çalıştır, gerçekten dene. Sonunda da <strong>"Sık karıştırılan noktalar"</strong> var — quiz'lerde en çok hata yapılan yerler. Bir kısmı hâlâ kafana yatmazsa, direkt bana o modülün adını söyleyip soru sor, birlikte konuşarak netleştiririz.</p>
+      </div>
+      <div class="card warn">
+        <div class="card-label">İlk yapman gereken</div>
+        <p style="margin:0">Kod örneklerini gerçekten çalıştırmak istiyorsan önce soldaki <strong>"Ortam kurulumu"</strong> sayfasına uğra — Azure kaynağı oluşturma, Python paketleri ve <code>.env</code> dosyası tek seferlik kurulum gerektiriyor. Sadece okuyup öğrenmek istiyorsan atlayıp direkt modüllere geçebilirsin.</p>
+      </div>
+
+      <h2>Önce büyük resim: Bu 6 modül neyi anlatıyor?</h2>
+      <p>Kurs, bir üretken AI (generative AI) uygulamasını <strong>Microsoft Foundry</strong> (eski adıyla Azure AI Foundry / Azure AI Studio) üzerinde baştan sona geliştirme sürecini takip ediyor:</p>
+      <ol>
+        <li><strong>Modül 1</strong> — Önce ortamı ve kavramları anla: Foundry nedir, hangi araçlar var, ne zaman hangisini seçersin.</li>
+        <li><strong>Modül 2</strong> — Model kataloğundan doğru dil modelini seç, bir endpoint'e deploy et, kalitesini ölç.</li>
+        <li><strong>Modül 3</strong> — Kodla o modele bağlanan gerçek bir sohbet (chat) uygulaması yaz.</li>
+        <li><strong>Modül 4</strong> — Modele "araç" (tool) ekle: kod çalıştırma, web arama, dosya arama, kendi fonksiyonların.</li>
+        <li><strong>Modül 5</strong> — Modelin cevaplarını iyileştir: prompt engineering, RAG (kendi verinle besleme), fine-tuning.</li>
+        <li><strong>Modül 6</strong> — Bunu güvenli ve sorumlu şekilde canlıya al: zararlı çıktıları öngör, ölç, azalt.</li>
+      </ol>
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/paths/develop-generative-ai-apps/" target="_blank">learn.microsoft.com — Develop generative AI apps in Azure</a></p>
+    </section>
+
+    <!-- ORTAM KURULUMU -->
+    <section class="section" id="ortam">
+      <div class="eyebrow">Ortam Kurulumu</div>
+      <h1>Bilgisayarında çalışır hale getirme<span class="sub">Bu rehberdeki tüm kod örneklerini gerçekten çalıştırabilmen için tek seferlik kurulum.</span></h1>
+
+      <p>Aşağıdaki adımları bir kere yaparsan, Modül 2-6'daki tüm kod örneklerini olduğu gibi kopyalayıp çalıştırabilirsin. Terminal (Mac/Linux) veya PowerShell (Windows) kullanabilirsin.</p>
+
+      <ol class="steps">
+        <li><strong>Azure kaynaklarını oluştur.</strong> Azure CLI ile giriş yap ve bir Foundry kaynağı + proje oluştur (portaldan da yapabilirsin — <a href="https://ai.azure.com" target="_blank">ai.azure.com</a>).
+          <div class="code-block">
+            <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+            <pre><code>az login
+az group create --name rg-foundry-egitim --location swedencentral
+
+az cognitiveservices account create \
+  --name egitim-foundry-kaynagim \
+  --resource-group rg-foundry-egitim \
+  --kind AIServices \
+  --sku S0 \
+  --location swedencentral \
+  --custom-domain egitim-foundry-kaynagim</code></pre>
+          </div>
+        </li>
+        <li><strong>Bir model deploy et</strong> (Foundry portalında Playground'a girmeden önceki adım — Modül 2'de anlatılan işlem budur). Portaldan: <em>Models + endpoints → Deploy model → gpt-4o-mini</em> seç, deployment adını not al.</li>
+        <li><strong>Python sanal ortamı (venv) oluştur ve gerekli paketleri kur.</strong></li>
+      </ol>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">terminal</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+pip install openai azure-identity azure-ai-projects python-dotenv \
+            azure-ai-contentsafety numpy</code></pre>
+      </div>
+
+      <ol class="steps" start="4">
+        <li><strong>.env dosyası oluştur</strong> — bu değerleri Foundry portalında proje sayfasının "Overview" kısmından kopyalarsın. Bu dosyayı asla paylaşma / GitHub'a atma.</li>
+      </ol>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">.env</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code># Foundry proje endpoint'i (AIProjectClient için)
+FOUNDRY_PROJECT_ENDPOINT=https://egitim-foundry-kaynagim.services.ai.azure.com/api/projects/egitim-proje
+
+# Azure OpenAI uyumlu endpoint (Responses / ChatCompletions API için)
+AZURE_OPENAI_ENDPOINT=https://egitim-foundry-kaynagim.openai.azure.com/openai/v1/
+AZURE_OPENAI_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Deploy ettiğin modelin deployment adı (model isminin kendisi değil!)
+MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+
+# Modül 6 için ayrı bir Content Safety kaynağı oluşturursan
+CONTENT_SAFETY_ENDPOINT=https://egitim-content-safety.cognitiveservices.azure.com/
+CONTENT_SAFETY_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
+      </div>
+
+      <div class="card warn">
+        <div class="card-label">İki kimlik doğrulama yolu var, karıştırma</div>
+        <p style="margin:0">Bu rehberdeki örnekler basitlik için <span class="env-note">AZURE_OPENAI_API_KEY</span> kullanıyor (Modül 3'te anlatıldığı gibi hızlı başlangıç için uygun). Production'a geçtiğinde <code>DefaultAzureCredential</code> ile Entra ID kimlik doğrulamasına geçmeni öneririz — kod örneklerinin çoğunda bunun da alternatif satırı var.</p>
+      </div>
+
+      <div class="card tip">
+        <div class="card-label">Hızlı doğrulama testi</div>
+        <p style="margin:0">Kurulumun çalıştığını doğrulamak için aşağıdaki 6 satırlık scripti çalıştır — "Merhaba" cevabını alırsan her şey doğru bağlanmış demektir.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">test_baglanti.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT_NAME"],
+    input="Tek kelimeyle cevap ver: bağlantı çalışıyor mu?"
+)
+print(response.output_text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python test_baglanti.py</code></p>
+    </section>
+
+    <!-- MODULE 1 -->
+    <section class="section" id="m1">
+      <div class="eyebrow">Modül 01 / 06</div>
+      <h1>Plan and prepare to develop AI solutions on Azure<span class="sub">Azure'da bir AI çözümüne başlamadan önce bilmen gerekenler.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Kod yazmadan önceki "harita" modülü. Azure'da yapay zekâ ile ilgili o kadar çok servis var ki (Foundry, Cognitive Services, Bot Service, ML Studio...) kafanız karışabilir. Bu modül bunları birbirinden ayırt etmeni ve doğru aracı seçmeni sağlıyor.</p>
+
+      <h3>1. "AI" ile neler yapılabilir? (AI capabilities)</h3>
+      <p>Modül önce genel AI yeteneklerini kategorize eder — bunları ezberlemek yerine "hangi problem, hangi kategori" diye düşün:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Generative AI</span><span class="tr">Metin, görsel, kod gibi <strong>yeni içerik üretme</strong> (ör. GPT modelleri, DALL-E)</span></div>
+        <div class="term"><span class="en">Agents</span><span class="tr">Kendi başına karar verip <strong>görev yürüten</strong> yapılar (araç çağırma, çok adımlı işler)</span></div>
+        <div class="term"><span class="en">Computer Vision</span><span class="tr">Görsellerdeki nesneleri, yüzleri, metni <strong>anlama</strong></span></div>
+        <div class="term"><span class="en">Natural Language Processing</span><span class="tr">Dilin anlamını, duygusunu, varlıklarını <strong>çözümleme</strong></span></div>
+        <div class="term"><span class="en">Knowledge mining / RAG</span><span class="tr">Kendi belgelerin içinde <strong>arama ve bilgi çıkarma</strong></span></div>
+        <div class="term"><span class="en">Anomaly detection</span><span class="tr">Normalden sapan <strong>olağandışı verileri</strong> yakalama</span></div>
+      </div>
+
+      <h3>2. Microsoft Foundry nedir?</h3>
+      <p><strong>Microsoft Foundry</strong> (sınavda / eski kaynaklarda "Azure AI Foundry" olarak da geçer — aynı ürün, isim güncellendi), AI uygulaması geliştirmek için tek bir <strong>birleşik platform / portal</strong>dır. Şunları tek yerden yapmanı sağlar:</p>
+      <ul>
+        <li>Model kataloğundan model seçmek</li>
+        <li>Modelleri bir "project" içinde organize etmek</li>
+        <li>Playground'da test etmek</li>
+        <li>Kod ile (SDK) bağlanmak</li>
+        <li>Değerlendirme, güvenlik ve izleme (monitoring) yapmak</li>
+      </ul>
+      <div class="card tip">
+        <div class="card-label">Zihinde nasıl otursun</div>
+        <p style="margin:0">Foundry'yi bir <strong>"AI geliştirme kontrol paneli / IDE"</strong> gibi düşün. Tıpkı Visual Studio'nun kod yazmak için bir "workspace" olması gibi, Foundry da AI modelleriyle çalışmak için bir "workspace" (project).</p>
+      </div>
+
+      <h3>3. Foundry Tools nedir? (eskiden "Azure AI Services")</h3>
+      <p>Bunlar Foundry'nin içinde kullanabileceğin <strong>hazır, önceden eğitilmiş yapay zekâ servisleridir</strong>. Kendi modelini eğitmene gerek kalmadan API çağrısıyla kullanırsın. Örnekler:</p>
+      <table>
+        <tr><th>Servis</th><th>Ne işe yarar</th></tr>
+        <tr><td>Azure AI Language</td><td>Duygu analizi, özetleme, varlık tanıma</td></tr>
+        <tr><td>Azure AI Vision</td><td>Görsel analiz, OCR</td></tr>
+        <tr><td>Azure AI Speech</td><td>Konuşmayı metne / metni konuşmaya çevirme</td></tr>
+        <tr><td>Azure AI Search</td><td>Belgeler üzerinde arama (RAG'ın temel taşı)</td></tr>
+        <tr><td>Azure OpenAI in Foundry Models</td><td>GPT ailesi modellere erişim</td></tr>
+      </table>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0"><strong>Foundry ≠ Foundry Tools.</strong> Foundry: geliştirme ortamı / platform. Foundry Tools: o platformun içinde çağırdığın hazır AI servisleri (eski adıyla "Cognitive Services"). Quiz'lerde "hangisi bir servistir, hangisi platformdur" şeklinde soru çıkar.</p>
+      </div>
+
+      <h3>4. Geliştirici araçları ve SDK'lar</h3>
+      <ul>
+        <li><strong>Foundry portal</strong> — tarayıcı üzerinden, kod yazmadan (no-code/low-code) çalışma alanı</li>
+        <li><strong>Foundry SDK</strong> (Python, C#, JavaScript, Java) — kod ile projeye bağlanma</li>
+        <li><strong>Foundry Toolkit extension (VS Code)</strong> — VS Code içinden projene bağlanıp modelleri test etme</li>
+        <li><strong>Azure CLI / Azure PowerShell</strong> — kaynakları otomatik oluşturma/yönetme</li>
+      </ul>
+
+      <h3>5. Responsible AI (sorumlu AI) — ilk bakış</h3>
+      <p>Bu modülde konu sadece tanıtılır (detayı Modül 6'da). Microsoft'un 6 ilkesini şimdiden öğren, çünkü sınavda tekrar tekrar çıkar:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Fairness</span><span class="tr">Adalet — gruplar arası ayrımcılık yapmama</span></div>
+        <div class="term"><span class="en">Reliability & Safety</span><span class="tr">Güvenilirlik — beklenmedik durumlarda güvenli davranma</span></div>
+        <div class="term"><span class="en">Privacy & Security</span><span class="tr">Gizlilik ve veri güvenliği</span></div>
+        <div class="term"><span class="en">Inclusiveness</span><span class="tr">Kapsayıcılık — herkes için erişilebilir olma</span></div>
+        <div class="term"><span class="en">Transparency</span><span class="tr">Şeffaflık — sistemin nasıl çalıştığının anlaşılır olması</span></div>
+        <div class="term"><span class="en">Accountability</span><span class="tr">Hesap verebilirlik — insanların sorumlu olması</span></div>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Azure AI Foundry ile Azure AI Services (Foundry Tools) arasındaki fark nedir?</summary>
+        <div class="a">Foundry: model seçme, deploy etme, test etme, izleme yaptığın <strong>üst düzey platform/portal</strong>. Foundry Tools (Azure AI Services): içinde hazır, tek amaçlı AI yetenekleri barındıran <strong>API servisleri</strong> (Vision, Language, Speech vb.). Foundry, bu servisleri de organize edebilir.</div>
+      </details>
+      <details class="qa">
+        <summary>Neden kendi modelimi sıfırdan eğitmek yerine Foundry Tools kullanayım?</summary>
+        <div class="a">Foundry Tools servisleri zaten devasa verilerle önceden eğitilmiş (pre-trained). Sıfırdan model eğitmek pahalı, zaman alıcı ve veri gerektirir. Genel amaçlı bir ihtiyaç (duygu analizi, OCR, vs.) için hazır servis kullanmak çok daha hızlıdır.</div>
+      </details>
+      <details class="qa">
+        <summary>"Responsible AI" bir özellik mi, yoksa bir süreç mi?</summary>
+        <div class="a">Bir <strong>süreçtir</strong> — proje planlamasından, geliştirmeye, dağıtıma (deployment) ve operasyona kadar her aşamada uygulanması gereken sürekli bir yaklaşımdır; tek seferlik bir "ayar" değildir.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which web portal should you use to work with assets in a Microsoft Foundry project?</div>
+          <div class="quiz-opt">The Azure portal</div>
+          <div class="quiz-opt">Microsoft Copilot</div>
+          <div class="quiz-opt correct">The Microsoft Foundry portal</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which component of Microsoft Foundry provides pre-built services for common AI tasks?</div>
+          <div class="quiz-opt correct">Foundry Tools</div>
+          <div class="quiz-opt">Foundry Models</div>
+          <div class="quiz-opt">Foundry IQ</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which extension should you use in Visual Studio Code to work with Foundry projects?</div>
+          <div class="quiz-opt">Python extension for Visual Studio Code</div>
+          <div class="quiz-opt">GitHub Copilot</div>
+          <div class="quiz-opt correct">Foundry Toolkit for Visual Studio Code</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/prepare-azure-ai-development/" target="_blank">learn.microsoft.com — Plan and prepare to develop AI solutions on Azure</a></p>
+    </section>
+
+    <!-- MODULE 2 -->
+    <section class="section" id="m2">
+      <div class="eyebrow">Modül 02 / 06</div>
+      <h1>Select, deploy, and evaluate Microsoft Foundry models<span class="sub">Doğru modeli bulma, canlıya alma (deploy) ve kalitesini ölçme.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Foundry'de "model catalog" denen bir mağaza var — yüzlerce dil modeli (GPT ailesi, Llama, Mistral, Phi, DeepSeek vb.) burada listelenir. Bu modül şunu öğretir: <strong>doğru modeli nasıl seçersin, nasıl bir endpoint'e açarsın, ve çıktısının "iyi" olduğunu nasıl kanıtlarsın.</strong></p>
+
+      <h3>1. Model kataloğunu keşfetme (Explore the model catalog)</h3>
+      <p>Kataloğu filtrelersin: sağlayıcı (Microsoft, OpenAI, Meta, Mistral...), görev tipi (chat, embedding, image), lisans, dağıtım tipi vb. Her modelin bir "model card"ı vardır: açıklama, kullanım örnekleri, kısıtlamalar, benchmark skorları.</p>
+
+      <h3>2. Benchmark'larla model seçme</h3>
+      <p>Modelleri karşılaştırırken 4 ana eksen düşün:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Quality</span><span class="tr">Doğruluk, tutarlılık, dil kalitesi</span></div>
+        <div class="term"><span class="en">Safety</span><span class="tr">Zararlı içerik üretme eğilimi ne kadar düşük</span></div>
+        <div class="term"><span class="en">Cost</span><span class="tr">1000 token başına maliyet</span></div>
+        <div class="term"><span class="en">Performance (latency/throughput)</span><span class="tr">Cevap hızı, saniyedeki istek sayısı</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0">"En kaliteli model her zaman en doğru seçimdir" YANLIŞ bir çıkarım. Sınav genelde şunu sorar: <strong>bir senaryoya göre</strong> hangi model uygun (ör. düşük gecikme gerektiren gerçek-zamanlı chatbot için küçük&hızlı model; karmaşık akıl yürütme gerektiren analiz için büyük&yavaş model). "Trade-off" mantığıyla düşün.</p>
+      </div>
+
+      <h3>3. Modeli bir endpoint'e deploy etme</h3>
+      <p>Bir modeli seçtikten sonra onu <strong>deploy</strong> edersin — bu, modelin bir HTTP endpoint (URL) arkasında canlı olarak çalışır hale gelmesi demektir. Deploy ederken seçilenler:</p>
+      <ul>
+        <li><strong>Deployment type</strong> — Standard (pay-as-you-go), Provisioned Throughput Unit (PTU, sabit kapasite ayrılır) gibi seçenekler</li>
+        <li><strong>Region</strong> — modelin barındırılacağı Azure bölgesi</li>
+        <li><strong>Rate limit / capacity</strong> — dakikada işlenecek token miktarı</li>
+      </ul>
+      <p>Deploy ettikten sonra <strong>Playground</strong>'da (kod yazmadan, tarayıcıda) hemen sohbet ederek test edebilirsin.</p>
+
+      <h3>4. Model performansını değerlendirme (Evaluation)</h3>
+      <p>İki yaklaşım vardır:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Manual evaluation</span><span class="tr">İnsan olarak örnek girdi-çıktılara bakıp puanlama (küçük ölçekte, sezgisel)</span></div>
+        <div class="term"><span class="en">Automated / AI-assisted evaluation</span><span class="tr">Bir "değerlendirici" model veya metrik kullanarak, çok sayıda örneği otomatik puanlama (ölçeklenebilir)</span></div>
+      </div>
+      <p>Otomatik değerlendirmede kullanılan bazı metrik kategorileri:</p>
+      <ul>
+        <li><strong>Groundedness</strong> — cevap, verilen kaynağa/bağlama ne kadar sadık (uydurma / "hallucination" yok mu)</li>
+        <li><strong>Relevance</strong> — cevap soruyla ne kadar alakalı</li>
+        <li><strong>Coherence</strong> — cevap mantıksal olarak ne kadar tutarlı</li>
+        <li><strong>Fluency</strong> — dil bilgisi ve akıcılık</li>
+        <li><strong>Similarity</strong> — beklenen cevaba ne kadar yakın</li>
+      </ul>
+      <div class="card tip">
+        <div class="card-label">Zihinde nasıl otursun</div>
+        <p style="margin:0">Bunu bir işe alım sürecine benzet: <strong>Kataloğu tarama</strong> = özgeçmiş inceleme, <strong>Benchmark</strong> = referans kontrolü, <strong>Deploy</strong> = işe alıp masaya oturtma, <strong>Evaluation</strong> = performans değerlendirmesi (deneme süresi sonu).</p>
+      </div>
+
+      <h2>💻 Çalışır kod: Foundry projene bağlanma</h2>
+      <p>Deploy ettiğin modeli koddan görebilmek için önce <code>AIProjectClient</code> ile projene bağlanırsın. Bu, Entra ID (Azure hesabınla <code>az login</code>) kullanır — <span class="env-note">ORTAM KURULUMU</span> adımında oluşturduğun kaynağa bağlanır.</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">proje_baglan.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
+load_dotenv()
+
+# Entra ID ile kimlik doğrulama (önce terminalde "az login" çalıştırmış olmalısın)
+project_client = AIProjectClient(
+    endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+    credential=DefaultAzureCredential(),
+)
+
+# Projendeki deploy edilmiş modelleri listele
+print("Projendeki bağlantılar:")
+for connection in project_client.connections.list():
+    print(f" - {connection.name} ({connection.type})")</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>az login</code> sonra <code>python proje_baglan.py</code></p>
+
+      <h3>Manuel değerlendirme scripti (Evaluation)</h3>
+      <p>Aşağıdaki script, birden fazla test sorusunu modele sırayla sorar, cevapları kaydeder ve <strong>groundedness için basit bir kontrol</strong> (beklenen anahtar kelimelerin cevapta geçip geçmediği) yapar — modülün anlattığı "manuel/otomatik değerlendirme" mantığının küçük ölçekte, çalışan bir versiyonu.</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">degerlendirme.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os, csv
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+# Her test örneği: soru + cevapta geçmesini beklediğin anahtar kelime(ler)
+test_cases = [
+    {"soru": "Microsoft Foundry nedir, tek cümlede anlat.", "beklenen": ["platform", "model"]},
+    {"soru": "Azure'da 2+2 kaçtır?", "beklenen": ["4"]},
+    {"soru": "RAG açılımı nedir?", "beklenen": ["retrieval", "augmented", "generation"]},
+]
+
+sonuclar = []
+for case in test_cases:
+    response = client.responses.create(model=model, input=case["soru"])
+    cevap = response.output_text
+    gecen = [kw for kw in case["beklenen"] if kw.lower() in cevap.lower()]
+    skor = len(gecen) / len(case["beklenen"])
+    sonuclar.append({
+        "soru": case["soru"],
+        "cevap": cevap[:120] + "...",
+        "skor": round(skor, 2),
+    })
+    print(f"[{skor:.0%}] {case['soru']}")
+
+# CSV'ye kaydet (sonraki deploy'larla kıyaslamak için baseline)
+with open("evaluation_sonuclari.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["soru", "cevap", "skor"])
+    writer.writeheader()
+    writer.writerows(sonuclar)
+
+ortalama = sum(s["skor"] for s in sonuclar) / len(sonuclar)
+print(f"\nOrtalama skor: {ortalama:.0%}  →  evaluation_sonuclari.csv dosyasına kaydedildi")</code></pre>
+      </div>
+      <div class="card tip">
+        <div class="card-label">Bunu neden yapıyoruz</div>
+        <p style="margin:0">Gerçek dünyada bu mantık, resmi <code>azure-ai-evaluation</code> paketindeki <code>GroundednessEvaluator</code>, <code>RelevanceEvaluator</code> gibi hazır sınıflarla otomatikleştirilir. Ama önce bu basit versiyonu elle yazıp mantığı anlamak, sınavdaki "manuel vs otomatik evaluation" ayrımını çok daha net oturtur.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>"Deploy etmek" ile "Playground'da test etmek" aynı şey mi?</summary>
+        <div class="a">Hayır. <strong>Deploy</strong>, modeli bir endpoint arkasında erişilebilir/çağrılabilir hale getirmektir (altyapı adımı). <strong>Playground</strong>, deploy edilmiş modeli tarayıcı üzerinden manuel olarak sohbet ederek denediğin arayüzdür. Deploy önce gelir, playground'da test sonra.</div>
+      </details>
+      <details class="qa">
+        <summary>Groundedness metriği neyi ölçer, neden önemlidir?</summary>
+        <div class="a">Modelin cevabının, kendisine verilen bağlam/kaynak veriye ne kadar sadık kaldığını ölçer. Düşük groundedness = model kaynakta olmayan bilgi "uyduruyor" (hallucination). Özellikle RAG uygulamalarında kritik bir metriktir.</div>
+      </details>
+      <details class="qa">
+        <summary>Manuel değerlendirme ne zaman, otomatik değerlendirme ne zaman tercih edilir?</summary>
+        <div class="a">Manuel: az sayıda örnek, erken aşama, sezgisel/kalitatif geri bildirim gerektiğinde. Otomatik: büyük veri setleri üzerinde tutarlı, tekrarlanabilir ve ölçeklenebilir şekilde puanlama gerektiğinde (ör. CI/CD içinde her deploy'da otomatik test).</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which model benchmark indicates the model's ability to process prompts and return comprehensive responses quickly?</div>
+          <div class="quiz-opt">Quality index</div>
+          <div class="quiz-opt">Cost</div>
+          <div class="quiz-opt correct">Throughput</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which deployment type in Microsoft Foundry is best for general use while offering the largest quota?</div>
+          <div class="quiz-opt">Data Zone Batch</div>
+          <div class="quiz-opt correct">Global Standard</div>
+          <div class="quiz-opt">Developer</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which evaluation metric measures linguistic correctness and natural language quality?</div>
+          <div class="quiz-opt correct">Fluency</div>
+          <div class="quiz-opt">Groundedness</div>
+          <div class="quiz-opt">Relevance</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/model-catalog-evaluate/" target="_blank">learn.microsoft.com — Select, deploy, and evaluate Microsoft Foundry models</a></p>
+    </section>
+
+    <!-- MODULE 3 -->
+    <section class="section" id="m3">
+      <div class="eyebrow">Modül 03 / 06</div>
+      <h1>Develop a generative AI chat app with Microsoft Foundry<span class="sub">Deploy ettiğin modele koddan bağlanıp gerçek bir chat uygulaması yazma.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Artık modelin deploy edilmiş durumda (Modül 2). Bu modül, o modele <strong>Python/C#/JS koduyla</strong> nasıl bağlanacağını ve gerçek bir uygulama içinde nasıl kullanacağını öğretir.</p>
+
+      <h3>1. Chat Playground ile başlama</h3>
+      <p>Foundry portalındaki Playground, sadece test için değil — orada denediğin ayarlardan (system message, temperature, vb.) <strong>otomatik kod örneği üretebilirsin</strong> ("View code" butonu). Bu, sınavda "playground bir kod üretme aracı olarak da kullanılabilir mi?" sorusuna denk gelir — Evet.</p>
+
+      <h3>2. Endpoint, kimlik doğrulama (authentication) ve SDK seçimi</h3>
+      <p>Uygulamanı yazmadan önce 3 karar verirsin:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Endpoint</span><span class="tr">Modelin çağrılacağı URL (proje bazlı veya Azure OpenAI bazlı endpoint)</span></div>
+        <div class="term"><span class="en">Authentication</span><span class="tr"><strong>API key</strong> (basit, hızlı) veya <strong>Microsoft Entra ID / Azure AD (Managed Identity)</strong> (kurumsal, daha güvenli — anahtar saklamana gerek yok)</span></div>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0">Sınavda "production (canlı) ortamda hangi kimlik doğrulama yöntemi önerilir?" diye sorulursa cevap genelde <strong>Microsoft Entra ID / Managed Identity</strong>'dir — API key'i koda gömmek (hardcode) güvenlik riski taşır.</p>
+      </div>
+
+      <h3>3. Responses API</h3>
+      <p>Foundry'nin daha yeni, <strong>çok adımlı (multi-turn) ve tool-çağırma dostu</strong> API'sidir. Tek bir "response" nesnesi içinde konuşma geçmişini, araç çağrılarını ve çıktıyı yönetmeyi kolaylaştırır. Basit çağrı:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">responses_basit.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],   # .../openai/v1/
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT_NAME"],
+    input="Azure Foundry nedir, kısaca anlat."
+)
+
+print(response.output_text)</code></pre>
+      </div>
+
+      <p><strong>Çok adımlı sohbet</strong> için her turda önceki cevabın kimliğini (<code>previous_response_id</code>) gönderirsin — geçmişi sen elle biriktirmene gerek kalmaz:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">responses_cok_adimli.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+# 1. tur
+r1 = client.responses.create(model=model, input="Retrieval Augmented Generation nedir?")
+print("Model:", r1.output_text)
+
+# 2. tur — önceki cevabın id'sini vererek bağlamı korur
+r2 = client.responses.create(
+    model=model,
+    previous_response_id=r1.id,
+    input="Bunu bir lise öğrencisine anlatır gibi tekrar açıklar mısın?"
+)
+print("Model:", r2.output_text)</code></pre>
+      </div>
+
+      <h3>4. ChatCompletions API</h3>
+      <p>Daha eski, yaygın bilinen ve hâlâ çok kullanılan API — <strong>mesaj listesi (messages array)</strong> mantığıyla çalışır: <code>system</code>, <code>user</code>, <code>assistant</code> rolleriyle konuşma geçmişini sen kendin yönetirsin ve her istekte tüm listeyi tekrar gönderirsin.</p>
+
+      <p>Aşağıdaki, terminalde çalışan <strong>tam bir sohbet uygulaması</strong> — kopyala, çalıştır, terminalde modelle Türkçe konuş, çıkmak için <code>exit</code> yaz:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">chat_app.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+# Konuşma geçmişini biz elle tutuyoruz (ChatCompletions API'nin doğası budur)
+messages = [
+    {"role": "system", "content": "Sen Türkçe konuşan, kısa ve net cevaplar veren yardımsever bir asistansın."}
+]
+
+print("Chat app başladı. Çıkmak için 'exit' yaz.\n")
+while True:
+    kullanici_girdisi = input("Sen: ")
+    if kullanici_girdisi.strip().lower() == "exit":
+        break
+
+    messages.append({"role": "user", "content": kullanici_girdisi})
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.7,
+    )
+
+    asistan_cevabi = response.choices[0].message.content
+    print(f"Asistan: {asistan_cevabi}\n")
+
+    # Asistanın cevabını da geçmişe ekle — yoksa model konuşmayı "hatırlamaz"
+    messages.append({"role": "assistant", "content": asistan_cevabi})</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python chat_app.py</code></p>
+
+      <div class="card tip">
+        <div class="card-label">İki API'yi ayırt etmenin en hızlı yolu</div>
+        <p style="margin:0"><strong>ChatCompletions API</strong>: sen mesaj geçmişini elle biriktirip her seferinde tüm listeyi gönderirsin (stateless — durumu sen tutarsın, <code>messages.append(...)</code> gördüğün yer budur). <strong>Responses API</strong>: daha yeni, tool kullanımı ve çok adımlı akışları daha az kodla yönetir; <code>previous_response_id</code> ile durumu (state) API tarafında tutabilirsin.</p>
+      </div>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Playground sadece manuel test için mi kullanılır?</summary>
+        <div class="a">Hayır — playground'da ayarları (system message, sıcaklık/temperature, model) belirledikten sonra "kodu görüntüle" ile o ayarları yansıtan hazır kod snippet'i alabilirsin; bu, geliştirmeyi hızlandıran bir başlangıç noktasıdır.</div>
+      </details>
+      <details class="qa">
+        <summary>API key ile Entra ID kimlik doğrulaması arasındaki temel fark nedir?</summary>
+        <div class="a">API key statik bir "parola" gibidir, sızarsa kötüye kullanılabilir, sen yönetmek zorundasındır. Entra ID / Managed Identity, Azure kimliklerine dayalı, rol tabanlı (RBAC) ve anahtar saklamayı gerektirmeyen daha güvenli bir yöntemdir; kurumsal/production senaryolarda tercih edilir.</div>
+      </details>
+      <details class="qa">
+        <summary>ChatCompletions API'de "system" rolünün amacı nedir?</summary>
+        <div class="a">Modelin genel davranışını, kişiliğini ve kısıtlarını belirleyen ilk talimattır — kullanıcı mesajlarından önce gelir ve konuşma boyunca modelin nasıl davranacağını çerçeveler (ör. "sen sadece Türkçe cevap veren bir müşteri hizmetleri asistanısın").</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which endpoint offers the broadest support for OpenAI APIs with Foundry Models?</div>
+          <div class="quiz-opt">The Foundry project endpoint</div>
+          <div class="quiz-opt correct">The Azure OpenAI endpoint</div>
+          <div class="quiz-opt">The Foundry Tools endpoint</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">Which package must you install to use the Microsoft Foundry SDK in Python?</div>
+          <div class="quiz-opt">Package azure-foundry</div>
+          <div class="quiz-opt correct">Package azure-ai-projects</div>
+          <div class="quiz-opt">Package microsoft-foundry-sdk</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which method do you use to generate responses with the Responses API?</div>
+          <div class="quiz-opt">client.chat.completions.create()</div>
+          <div class="quiz-opt">client.get_response_id()</div>
+          <div class="quiz-opt correct">client.responses.create()</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/foundry-sdk/" target="_blank">learn.microsoft.com — Develop a generative AI chat app with Microsoft Foundry</a></p>
+    </section>
+
+    <!-- MODULE 4 -->
+    <section class="section" id="m4">
+      <div class="eyebrow">Modül 04 / 06</div>
+      <h1>Develop generative AI apps that use tools<span class="sub">Modeline "yeteneklerini" ekle: kod çalıştırma, web arama, dosya arama, kendi fonksiyonların.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Bir dil modeli tek başına sadece <strong>metin üretir</strong> — matematik yapamaz (güvenilir şekilde), internete bağlanamaz, senin dosyalarını okuyamaz, senin veritabanına yazamaz. <strong>Tools (araçlar)</strong>, modele bu sınırların dışına çıkma yeteneği kazandırır. Mantık: model "bu görevi yapmak için şu aracı çağırmam gerek" der, sistem aracı çalıştırır, sonucu modele geri verir, model nihai cevabı üretir.</p>
+
+      <h3>1. code_interpreter tool</h3>
+      <p>Model, verdiğin bir problemi çözmek için <strong>gerçek Python kodu yazıp çalıştırabilir</strong> (sandbox/container ortamda). Örnek kullanım: "Bu CSV'deki verilerin ortalamasını hesapla ve grafik çiz" — model kodu yazar, çalıştırır, sonucu (sayı/grafik) sana döner.</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">code_interpreter_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+
+response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT_NAME"],
+    tools=[{"type": "code_interpreter", "container": {"type": "auto"}}],
+    instructions="Sen bir matematik öğretmenisin. Soruları Python kodu yazıp çalıştırarak çöz.",
+    input="3x + 11 = 14 denklemini çöz ve x'i bul."
+)
+
+print(response.output_text)</code></pre>
+      </div>
+      <p class="mini">Not: <code>code_interpreter</code> token ücretinin üzerinde ayrı bir konteyner ücreti de çıkarır — Foundry portalında fiyatlandırmayı kontrol et.</p>
+
+      <h3>2. web_search tool</h3>
+      <p>Modelin eğitim verisi belli bir tarihte dondurulmuştur (knowledge cutoff). Bu araç, modelin <strong>güncel/gerçek zamanlı bilgiye</strong> internetten erişmesini sağlar.</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">web_search_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>response = client.responses.create(
+    model=os.environ["MODEL_DEPLOYMENT_NAME"],
+    tools=[{"type": "web_search"}],
+    input="Bugün İstanbul'da hava nasıl?"
+)
+print(response.output_text)</code></pre>
+      </div>
+
+      <h3>3. file_search tool</h3>
+      <p>Kendi yüklediğin belgeleri (PDF, docx, vb.) modelin arayıp içinden ilgili parçaları bulmasını sağlar — bu aslında <strong>RAG'ın (Modül 5) hazır/entegre bir uygulamasıdır</strong>: model cevabını senin belgene dayandırır. Önce dosyayı yüklersin, sonra bir "vector store" oluşturup dosyayı ona bağlarsın:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">file_search_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+# 1) Şirket belgeni yükle
+uploaded_file = client.files.create(
+    file=open("sirket_politikasi.pdf", "rb"),
+    purpose="assistants",
+)
+
+# 2) Bir vector store oluştur ve dosyayı ekle
+vector_store = client.vector_stores.create(name="sirket-belgeleri")
+client.vector_stores.files.create(vector_store_id=vector_store.id, file_id=uploaded_file.id)
+
+# 3) file_search aracıyla, sadece bu belgeye dayanarak soru sor
+response = client.responses.create(
+    model=model,
+    tools=[{"type": "file_search", "vector_store_ids": [vector_store.id]}],
+    input="Şirket politikasına göre yıllık izin kaç gün?"
+)
+print(response.output_text)</code></pre>
+      </div>
+
+      <h3>4. function tool (custom function calling)</h3>
+      <p>En esnek olanı. Kendi yazdığın <strong>herhangi bir fonksiyonu</strong> (bir API çağrısı, veritabanı sorgusu, iş mantığı) modele tanıtırsın. Model, kullanıcının isteğine göre "bu fonksiyonu şu parametrelerle çağırmalıyım" diye karar verir — <strong>ama fonksiyonu asıl senin kodun çalıştırır</strong>, model sadece "hangi fonksiyon, hangi parametrelerle" bilgisini üretir.</p>
+
+      <div class="card pitfall">
+        <div class="card-label">En kritik kavram — burada takılınıyor</div>
+        <p style="margin:0">Model <strong>fonksiyonu kendisi çalıştırmaz.</strong> Model sadece "şu fonksiyonu, şu argümanlarla çağırman lazım" diye bir <code>function_call</code> nesnesi üretir. Fonksiyonu gerçekten çalıştırmak (API'ye istek atmak, veritabanına bağlanmak) <strong>senin kodunun</strong> sorumluluğundadır; sonucu <code>function_call_output</code> olarak modele geri gönderirsin. Bu ayrımı karıştırmak sınavda en sık hata yapılan yerdir.</p>
+      </div>
+
+      <p>Aşağıda, gerçek hava durumu API'si yerine sahte (mock) bir fonksiyon kullanan ama <strong>uçtan uca çalışan tam akış</strong> var — Microsoft'un resmi dokümantasyonundaki desene birebir uyar:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">function_calling_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os, json
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+# --- 1) Senin gerçek fonksiyonun (burada mock veri döndürüyor) ---
+def get_weather(location: str) -> dict:
+    print(f"  [Gerçek kod çalışıyor] {location} için hava durumu getiriliyor...")
+    return {"location": location, "temperature": "21°C", "condition": "parçalı bulutlu"}
+
+# --- 2) Bu fonksiyonu modele "tanıt" (JSON şema olarak) ---
+tools = [
+    {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Belirtilen şehir için güncel hava durumunu döner",
+        "parameters": {
+            "type": "object",
+            "properties": {"location": {"type": "string", "description": "Şehir adı"}},
+            "required": ["location"],
+        },
+    }
+]
+
+# --- 3) Modele soruyu sor, tool tanımlarını da ekle ---
+response = client.responses.create(
+    model=model,
+    tools=tools,
+    input="İzmir'de hava nasıl?"
+)
+
+# --- 4) Model "function_call" istiyorsa, GERÇEK fonksiyonu SEN çalıştır ---
+tool_outputs = []
+for item in response.output:
+    if item.type == "function_call" and item.name == "get_weather":
+        args = json.loads(item.arguments)
+        result = get_weather(**args)          # <- fonksiyonu burada biz çalıştırıyoruz
+        tool_outputs.append({
+            "type": "function_call_output",
+            "call_id": item.call_id,
+            "output": json.dumps(result),
+        })
+
+# --- 5) Sonucu modele geri gönder, nihai cevabı al ---
+if tool_outputs:
+    final_response = client.responses.create(
+        model=model,
+        previous_response_id=response.id,
+        input=tool_outputs,
+    )
+    print("Asistan:", final_response.output_text)
+else:
+    print("Asistan:", response.output_text)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: <code>python function_calling_ornek.py</code> — çıktıda önce "[Gerçek kod çalışıyor]" satırını, sonra modelin bu veriyi cümleye dönüştürdüğünü göreceksin.</p>
+
+      <h3>Dört aracı karşılaştır</h3>
+      <table>
+        <tr><th>Araç</th><th>Ne zaman kullanılır</th></tr>
+        <tr><td><code>code_interpreter</code></td><td>Hesaplama, veri analizi, grafik gerektiğinde</td></tr>
+        <tr><td><code>web_search</code></td><td>Güncel/gerçek zamanlı bilgi gerektiğinde</td></tr>
+        <tr><td><code>file_search</code></td><td>Kendi belgelerinden bilgi çekmek gerektiğinde</td></tr>
+        <tr><td><code>function</code></td><td>Dış sistemlere bağlanmak / özel iş mantığı gerektiğinde</td></tr>
+      </table>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Function calling akışında kod gerçekte kim tarafından çalıştırılır?</summary>
+        <div class="a">Senin uygulama kodun tarafından. Model sadece hangi fonksiyonun hangi argümanlarla çağrılması gerektiğini belirten yapılandırılmış bir çıktı üretir; çalıştırma adımı tamamen geliştiricinin sorumluluğundadır.</div>
+      </details>
+      <details class="qa">
+        <summary>file_search ile web_search arasındaki fark nedir?</summary>
+        <div class="a">file_search, senin sisteme yüklediğin özel/kapalı belgeler üzerinde arama yapar (senin verin). web_search, açık internetten güncel/genel bilgi getirir. Kaynakları birbirine karıştırma — biri özel veri, diğeri kamuya açık güncel veri.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Which tool should you use when a model needs to answer questions from your own uploaded policy documents?</div>
+          <div class="quiz-opt">web_search</div>
+          <div class="quiz-opt correct">file_search</div>
+          <div class="quiz-opt">code_interpreter</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">In a function-calling workflow, what should your application do after the model returns a function_call item?</div>
+          <div class="quiz-opt">Wait for the model to run the function automatically</div>
+          <div class="quiz-opt correct">Run the function in your code and send a function_call_output back to the model</div>
+          <div class="quiz-opt">Convert the function call into a web_search request</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Which statement about the code_interpreter tool is correct?</div>
+          <div class="quiz-opt correct">It can run Python code in a sandboxed runtime to help solve tasks</div>
+          <div class="quiz-opt">It can browse external websites directly during code execution</div>
+          <div class="quiz-opt">It only supports file uploads and can't perform calculations</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/use-generative-ai-tools/" target="_blank">learn.microsoft.com — Develop generative AI apps that use tools</a></p>
+    </section>
+
+    <!-- MODULE 5 -->
+    <section class="section" id="m5">
+      <div class="eyebrow">Modül 05 / 06</div>
+      <h1>Optimize generative AI model performance with Microsoft Foundry<span class="sub">Prompt engineering, RAG ve fine-tuning — hangisini ne zaman kullanmalı.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Modelin çıktısı "yeterince iyi değil" dediğinde 3 farklı çözüm yolu var. Bu modülün asıl sınav konusu: <strong>bu üç yöntemi birbirinden ayırt etmek ve doğru senaryoda doğrusunu seçmek.</strong></p>
+
+      <h3>1. Prompt Engineering</h3>
+      <p>Modelin ağırlıklarına <strong>hiç dokunmadan</strong>, sadece ona verdiğin talimatı (prompt) iyileştirerek daha iyi sonuç almaktır. En ucuz ve en hızlı yöntemdir, her zaman ilk denenmesi gereken şeydir.</p>
+      <div class="grid2">
+        <div class="term"><span class="en">System message</span><span class="tr">Modelin rolünü, tonunu, kısıtlarını baştan tanımlayan talimat</span></div>
+        <div class="term"><span class="en">Few-shot learning</span><span class="tr">Promptun içine birkaç örnek girdi-çıktı ekleyerek modele "böyle cevap ver" göstermek</span></div>
+        <div class="term"><span class="en">Zero-shot</span><span class="tr">Hiç örnek vermeden direkt talimat vermek</span></div>
+        <div class="term"><span class="en">Model parameters</span><span class="tr"><code>temperature</code> (yaratıcılık/rastgelelik), <code>max_tokens</code>, <code>top_p</code> gibi ayarlar</span></div>
+      </div>
+      <div class="card tip">
+        <div class="card-label">Temperature'ı hatırlamanın kolay yolu</div>
+        <p style="margin:0"><strong>Düşük temperature (ör. 0.1)</strong> = tutarlı, öngörülebilir, "güvenli" cevaplar (ör. kod üretimi, faktüel cevaplar). <strong>Yüksek temperature (ör. 0.9)</strong> = yaratıcı, çeşitli, sürpriz cevaplar (ör. hikaye yazımı, beyin fırtınası).</p>
+      </div>
+
+      <h3>2. RAG (Retrieval Augmented Generation)</h3>
+      <p>Model kendi eğitim verisinde olmayan (ör. şirketinin iç dokümanları, güncel veriler) bilgiyi bilmiyor. RAG'ın mantığı: <strong>soruyu almadan önce/sırasında ilgili belgeleri bir arama motorundan (ör. Azure AI Search) çek, bu belgeleri prompt'un içine ekle, sonra modele sor.</strong></p>
+      <p>Akış şu şekilde özetlenebilir:</p>
+      <ol>
+        <li>Kullanıcı soru sorar</li>
+        <li>Sistem, o soruyla ilgili belge parçalarını (chunks) bir index'ten arar (retrieval)</li>
+        <li>Bulunan parçalar, prompt'a "bağlam" (context) olarak eklenir</li>
+        <li>Model, bu bağlama dayanarak cevap üretir (generation) — <strong>groundedness</strong> buradan gelir</li>
+      </ol>
+      <div class="card warn">
+        <div class="card-label">Sık karışan nokta</div>
+        <p style="margin:0">RAG, modelin ağırlıklarını <strong>değiştirmez</strong> — model hâlâ aynı modeldir, sadece ona her seferinde "işte cevap vermen için gereken ek bilgi" verilir. Fine-tuning ile karıştırma: RAG = "modelin önüne kitap koymak", Fine-tuning = "modele yeni bir ders vererek onu değiştirmek".</p>
+      </div>
+
+      <h3>💻 Çalışır kod: Basit bir RAG sistemi (Azure AI Search olmadan)</h3>
+      <p>Gerçek projelerde retrieval genelde Azure AI Search ile yapılır, ama <strong>mantığı anlamak için</strong> aşağıda hiçbir ek altyapı gerektirmeyen, sadece embedding + kosinüs benzerliğiyle çalışan minik bir RAG var. 4 adımı da (embed → sakla → ara → prompt'a ekle) net görebilirsin:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">basit_rag.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+import numpy as np
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+chat_model = os.environ["MODEL_DEPLOYMENT_NAME"]
+embed_model = "text-embedding-3-small"   # Foundry'de ayrıca deploy etmen gerekir
+
+# --- "Şirket belgesi" yerine kısa örnek metin parçaları (chunks) ---
+belgeler = [
+    "Şirketimizde yıllık izin hakkı, çalışma süresine göre 14 ila 26 gün arasında değişir.",
+    "Uzaktan çalışma politikası: haftada en fazla 3 gün ofis dışında çalışılabilir.",
+    "Masraf iadeleri, fişin kesildiği tarihten itibaren 30 gün içinde talep edilmelidir.",
+]
+
+def embed(text: str):
+    result = client.embeddings.create(model=embed_model, input=text)
+    return np.array(result.data[0].embedding)
+
+def kosinus_benzerligi(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+# --- 1) RETRIEVAL: belgeleri önceden embed'le (gerçek sistemde bu bir kere yapılır ve saklanır) ---
+belge_vektorleri = [embed(b) for b in belgeler]
+
+def ilgili_belgeyi_bul(soru: str, k: int = 1):
+    soru_vektoru = embed(soru)
+    skorlar = [kosinus_benzerligi(soru_vektoru, bv) for bv in belge_vektorleri]
+    en_iyi_indeksler = np.argsort(skorlar)[::-1][:k]
+    return [belgeler[i] for i in en_iyi_indeksler]
+
+# --- 2) AUGMENTED: bulunan belgeyi prompt'a bağlam olarak ekle ---
+def rag_ile_cevapla(soru: str):
+    bulunan = ilgili_belgeyi_bul(soru)
+    baglam = "\n".join(bulunan)
+
+    system_msg = (
+        "Sen bir İK asistanısın. SADECE aşağıdaki bağlamda verilen bilgiye dayanarak cevap ver. "
+        "Bağlamda cevap yoksa 'Bu konuda bilgim yok' de.\n\n"
+        f"BAĞLAM:\n{baglam}"
+    )
+
+    # --- 3) GENERATION: modele bağlam + soruyu birlikte gönder ---
+    response = client.chat.completions.create(
+        model=chat_model,
+        messages=[
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": soru},
+        ],
+    )
+    return response.choices[0].message.content, bulunan
+
+cevap, kaynak = rag_ile_cevapla("Kaç gün yıllık iznim var?")
+print("Kullanılan kaynak:", kaynak)
+print("Cevap:", cevap)</code></pre>
+      </div>
+      <p class="mini">Çalıştırmak için: Foundry'de <code>text-embedding-3-small</code> modelini de deploy etmen gerekir, sonra <code>pip install numpy</code> + <code>python basit_rag.py</code>.</p>
+      <div class="card tip">
+        <div class="card-label">Gerçek RAG sistemlerinde ne değişir</div>
+        <p style="margin:0">Üretimde belgeler binlerce/milyonlarca parçaya bölünür (chunking), vektörler <strong>Azure AI Search</strong> gibi bir vektör veritabanında saklanır ve arama milisaniyeler içinde yapılır. Ama yukarıdaki kod, "belge → embedding → benzerlik araması → prompt'a ekleme" akışının ta kendisidir — ölçek dışında fark yoktur.</p>
+      </div>
+
+      <h3>3. Fine-tuning</h3>
+      <p>Modeli, kendi <strong>örnek girdi-çıktı çiftlerinle (training data)</strong> ek olarak eğitip, modelin ağırlıklarını gerçekten güncelleyen yöntemdir. Sonuç: model, senin istediğin <strong>ton, format veya davranışı</strong> her promptta tekrar tekrar açıklamana gerek kalmadan "hatırlar".</p>
+      <div class="card pitfall">
+        <div class="card-label">Ne zaman fine-tuning, ne zaman RAG?</div>
+        <p style="margin:0"><strong>Fine-tuning</strong> → modelin <em>davranışını/tarzını/formatını</em> tutarlı hale getirmek istiyorsan (ör. hep aynı JSON formatında cevap versin).<br><strong>RAG</strong> → modelin <em>bilmediği/güncel bilgiye</em> erişmesi gerekiyorsa (ör. şirket politikaları, son çıkan ürünler). Sınavda en sık yapılan hata bu ikisini yer değiştirmek.</p>
+      </div>
+
+      <h3>💻 Çalışır kod: Fine-tuning işi başlatma</h3>
+      <p>Fine-tuning verisi, ChatCompletions formatında <strong>JSONL</strong> (her satır bir örnek konuşma) olmalı. Önce eğitim verisini oluştur:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">training_set.jsonl</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>{"messages": [{"role": "system", "content": "Sen kısa ve resmi cevaplar veren bir destek asistanısın."}, {"role": "user", "content": "Şifremi unuttum"}, {"role": "assistant", "content": "Anlaşıldı. Giriş sayfasındaki 'Şifremi Unuttum' bağlantısına tıklayarak e-postanıza sıfırlama bağlantısı alabilirsiniz."}]}
+{"messages": [{"role": "system", "content": "Sen kısa ve resmi cevaplar veren bir destek asistanısın."}, {"role": "user", "content": "Faturamı nereden görebilirim?"}, {"role": "assistant", "content": "Hesabım > Faturalarım sekmesinden tüm geçmiş faturalarınıza ulaşabilirsiniz."}]}</code></pre>
+      </div>
+      <div class="card warn">
+        <div class="card-label">Gerçek bir fine-tuning işi için</div>
+        <p style="margin:0">Microsoft en az birkaç <strong>yüz</strong> kaliteli örnek öneriyor (10 örnek teknik minimum, ama anlamlı bir davranış değişikliği için yetersiz). Dosya UTF-8 + BOM ile kodlanmalı ve 512 MB'ı geçmemeli.</p>
+      </div>
+
+      <p>Sonra dosyayı yükleyip işi başlatan script:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">fine_tune_baslat.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os, time
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+
+load_dotenv()
+client = AzureOpenAI(
+    azure_endpoint=os.environ["AZURE_OPENAI_RESOURCE_ENDPOINT"],  # https://&lt;kaynak&gt;.openai.azure.com/
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    api_version="2024-10-21",
+)
+
+# 1) Eğitim dosyasını yükle
+training_file = client.files.create(
+    file=open("training_set.jsonl", "rb"),
+    purpose="fine-tune",
+)
+print("Dosya yüklendi, id:", training_file.id)
+
+# 2) Fine-tuning işini başlat (base model olarak fine-tuning'e açık bir model seç)
+job = client.fine_tuning.jobs.create(
+    training_file=training_file.id,
+    model="gpt-4o-mini-2024-07-18",
+    suffix="destek-asistani-v1",
+)
+print("İş başlatıldı, id:", job.id)
+
+# 3) Durumu periyodik kontrol et (bu işlem dakikalar/saatler sürebilir)
+while job.status not in ("succeeded", "failed", "cancelled"):
+    time.sleep(30)
+    job = client.fine_tuning.jobs.retrieve(job.id)
+    print("Durum:", job.status)
+
+if job.status == "succeeded":
+    print("Tamamlandı! Fine-tuned model adı:", job.fine_tuned_model)
+    print("Şimdi Foundry portalından bu modeli bir endpoint'e deploy edebilirsin.")
+else:
+    print("İş başarısız oldu:", job.status)</code></pre>
+      </div>
+      <p class="mini">Not: <code>AZURE_OPENAI_RESOURCE_ENDPOINT</code>, .env'deki Responses API endpoint'inden farklı — sondaki <code>/openai/v1/</code> olmadan, klasik <code>AzureOpenAI</code> istemcisinin beklediği kök endpoint'tir (ör. <code>https://egitim-foundry-kaynagim.openai.azure.com/</code>).</p>
+
+      <h3>4. Stratejileri karşılaştırma ve birleştirme</h3>
+      <table>
+        <tr><th>Yöntem</th><th>Ne değişir</th><th>Maliyet/Hız</th><th>En iyi kullanım</th></tr>
+        <tr><td>Prompt engineering</td><td>Hiçbir şey (sadece istek)</td><td>Anında, ücretsiz</td><td>İlk deneme, hızlı iyileştirme</td></tr>
+        <tr><td>RAG</td><td>Modele verilen bağlam</td><td>Orta (arama altyapısı gerekir)</td><td>Güncel/özel bilgiye ihtiyaç</td></tr>
+        <tr><td>Fine-tuning</td><td>Modelin kendisi (ağırlıklar)</td><td>Yüksek (eğitim süresi + maliyet)</td><td>Tutarlı ton/format/davranış</td></tr>
+      </table>
+      <p>Bu üç yöntem <strong>birbirini dışlamaz</strong> — bir sistemde hepsi bir arada kullanılabilir: iyi bir system message (prompt engineering) + RAG ile güncel veri + fine-tune edilmiş bir model.</p>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Şirketimizin geçen hafta yayınlanan iç politika belgesine göre model cevap versin istiyorum — hangi yöntem?</summary>
+        <div class="a"><strong>RAG.</strong> Bu, modelin bilmediği güncel/özel bilgiye erişim ihtiyacıdır — modelin genel "davranışını" değil, "bilgisini" genişletmen gerekiyor.</div>
+      </details>
+      <details class="qa">
+        <summary>Modelin her zaman aynı sabit JSON şablonunda, aynı üslupta cevap vermesini istiyorum — hangi yöntem?</summary>
+        <div class="a">Öncelik sırayla: önce <strong>prompt engineering</strong> (system message + few-shot örnekler) dene — çoğu zaman yeterlidir. Eğer hâlâ tutarsızlık varsa ve bu davranışı kalıcı/otomatik hale getirmek istiyorsan <strong>fine-tuning</strong> düşünülür.</div>
+      </details>
+      <details class="qa">
+        <summary>Temperature = 0 yapmak modelin "hiç hata yapmaması" anlamına gelir mi?</summary>
+        <div class="a">Hayır. Temperature sadece çıktının rastgeleliğini/çeşitliliğini azaltır, en olası kelimeyi seçme eğilimini artırır. Modelin doğruluğunu (factuality) garanti etmez — hâlâ yanlış/uydurma bilgi verebilir (bu yüzden groundedness/RAG önemli).</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">What is the primary purpose of a system message in a prompt?</div>
+          <div class="quiz-opt correct">To define the model's role, behavior, and output constraints.</div>
+          <div class="quiz-opt">To provide training data that permanently changes the model.</div>
+          <div class="quiz-opt">To retrieve data from an external data source.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">When should you use Retrieval Augmented Generation (RAG) instead of relying on prompt engineering alone?</div>
+          <div class="quiz-opt">When you want the model to respond in a consistent style and format.</div>
+          <div class="quiz-opt correct">When the model needs access to domain-specific or current data that it wasn't trained on.</div>
+          <div class="quiz-opt">When you want to reduce the length of prompts sent to the model.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">What does the temperature parameter control in a language model?</div>
+          <div class="quiz-opt">The maximum number of tokens the model can generate.</div>
+          <div class="quiz-opt correct">The randomness and creativity of the model's responses.</div>
+          <div class="quiz-opt">The speed at which the model processes requests.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 4</span>
+          <div class="qtext">What does fine-tuning optimize in a language model?</div>
+          <div class="quiz-opt">The factual accuracy of responses by connecting to external data.</div>
+          <div class="quiz-opt correct">The consistency of the model's behavior, style, and output format.</div>
+          <div class="quiz-opt">The number of tokens the model can process in a single request.</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 5</span>
+          <div class="qtext">You're building a chat application that needs to answer questions using your company's product catalog while maintaining a specific brand voice. Which combination of strategies is most appropriate?</div>
+          <div class="quiz-opt">Prompt engineering only, with detailed system messages.</div>
+          <div class="quiz-opt correct">RAG for the product catalog data, fine-tuning for the brand voice, and prompt engineering for conversation-specific instructions.</div>
+          <div class="quiz-opt">Fine-tuning only, with the product catalog included in the training data.</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/optimize-generative-ai-model-performance/" target="_blank">learn.microsoft.com — Optimize generative AI model performance with Microsoft Foundry</a></p>
+    </section>
+
+    <!-- MODULE 6 -->
+    <section class="section" id="m6">
+      <div class="eyebrow">Modül 06 / 06</div>
+      <h1>Implement a responsible generative AI solution in Microsoft Foundry<span class="sub">Zararlı çıktıları öngörme, ölçme, azaltma ve güvenli şekilde operasyona alma.</span></h1>
+
+      <h2>Bu modül aslında ne anlatıyor?</h2>
+      <p>Microsoft'un dört aşamalı <strong>sorumlu AI yaşam döngüsü</strong> etrafında kurulu: <strong>Identify → Measure → Mitigate → Operate.</strong> Bu dört kelimeyi bir sıra olarak ezberlemek sınav için çok işine yarar.</p>
+
+      <h3>1. Map (Identify) — Potansiyel zararları haritalama</h3>
+      <p>Uygulamanı yayınlamadan önce "bu sistem hangi şekillerde zarar verebilir?" diye düşünürsün. Microsoft'un zarar kategorileri:</p>
+      <div class="grid2">
+        <div class="term"><span class="en">Offensive content</span><span class="tr">Nefret söylemi, ayrımcılık, taciz içeriği</span></div>
+        <div class="term"><span class="en">Fabricated content (hallucination)</span><span class="tr">Uydurma, yanlış ama ikna edici bilgi</span></div>
+        <div class="term"><span class="en">Inappropriate/harmful content</span><span class="tr">Yasa dışı faaliyetlere teşvik, tehlikeli talimatlar</span></div>
+        <div class="term"><span class="en">Jailbreak / prompt injection</span><span class="tr">Kullanıcının sistem talimatlarını atlatmaya çalışması</span></div>
+      </div>
+      <p>Bunu yaparken <strong>kırılganlığı en yüksek kullanıcı grubunu</strong> ("most vulnerable user") düşünmen istenir — ör. çocuklar, kriz anındaki kişiler.</p>
+
+      <h3>2. Measure — Zararları ölçme</h3>
+      <p>Zararların ne sıklıkla, ne şiddette ortaya çıktığını sistematik olarak test edersin:</p>
+      <ul>
+        <li><strong>Manual/adversarial testing (red teaming)</strong> — insanların sistemi kasıtlı olarak "kırmaya" çalışması</li>
+        <li><strong>Automated metrics</strong> — otomatik değerlendirme ile büyük ölçekte zararlı içerik oranını ölçme</li>
+        <li>Baseline (başlangıç) ölçümü almak, sonraki iyileştirmelerle kıyaslamak için önemlidir</li>
+      </ul>
+
+      <h3>3. Mitigate — Zararları azaltma (4 katman)</h3>
+      <p>Bu bölüm sınavda en çok soru çıkan kısımdır. Microsoft dört katmanlı bir "savunma derinliği" (defense in depth) modeli önerir:</p>
+      <table>
+        <tr><th>Katman</th><th>Ne yapılır</th><th>Örnek</th></tr>
+        <tr><td><strong>1. Model</strong></td><td>Doğru modeli seç / fine-tune et</td><td>Zaten güvenlik odaklı eğitilmiş bir model seçmek</td></tr>
+        <tr><td><strong>2. Safety System</strong></td><td>Model çevresinde platform seviyesinde filtreler</td><td><strong>Azure AI Content Safety / content filters</strong> — girdi ve çıktıyı tarayıp engelleme</td></tr>
+        <tr><td><strong>3. Metaprompt & grounding</strong></td><td>Sistem talimatlarıyla davranışı sınırlama, RAG ile gerçek veriye dayandırma</td><td>System message'da "sadece verilen belgelere dayanarak cevap ver" demek</td></tr>
+        <tr><td><strong>4. User experience</strong></td><td>Arayüz seviyesinde koruma</td><td>Kullanıcıya "bu AI hata yapabilir" uyarısı, geri bildirim düğmesi, kullanım kısıtları</td></tr>
+      </table>
+      <div class="card tip">
+        <div class="card-label">Zihinde nasıl otursun</div>
+        <p style="margin:0">Bunu bir <strong>soğan / katmanlar</strong> gibi düşün: en içte model, onun etrafında güvenlik filtreleri, onun etrafında sistem talimatları, en dışta kullanıcı arayüzü. Tek bir katmana güvenmezsin — hepsi birlikte çalışır ("defense in depth").</p>
+      </div>
+
+      <h3>Content filters (Azure AI Content Safety) — pratik detay</h3>
+      <p>Foundry'de deploy ettiğin her modelin, hem <strong>girdi (prompt)</strong> hem <strong>çıktı (completion)</strong> için ayrı ayrı yapılandırılabilen filtreleri vardır. Kategoriler genelde şunlardır:</p>
+      <ul>
+        <li>Hate & Fairness (nefret ve adalet)</li>
+        <li>Sexual (cinsel içerik)</li>
+        <li>Violence (şiddet)</li>
+        <li>Self-harm (kendine zarar)</li>
+      </ul>
+      <p>Her kategori için bir <strong>şiddet eşiği (severity threshold: low / medium / high)</strong> ayarlarsın — eşiği aşan içerik otomatik olarak engellenir.</p>
+
+      <h3>💻 Çalışır kod: Kendi guardrail'ini yazmak</h3>
+      <p>Foundry portalından deployment'ına content filter eklemek en pratik yoldur (otomatik, her istekte çalışır). Ama bunun <strong>arka planda ne yaptığını</strong> anlamak için, aynı işi ayrı bir <code>azure-ai-contentsafety</code> çağrısıyla kendin de yapabilirsin — bu, örneğin kullanıcı girdisini modele göndermeden <em>önce</em> ekstra bir kontrol katmanı eklemek istediğinde işine yarar:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">content_safety_ornek.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from azure.ai.contentsafety import ContentSafetyClient
+from azure.ai.contentsafety.models import AnalyzeTextOptions, TextCategory
+from azure.core.credentials import AzureKeyCredential
+
+load_dotenv()
+client = ContentSafetyClient(
+    endpoint=os.environ["CONTENT_SAFETY_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["CONTENT_SAFETY_KEY"]),
+)
+
+def metni_kontrol_et(text: str, esik: int = 2):
+    """
+    esik: 0-6 arası şiddet skoru. Bu değeri aşan herhangi bir kategori varsa
+    içeriği 'engellenmeli' olarak işaretler. (Foundry portalındaki low/medium/high
+    ayarının kod karşılığı budur.)
+    """
+    result = client.analyze_text(AnalyzeTextOptions(text=text))
+    engellenen_kategoriler = []
+    for kategori_sonucu in result.categories_analysis:
+        if kategori_sonucu.severity >= esik:
+            engellenen_kategoriler.append(
+                f"{kategori_sonucu.category} (şiddet: {kategori_sonucu.severity})"
+            )
+    return {
+        "guvenli_mi": len(engellenen_kategoriler) == 0,
+        "engellenen_kategoriler": engellenen_kategoriler,
+    }
+
+# Test
+sonuc = metni_kontrol_et("Bugün hava çok güzel, dışarı çıkalım.")
+print(sonuc)</code></pre>
+      </div>
+
+      <p>Bunu bir önceki modüldeki <code>chat_app.py</code> ile birleştirince, <strong>gerçek bir "defense in depth" örneği</strong> ortaya çıkar — hem kullanıcı girdisini hem model çıktısını kontrol eden bir sarmalayıcı (wrapper) fonksiyon:</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-filename">guvenli_chat.py</span><button class="copy-btn" onclick="copyCode(this)">Kopyala</button></div>
+        <pre><code>import os
+from dotenv import load_dotenv
+from openai import OpenAI
+from azure.ai.contentsafety import ContentSafetyClient
+from azure.ai.contentsafety.models import AnalyzeTextOptions
+from azure.core.credentials import AzureKeyCredential
+
+load_dotenv()
+chat_client = OpenAI(
+    base_url=os.environ["AZURE_OPENAI_ENDPOINT"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+)
+safety_client = ContentSafetyClient(
+    endpoint=os.environ["CONTENT_SAFETY_ENDPOINT"],
+    credential=AzureKeyCredential(os.environ["CONTENT_SAFETY_KEY"]),
+)
+model = os.environ["MODEL_DEPLOYMENT_NAME"]
+
+def guvenli_mi(text: str, esik: int = 4) -> bool:
+    result = safety_client.analyze_text(AnalyzeTextOptions(text=text))
+    return all(c.severity < esik for c in result.categories_analysis)
+
+def guvenli_sohbet(kullanici_mesaji: str) -> str:
+    # KATMAN 1 — Safety System: girdiyi kontrol et (metaprompt'a ulaşmadan önce)
+    if not guvenli_mi(kullanici_mesaji):
+        return "Bu mesajı işleyemiyorum çünkü içerik politikamıza aykırı görünüyor."
+
+    # KATMAN 2 — Metaprompt: modele davranış sınırı çiz
+    response = chat_client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "Sen güvenli, yardımsever bir asistansın. Zararlı, yasa dışı veya tehlikeli içerik üretme."},
+            {"role": "user", "content": kullanici_mesaji},
+        ],
+    )
+    cevap = response.choices[0].message.content
+
+    # KATMAN 1 (tekrar) — Safety System: çıktıyı da kontrol et
+    if not guvenli_mi(cevap):
+        return "Üretilen cevap güvenlik kontrolünden geçemedi, gösterilemiyor."
+
+    return cevap  # KATMAN 4 (User experience) burada kullanıcıya iletilir
+
+print(guvenli_sohbet("Ankara'nın nüfusu kaçtır?"))</code></pre>
+      </div>
+      <p class="mini">Bu script, Modül 6'nın "4 katmanlı mitigation" mantığının (Model / Safety System / Metaprompt / UX) çalışan bir minyatürüdür.</p>
+
+      <h3>4. Operate — Sorumlu şekilde işletme</h3>
+      <p>Canlıya aldıktan sonra da iş bitmez:</p>
+      <ul>
+        <li><strong>Release planı</strong> — aşamalı yayın (ör. önce sınırlı kullanıcı grubuna)</li>
+        <li><strong>İzleme (monitoring)</strong> — kullanım loglarını, filtrelenen içerik oranlarını takip etme</li>
+        <li><strong>Geri bildirim mekanizması</strong> — kullanıcıların zararlı çıktıyı raporlayabilmesi</li>
+        <li><strong>Acil durdurma (rollback) planı</strong> — ciddi bir sorun çıkarsa hızlıca devre dışı bırakabilme</li>
+      </ul>
+
+      <h2>Sık karıştırılan noktalar (quiz odaklı)</h2>
+      <details class="qa">
+        <summary>Content filter'lar hangi katmana aittir: model mi, safety system mi?</summary>
+        <div class="a"><strong>Safety System</strong> katmanına aittir. Modelin kendisini değiştirmezler; modelin etrafında, girdi/çıktıyı tarayan ayrı bir koruma katmanıdır.</div>
+      </details>
+      <details class="qa">
+        <summary>"Identify → Measure → Mitigate → Operate" sıralamasını neden bu sırayla uygularız?</summary>
+        <div class="a">Önce riskleri <strong>tanımlamadan</strong> ne <strong>ölçeceğini</strong> bilemezsin; ölçmeden de neyi <strong>azaltacağını</strong> bilemezsin; azaltma uygulanmadan da güvenle <strong>operasyona</strong> alamazsın. Her adım bir sonrakinin girdisidir — sıralı ve döngüsel bir süreçtir (canlıda da tekrar tekrar "measure"a dönülür).</div>
+      </details>
+      <details class="qa">
+        <summary>Fine-tuning veya RAG kullanmak, content filter ihtiyacını ortadan kaldırır mı?</summary>
+        <div class="a">Hayır. "Defense in depth" mantığı gereği bu katmanlar birbirinin yerine geçmez, birlikte çalışır. İyi bir model/RAG kurulumu zararlı çıktı riskini azaltır ama sıfırlamaz — bu yüzden yine de safety system (content filters) katmanına ihtiyaç vardır.</div>
+      </details>
+
+      <h2>📋 Modülün orijinal quiz soruları</h2>
+      <div class="quiz-block">
+        <div class="quiz-q">
+          <span class="qnum">Soru 1</span>
+          <div class="qtext">Why should you consider creating an AI Impact Assessment when designing a generative AI solution?</div>
+          <div class="quiz-opt">To make a legal case that indemnifies you from responsibility for harms caused by the solution</div>
+          <div class="quiz-opt correct">To document the purpose, expected use, and potential harms for the solution</div>
+          <div class="quiz-opt">To evaluate the cost of cloud services required to implement your solution</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 2</span>
+          <div class="qtext">What capability of Microsoft Foundry helps mitigate harmful content generation at the Safety System level?</div>
+          <div class="quiz-opt">DALL-E model support</div>
+          <div class="quiz-opt">Fine-tuning</div>
+          <div class="quiz-opt correct">Guardrails</div>
+        </div>
+        <div class="quiz-q">
+          <span class="qnum">Soru 3</span>
+          <div class="qtext">Why should you consider a phased delivery plan for your generative AI solution?</div>
+          <div class="quiz-opt correct">To enable you to gather feedback and identify issues before releasing the solution more broadly</div>
+          <div class="quiz-opt">To eliminate the need to map, measure, mitigate, and manage potential harms</div>
+          <div class="quiz-opt">To enable you to charge more for the solution</div>
+        </div>
+      </div>
+
+      <p class="mini">Kaynak: <a href="https://learn.microsoft.com/en-us/training/modules/responsible-ai-studio/" target="_blank">learn.microsoft.com — Implement a responsible generative AI solution in Microsoft Foundry</a></p>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="section" id="ozet">
+      <div class="eyebrow">Kapanış</div>
+      <h1>Sınav öncesi hızlı tekrar tablosu<span class="sub">6 modülü tek sayfada, en kritik ayrımlarla özetleyen tablo.</span></h1>
+
+      <table>
+        <tr><th>Modül</th><th>Tek cümlelik özet</th><th>En kritik ayrım</th></tr>
+        <tr><td>1. Plan & Prepare</td><td>Foundry = platform, Foundry Tools = hazır servisler</td><td>Platform vs. servis</td></tr>
+        <tr><td>2. Select/Deploy/Evaluate</td><td>Katalogdan seç → deploy et → ölç</td><td>Deploy ≠ playground testi</td></tr>
+        <tr><td>3. Chat App</td><td>Responses API (yeni) vs ChatCompletions API (klasik)</td><td>API key vs Entra ID (kimlik doğrulama)</td></tr>
+        <tr><td>4. Tools</td><td>code_interpreter / web_search / file_search / function</td><td>Fonksiyonu model değil, senin kodun çalıştırır</td></tr>
+        <tr><td>5. Optimize</td><td>Prompt engineering → RAG → Fine-tuning</td><td>RAG = bilgi ekleme, Fine-tune = davranış değiştirme</td></tr>
+        <tr><td>6. Responsible AI</td><td>Identify → Measure → Mitigate → Operate</td><td>4 katmanlı mitigation: Model/Safety System/Metaprompt/UX</td></tr>
+      </table>
+
+      <div class="card tip">
+        <div class="card-label">Şimdi ne yapalım?</div>
+        <p style="margin:0">Bana hangi modülde hâlâ kafanın karıştığını söyle (ör. "Modül 5'teki RAG kısmını anlamadım" ya da "quiz'deki şu soruyu çözemedim") — o modülü birlikte, örnek üzerinden, adım adım konuşarak netleştirelim. İstersen quiz sorularının ekran görüntülerini tek tek de gözden geçirebiliriz.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function copyCode(btn){
+  var pre = btn.closest('.code-block').querySelector('pre code');
+  var text = pre ? pre.innerText : '';
+  navigator.clipboard.writeText(text).then(function(){
+    var original = btn.textContent;
+    btn.textContent = 'Kopyalandı ✓';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1600);
+  });
+}
+document.querySelectorAll('.nav-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+    item.classList.add('active');
+    document.getElementById(item.dataset.target).classList.add('active');
+    document.querySelector('.main').scrollTo(0,0);
+    window.scrollTo(0,0);
+  });
+});
+document.querySelector('.nav-item[data-target="giris"]').classList.add('active');
+</script>
+</body>
+</html>

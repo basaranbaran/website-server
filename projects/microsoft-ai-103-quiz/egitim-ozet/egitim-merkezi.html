@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eğitim Merkezi — Azure AI Apps and Agents Developer Associate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1420; --bg-panel:#101c2c; --bg-panel-2:#142234; --line:#223244;
+  --text:#dbe6f0; --text-dim:#8fa3b8; --text-faint:#5c7188; --ok:#6fd6a0;
+  --c1:#3fb6ff; --c1-dim:#1c4a66;   /* kurs 1 - azure */
+  --c2:#b39dff; --c2-dim:#3a2f66;   /* kurs 2 - violet */
+  --c3:#2dd4bf; --c3-dim:#124a44;   /* kurs 3 - teal */
+  --c4:#ff7a5c; --c4-dim:#4a2418;   /* kurs 4 - coral */
+  --c5:#ffcc66; --c5-dim:#4a3a12;   /* referans - amber/gold */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1000px 500px at 12% -8%, rgba(63,182,255,0.08), transparent 55%),
+    radial-gradient(1000px 500px at 88% 8%, rgba(179,157,255,0.08), transparent 55%),
+    radial-gradient(900px 500px at 50% 100%, rgba(255,204,102,0.06), transparent 55%),
+    var(--bg);
+  color:var(--text); font-family:'Inter', sans-serif; line-height:1.6; min-height:100vh;
+}
+.wrap{max-width:1160px; margin:0 auto; padding:56px 32px 90px;}
+.top-eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-faint);
+  text-transform:uppercase; letter-spacing:.14em; margin-bottom:14px;
+}
+h1{
+  font-family:'Space Grotesk', sans-serif; font-size:38px; font-weight:700; color:#fff;
+  margin:0 0 14px; letter-spacing:-.02em; line-height:1.15;
+}
+h1 span{background:linear-gradient(90deg,var(--c1),var(--c2) 45%,var(--c3) 75%,var(--c4)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.lead{font-size:16px; color:var(--text-dim); max-width:700px; margin:0 0 28px;}
+.stat-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px;}
+.stat{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:14px 20px; min-width:120px;
+}
+.stat .num{font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:#fff;}
+.stat .lbl{font-size:12px; color:var(--text-faint); margin-top:2px;}
+
+.howto{
+  background:var(--bg-panel); border:1px solid var(--line); border-left:3px solid var(--ok);
+  border-radius:12px; padding:18px 22px; margin-bottom:44px;
+}
+.howto .lbl{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ok); margin-bottom:8px; font-weight:600;}
+.howto p{margin:0; font-size:14.5px; color:#c7d6e4;}
+.howto code{font-family:'IBM Plex Mono',monospace; background:#0d1826; color:#ffcc66; padding:2px 6px; border-radius:4px; font-size:13px; border:1px solid var(--line);}
+
+.section-label{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-faint);
+  text-transform:uppercase; letter-spacing:.12em; margin:0 0 18px; display:flex; align-items:center; gap:10px;
+}
+.section-label::after{content:""; flex:1; height:1px; background:var(--line);}
+
+.grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; margin-bottom:52px;}
+@media(max-width:820px){.grid{grid-template-columns:1fr;}}
+
+.card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:16px;
+  padding:26px 26px 22px; text-decoration:none; display:block; color:inherit;
+  transition:.2s; position:relative; overflow:hidden;
+}
+.card::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--accent), transparent);
+}
+.card:hover{border-color:var(--accent); transform:translateY(-2px); box-shadow:0 10px 30px -12px rgba(0,0,0,0.5);}
+.card-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.card-code{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:.08em; font-weight:600;}
+.card-count{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint);
+  border:1px solid var(--line); border-radius:20px; padding:3px 10px;
+}
+.card h2{font-family:'Space Grotesk',sans-serif; font-size:19px; color:#fff; margin:0 0 8px; font-weight:600; line-height:1.3;}
+.card p.desc{font-size:13.5px; color:var(--text-dim); margin:0 0 16px; min-height:40px;}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;}
+.tag{
+  font-size:11.5px; color:var(--text-dim); background:var(--bg-panel-2); border:1px solid var(--line);
+  padding:4px 9px; border-radius:6px;
+}
+.card-open{
+  font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--accent); font-weight:600;
+  display:flex; align-items:center; gap:6px;
+}
+.card-open .arrow{transition:.2s;}
+.card:hover .card-open .arrow{transform:translateX(4px);}
+
+.c1{--accent:var(--c1);} .c2{--accent:var(--c2);} .c3{--accent:var(--c3);}
+.c4{--accent:var(--c4);} .c5{--accent:var(--c5);}
+
+.ref-card{
+  background:linear-gradient(135deg, rgba(255,204,102,0.08), var(--bg-panel) 60%);
+  border:1px solid var(--c5-dim);
+}
+.ref-card::before{background:linear-gradient(90deg, var(--c5), transparent);}
+.ref-card:hover{border-color:var(--c5);}
+
+footer{
+  margin-top:20px; padding-top:24px; border-top:1px solid var(--line);
+  font-size:12.5px; color:var(--text-faint);
+}
+footer a{color:var(--text-dim);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-eyebrow">Microsoft Certified · Azure AI Apps and Agents Developer Associate</div>
+  <h1>Türkçe Eğitim <span>Merkezi</span></h1>
+  <p class="lead">Sertifikanın gerektirdiği 4 öğrenme yolunun tamamı — sıfırdan, Türkçe, çalışır kodlarla ve her modülün orijinal quiz sorularıyla birlikte. Bir kursu aç, soldaki menüden modül modül ilerle.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">4</div><div class="lbl">Eğitim / Learning Path</div></div>
+    <div class="stat"><div class="num">30</div><div class="lbl">Modül</div></div>
+    <div class="stat"><div class="num">96</div><div class="lbl">Orijinal quiz sorusu</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Servis &amp; notlar sayfası</div></div>
+  </div>
+
+  <div class="howto">
+    <div class="lbl">Nasıl kullanılır</div>
+    <p>Bu sayfa ve 5 eğitim dosyası birbirine bağlantı veriyor — çalışması için hepsinin <strong>aynı klasörde</strong> olması gerekiyor. İndirdiğin tüm <code>.html</code> dosyalarını tek bir klasöre koy, sonra bu dosyayı (<code>egitim-merkezi.html</code>) tarayıcıda aç. Bir kurs kartına tıklayınca o eğitimin kendi sayfasına gidersin; oradaki sol üstteki "← Eğitim Merkezi" bağlantısıyla buraya geri dönersin.</p>
+  </div>
+
+  <div class="section-label">4 Eğitim</div>
+  <div class="grid">
+
+    <a class="card c1" href="develop-generative-ai-apps-azure-tr.html" target="_top">
+      <div class="card-top">
+        <span class="card-code">AI-3016 · Eğitim 1</span>
+        <span class="card-count">6 modül · 20 soru</span>
+      </div>
+      <h2>Develop generative AI apps in Azure</h2>
+      <p class="desc">Microsoft Foundry'nin temelleri: model kataloğu, deploy, Responses/ChatCompletions API, tool kullanımı, RAG/fine-tuning, sorumlu AI.</p>
+      <div class="tags">
+        <span class="tag">Foundry Tools</span>
+        <span class="tag">Model deploy</span>
+        <span class="tag">RAG</span>
+        <span class="tag">Content filters</span>
+      </div>
+      <div class="card-open">Eğitime git <span class="arrow">→</span></div>
+    </a>
+
+    <a class="card c2" href="develop-ai-agents-azure-tr.html" target="_top">
+      <div class="card-top">
+        <span class="card-code">AI-3026 · Eğitim 2</span>
+        <span class="card-count">9 modül · 31 soru</span>
+      </div>
+      <h2>Develop AI agents on Azure</h2>
+      <p class="desc">Foundry Agent Service, custom/MCP tool'lar, Foundry IQ, Microsoft 365 entegrasyonu, Agent Framework, çoklu-agent orkestrasyon, A2A protokolü.</p>
+      <div class="tags">
+        <span class="tag">Agent Service</span>
+        <span class="tag">MCP</span>
+        <span class="tag">Agent Framework</span>
+        <span class="tag">A2A</span>
+      </div>
+      <div class="card-open">Eğitime git <span class="arrow">→</span></div>
+    </a>
+
+    <a class="card c3" href="develop-natural-language-solutions-azure-tr.html" target="_top">
+      <div class="card-top">
+        <span class="card-code">AI-3015 · Eğitim 3</span>
+        <span class="card-count">7 modül · 22 soru</span>
+      </div>
+      <h2>Develop natural language solutions in Azure</h2>
+      <p class="desc">Metin analizi (Language), Language/Speech MCP server'ları, GPT-4o ses modelleri, klasik Speech SDK, Voice Live, metin/konuşma çevirisi.</p>
+      <div class="tags">
+        <span class="tag">Azure Language</span>
+        <span class="tag">Speech SDK</span>
+        <span class="tag">Voice Live</span>
+        <span class="tag">Translator</span>
+      </div>
+      <div class="card-open">Eğitime git <span class="arrow">→</span></div>
+    </a>
+
+    <a class="card c4" href="extract-insights-visual-data-azure-tr.html" target="_top">
+      <div class="card-top">
+        <span class="card-code">AI-3018 · Eğitim 4</span>
+        <span class="card-count">8 modül · 23 soru</span>
+      </div>
+      <h2>Extract insights from visual data on Azure</h2>
+      <p class="desc">Vision chat, görsel/video üretme (gpt-image, Sora 2), Content Understanding, Document Intelligence, Azure AI Search ile bilgi madenciliği.</p>
+      <div class="tags">
+        <span class="tag">Vision</span>
+        <span class="tag">Content Understanding</span>
+        <span class="tag">Document Intelligence</span>
+        <span class="tag">AI Search</span>
+      </div>
+      <div class="card-open">Eğitime git <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+
+  <div class="section-label">Referans</div>
+  <div class="grid">
+    <a class="card c5 ref-card" href="onemli-servisler-notlari.html" target="_top" style="grid-column: 1 / -1;">
+      <div class="card-top">
+        <span class="card-code">5. Sayfa · Notlar</span>
+        <span class="card-count">Tüm eğitimlerden</span>
+      </div>
+      <h2>📚 Önemli Servisler &amp; Notlar</h2>
+      <p class="desc">4 eğitimde geçen tüm Azure servislerinin tek sayfada özeti: her servis ne işe yarar, hangi SDK/paket kullanılır, kimlik doğrulama nasıl yapılır, en sık yapılan hatalar. Kendi ders notlarına eklemen için hazırlandı.</p>
+      <div class="tags">
+        <span class="tag">Microsoft Foundry</span>
+        <span class="tag">Foundry Tools</span>
+        <span class="tag">Kimlik doğrulama</span>
+        <span class="tag">SDK paketleri</span>
+        <span class="tag">Sık yapılan hatalar</span>
+      </div>
+      <div class="card-open">Notları aç <span class="arrow">→</span></div>
+    </a>
+  </div>
+
+  <footer>
+    Kaynak: <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank">Microsoft Certified: Azure AI Apps and Agents Developer Associate</a> — resmi sertifika sayfası.
+  </footer>
+</div>
+</body>
+</html>

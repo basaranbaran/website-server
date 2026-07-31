@@ -21,6 +21,7 @@
     --docker-color: #2496ed;
     --wiki-color: #00d4aa;
     --gastropod-color: #8e44ad;
+    --ai103-color: #00a4ef;
     --success: #39ff14;
     --warning: #fdcb6e;
     --danger: #ff6b6b;
@@ -474,6 +475,7 @@ code {
 .docker-gradient { background: linear-gradient(90deg, #2496ed, #1a73e8); }
 .wiki-gradient { background: linear-gradient(90deg, #00b894, #00cec9); }
 .gastropod-gradient { background: linear-gradient(90deg, #8e44ad, #9b59b6, #3498db); }
+.ai103-gradient { background: linear-gradient(90deg, #00a4ef, #7fba00); }
 
 .card-content {
     padding: 1.5rem;
@@ -494,6 +496,7 @@ code {
 .docker-icon { background: rgba(36, 150, 237, 0.15); color: var(--docker-color); }
 .wiki-icon { background: rgba(0, 184, 148, 0.15); color: var(--wiki-color); }
 .gastropod-icon { background: rgba(142, 68, 173, 0.15); color: var(--gastropod-color); }
+.ai103-icon { background: rgba(0, 164, 239, 0.15); color: var(--ai103-color); }
 
 .card-content h3 {
     font-size: 1.2rem;
@@ -659,6 +662,7 @@ code {
 .yt-accent { background: rgba(255, 0, 0, 0.15); color: var(--yt-color); }
 .docker-accent { background: rgba(36, 150, 237, 0.15); color: var(--docker-color); }
 .wiki-accent { background: rgba(0, 184, 148, 0.15); color: var(--wiki-color); }
+.ai103-accent { background: rgba(0, 164, 239, 0.15); color: var(--ai103-color); }
 
 .page-header h1 {
     font-size: 2rem;
@@ -2402,6 +2406,29 @@ select option { background: #10122b; color: white; }
 
 .gastromatch-btn {
     background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.ai103-launch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.8rem;
+    background: linear-gradient(135deg, #00a4ef, #7fba00);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ai103-launch-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 164, 239, 0.4);
 }
 
 .highlight-block {
