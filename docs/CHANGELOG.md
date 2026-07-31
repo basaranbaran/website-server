@@ -20,7 +20,14 @@
 | `deploy/nginx.conf` | `/microsoft-ai-103-quiz-app/` için reverse proxy bloğu eklendi (port 6321, prefix nginx tarafından soyuluyor çünkü backend basePath desteklemiyor) + `@flask_fallback` |
 | `projects/microsoft-ai-103-quiz/static/index.html`, `static/app.js`, `egitim-ozet/egitim-merkezi.html` | Mutlak (`/static/...`, `/api/...`, `/egitim-ozet/...`) yol referansları göreli hale getirildi — hem `http://localhost:6321/` kökünde hem de `/microsoft-ai-103-quiz-app/` alt yolunda (nginx prefix-stripping ile) çalışabilsin diye. Standalone/Docker kullanımını bozmuyor. |
 
-### 3. Mimari Not
+### 3. Docker Hub
+
+İmaj `docker.io/basaranbaran/microsoft-ai-103-quiz:latest` olarak public şekilde yayınlandı
+(`docker build` + `docker push`, bu sunucuda). Landing page'in Docker sekmesi artık öncelikle
+`docker pull basaranbaran/microsoft-ai-103-quiz` komutunu gösteriyor, kendi imajını build etmek
+isteyenler için Dockerfile/docker-compose talimatları ayrı bir alt bölümde duruyor.
+
+### 4. Mimari Not
 
 ```
 Kullanıcı → Nginx → /microsoft-ai-103-quiz-app/... → localhost:6321 (Python http.server, prefix nginx'te soyulur)

@@ -117,8 +117,48 @@ python3 server.py
             <div class="content-block">
                 <h2><i class="fa-brands fa-docker"></i> Docker İmajı Olarak Çalıştır</h2>
                 <p class="commands-intro">
-                    Repo, hazır bir <code>Dockerfile</code> ve <code>docker-compose.yml</code> ile geliyor.
-                    Docker kurulu herhangi bir makinede saniyeler içinde ayağa kaldırabilirsin.
+                    Docker Hub'da hazır, herkese açık bir imaj olarak yayınlandı. Build etmeye gerek yok,
+                    doğrudan çekip çalıştırabilirsin.
+                </p>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">1</span>
+                        İmajı Docker Hub'dan Çek
+                    </div>
+                    <pre class="command-code"><code>docker pull basaranbaran/microsoft-ai-103-quiz:latest</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">2</span>
+                        Container'ı Çalıştır
+                    </div>
+                    <pre class="command-code"><code>docker run -d -p 6321:6321 --name ai103-quiz basaranbaran/microsoft-ai-103-quiz:latest
+# -> http://localhost:6321</code></pre>
+                </div>
+
+                <div class="command-block">
+                    <div class="command-title">
+                        <span class="command-num">3</span>
+                        Sağlık Kontrolü
+                    </div>
+                    <pre class="command-code"><code>curl http://localhost:6321/api/health
+# {"status": "healthy", ...}</code></pre>
+                </div>
+
+                <div class="content-block center-text" style="padding-top:0;">
+                    <a href="https://hub.docker.com/r/basaranbaran/microsoft-ai-103-quiz" target="_blank" class="github-source-btn">
+                        <i class="fa-brands fa-docker"></i> Docker Hub'da İmajı Görüntüle
+                    </a>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-title">Kendi İmajını Build Etmek İstersen</h3>
+                <p class="commands-intro">
+                    Repo, hazır bir <code>Dockerfile</code> ve <code>docker-compose.yml</code> ile geliyor —
+                    istersen kaynağından kendin de build edebilirsin.
                 </p>
 
                 <div class="command-block">
@@ -134,28 +174,10 @@ docker build -t microsoft-ai-103-quiz .</code></pre>
                 <div class="command-block">
                     <div class="command-title">
                         <span class="command-num">2</span>
-                        Container'ı Çalıştır
-                    </div>
-                    <pre class="command-code"><code>docker run -d -p 6321:6321 --name ai103-quiz microsoft-ai-103-quiz
-# -> http://localhost:6321</code></pre>
-                </div>
-
-                <div class="command-block">
-                    <div class="command-title">
-                        <span class="command-num">3</span>
                         Ya da docker-compose ile
                     </div>
                     <pre class="command-code"><code>docker compose up -d
 # -> http://localhost:6321</code></pre>
-                </div>
-
-                <div class="command-block">
-                    <div class="command-title">
-                        <span class="command-num">4</span>
-                        Sağlık Kontrolü
-                    </div>
-                    <pre class="command-code"><code>curl http://localhost:6321/api/health
-# {"status": "healthy", ...}</code></pre>
                 </div>
             </div>
         </div>
